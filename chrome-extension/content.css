@@ -1,0 +1,10 @@
+#chatbox-iframe {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	z-index: 2147483640;
+	height: 100%;
+	width: 100%;
+	border:none;
+	box-shadow: 15px 15px 5px rgba(0, 0, 0, 0.31);
+}
