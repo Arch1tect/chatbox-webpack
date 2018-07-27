@@ -2,6 +2,7 @@ import Vue from 'vue'
 import 'bootstrap'
 import chatboxMainVue from './main.vue'
 import commentModal from './comment-modal.vue'
+import danmu from './danmu.vue'
 import topBar from './component/top-bar.vue'
 import chat from './component/chat.vue'
 import inbox from './component/inbox.vue'
@@ -16,7 +17,10 @@ Vue.component('comment-body', comment);
 Vue.component('comment-btn', commentBtn);
 Vue.component('input-bar', inputBar);
 
-
+new Vue({
+  el: '#chatbox',
+  render: h => h(chatboxMainVue)
+})
 
 new Vue({
   el: '#comment-modal',
@@ -24,6 +28,6 @@ new Vue({
 })
 
 new Vue({
-  el: '#chatbox',
-  render: h => h(chatboxMainVue)
+  el: '#danmu',
+  render: h => h(danmu)
 })

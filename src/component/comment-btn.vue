@@ -23,11 +23,6 @@ export default {
             state: chatboxUIState,
             chatbox: chatbox
         }
-    },
-    methods: {
-        openCommentModal: function() {
-            $('#socketchatbox-comment-modal').modal('show');
-        }
     }
 }
 
