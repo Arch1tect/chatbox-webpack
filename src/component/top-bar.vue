@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import chatboxUIState from './ui-state.js'
+import chatboxUIState from '../ui-state.js'
 export default {
     name: 'top-bar',
     data () {

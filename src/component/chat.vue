@@ -31,9 +31,9 @@ import * as io from 'socket.io-client'
 import * as moment from 'moment';
 import Vue from 'vue'
 
-import chatboxUIState from './ui-state.js'
-import chatbox from './config.js'
-import chatboxUtils from './utils.js'
+import chatboxUIState from '../ui-state.js'
+import chatbox from '../config.js'
+import chatboxUtils from '../utils.js'
 
 
 "use strict";

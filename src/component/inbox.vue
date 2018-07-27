@@ -1,0 +1,353 @@
+<template>
+    <div class="socketchatbox-inbox" v-show="state.view==3">
+        <div class="socketchatbox-page-title">
+            <span v-bind:class="{fa: true, 'fa-refresh': true, 'fa-spin': loading }" @click="userClickRefresh" title='Refresh' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-refresh-inbox'></span>
+            <span>{{title}}</span>
+        </div>
+        <div class="socketchatbox-inbox-wrapper">
+            <span class="fa fa-chevron-left" id="socketchatbox-toggle-friend-list"></span>
+            <div class="socketchatbox-friend-list">
+                <div v-bind:class="{selected: friend.selected}" @click="selectFriend(friend)" v-for="friend in friends"><span class='message-unread' v-show='friend.unreadMsg'></span>{{friend.name}}</div>
+            </div>
+            <div ref="msgArea" class="socketchatbox-friend-messages">
+                <div class="inbox-conversation-no-message" v-if="!selectedConversation.length">Start the conversation now!</div>
+                <div v-bind:class="{ 'socketchatbox-message socketchatbox-inbox-message': true, 'socketchatbox-message-me': msg.me, 'merge-above': false }" v-for="msg in selectedConversation">
+                    <div v-if="msg.isLog" class="socketchatbox-log">{{msg.message}}</div>
+                    <div v-else>
+                        <div v-if="msg.renderType=='media'" class="socketchatbox-messageBody image-or-video"><img class="chatbox-image" v-bind:src="msg.message" /></div>
+                        <!-- use v-html because message contain html due to adding class to emoji -->
+                        <div v-if="msg.renderType=='text'" v-html="msg.message" class="socketchatbox-messageBody"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+/*
+message object:
+{
+    create_time: "2018-07-08 07:36:15",
+    id: 0,
+    message: "Welcome! Thank you!",
+    receiver: 'fdafdsafd-adsfasdf-kl',
+    receivername: "David",
+    sender: 'chat-bot-id',
+    sendername: 'chat bot'
+}
+friend object:
+{
+    name: 'chat bot',
+    id: 'chat-bot-id',
+    selected: false,
+}
+
+Given friend user id, look up all their messages:
+{
+    'sfaf-hgfjhg-kljk': [message1, message2],
+    'fafds-vbcvb-edffg': [message1, message2, message3]
+    ...
+}
+*/
+// TODO: need to messages and offset in local storage
+import Vue from 'vue'
+import * as moment from 'moment';
+
+import chatboxUIState from '../ui-state.js'
+import chatbox from '../config.js'
+import chatboxUtils from '../utils.js'
+
+
+"use strict";
+var LOG_MESSAGE_TIME_AFTER = 5*60*1000 // 5 mins
+
+export default {
+    name: 'inbox-body',
+    data () {
+        return {
+            state: chatboxUIState,
+            loading: false,
+            userClickedRefresh: false,
+            userClickedRefreshTimeout: null,
+            messageDict: {},
+            friendDict: {},
+            selectedConversation: [],
+            selectedFriend: null,
+            chatbotFriend: null,
+            friends: [],
+            // track latest msg user received regardless of which friend it's from
+            lastMsgId: -1
+        }
+    },
+    methods: {
+        buildFriendObj: function (id, inName) {
+            var name = inName;
+            if (!name)
+                name = 'no name';
+            return {
+                userId: id,
+                name: name,
+                selected: false,
+                unreadMsg: true
+            };
+        },
+        selectFriend: function (friend) {
+            if (friend.selected)
+                return;
+            var i=0;
+            for (; i < this.friends.length; i++) {
+                if (this.friends[i].selected)
+                    this.friends[i].selected = false;
+            }
+            friend.selected = true;
+            friend.unreadMsg = false;
+            this.selectedFriend = friend;
+        },
+        loadChatbotMsg: function () {
+            var i = 0;
+            for (; i < welcomeMessagesFromChatbot.length; i++) {
+                this.chatbotFriend = this.processMsg(welcomeMessagesFromChatbot[i]);
+            }
+            this.chatbotFriend.unreadMsg = false;
+            this.selectFriend(this.chatbotFriend);
+        },
+        loadTestData: function () {
+            var i = 0;
+            for (; i<testData.length; i++) {
+                var friend = this.processMsg(testData[i]);
+                friend.unreadMsg = false;
+            }
+        },
+        styleMsg: function (data) {
+            if (data.message.match(/\.(jpeg|jpg|gif|png)$/) !== null) {
+                data.renderType = 'media';
+            } else {
+                data.renderType = 'text';
+                data.message = chatboxUtils.addClassToEmoji(data.message);
+            }
+        },
+        addFriend: function (friend) {
+            this.friendDict[friend.userId] = friend;
+            this.friends.unshift(friend);
+            this.messageDict[friend.userId] = [];
+        },
+        processMsg: function (data) {
+            this.styleMsg(data);
+            // Some logic that based on conversation:
+            // 1. log time if needed
+            // 2. add friend if first message of conversation
+            // 3. mark if message need to display friend's name - lastBySelf
+            var friend = null;
+            if (data.sender == chatbox.userId) {
+                data.me = true;
+                friend = this.buildFriendObj(data.receiver, data.receivername);
+            } else {
+                friend = this.buildFriendObj(data.sender, data.sendername);
+            }
+
+            // Figure out if need to log time before pushing message itself
+            var messageTime = moment.utc(data.create_time);
+            var log = {
+                isLog: true,
+                message: messageTime.local().format("MMMM Do YYYY, h:mm a")
+            };
+
+            var conversation = this.messageDict[friend.userId];
+            if (conversation) {
+                var lastMsg = null;
+                if (conversation.length)
+                    lastMsg = conversation[conversation.length-1];
+                // important: use existing friend obj in friendDict
+                friend = this.friendDict[friend.userId];
+
+                // determine if need to log time
+                var curMsgTime = moment(data.create_time);
+                if (!lastMsg || messageTime.diff(moment.utc(lastMsg.create_time))  > LOG_MESSAGE_TIME_AFTER) {
+                    conversation.push(log);
+                }
+                conversation.push(data);
+
+            } else {
+                // first message of conversation that's sent FROM OTHER USER!
+                data.firstMsg = true;
+                this.addFriend(friend);
+                this.messageDict[friend.userId] = [log, data];
+            }
+            return friend;
+        },
+        sendPM: function (msg) {
+            var _this = this;
+            var payload = {
+                'sender': chatbox.userId,
+                'receiver': this.selectedFriend.userId,
+                'message': msg
+            }
+            console.log(msg);
+            $.post(chatbox.inboxUrl + "/db/message", payload, function(resp) {
+                _this.pullMsgFromDB();
+            });
+        },
+        userClickRefresh: function () {
+            var _this = this;
+            this.userClickedRefresh = true;
+            if (this.userClickedRefreshTimeout)
+                clearTimeout(this.userClickedRefreshTimeout);
+            this.pullMsgFromDB(function(data){
+                _this.userClickedRefreshTimeout = setTimeout(function(){
+                    _this.userClickedRefresh = false;
+                }, 2000);
+            });
+        },
+        keepPulling: function () {
+            var _this = this;
+            setTimeout(function(){
+                _this.keepPulling();
+                _this.pullMsgFromDB();
+            }, 5*1000);
+        },
+        pullMsgFromDB: function (callback) {
+            this.loading = true;
+            var _this = this;
+            $.get(chatbox.inboxUrl + "/db/message/offset/" + this.lastMsgId+"/user/" + chatbox.userId, function(data, status) {
+                // TODO: last message first so recent conversation on top
+
+                var i = 0;
+                for (; i < data.length; i++) {
+                    _this.lastMsgId = data[i].id;
+                    var friend = _this.processMsg(data[i]);
+                    // Mark friend has unread message unless friend is being selected
+                    if (!(_this.selectedFriend && _this.selectedFriend.userId == friend.userId))
+                        friend.unreadMsg = true;
+                }
+                if (callback)
+                    callback(data);
+            }).always(function(){
+                _this.loading = false;
+            });
+        },
+        scrollToBottom: function () {
+            this.$refs.msgArea.scrollTop = this.$refs.msgArea.scrollHeight;
+        },
+        goToMessage: function (userId, userName) {
+            this.state.view = 3;
+            var friend = null;
+            if (userId in this.friendDict) {
+                friend = this.friendDict[userId];
+            } else {
+                friend = this.buildFriendObj(userId, userName);
+                this.addFriend(friend);
+                this.messageDict[userId] = [];
+            }
+            this.selectFriend(friend);
+        }
+    },
+    watch: {
+        selectedFriend: function (newVal, oldVal) {
+            this.selectedConversation = this.messageDict[newVal.userId];
+        },
+        selectedConversation: function (newVal, oldVal) {
+            var _this = this;
+            Vue.nextTick(function(){
+                _this.scrollToBottom();
+            });
+        }
+    },
+    computed: {
+        title: function () {
+            var i = 0;
+            var unreadMsg = false;
+            for (; i<this.friends.length; i++) {
+                if (this.friends[i].unreadMsg)
+                    unreadMsg = true;
+            }
+            if (unreadMsg)
+                return 'You have new message!';
+            else {
+                if (this.userClickedRefresh)
+                    return 'No new message';
+            }
+            return 'Your private messages';
+        }
+    },
+    created () {
+        // expose sendPM method so input component can access it
+        chatbox.sendPM = this.sendPM;
+        chatbox.goToMessage = this.goToMessage;
+        this.loadChatbotMsg();
+        this.loadTestData();
+        this.pullMsgFromDB();
+        this.keepPulling();
+    }
+}
+function sortByMsgId(a, b) {
+    return a.id > b.id ? -1 : 1;
+}
+var welcomeMessagesFromChatbot = [
+    {
+        create_time: "2018-07-08 07:36:15",
+        id: -1,
+        message: "stickers/bunny/hi.gif",
+        receiver: chatbox.userId,
+        receivername: "",
+        sender: chatbox.chatbot.userId,
+        sendername: chatbox.chatbot.name,
+    },
+    {
+        create_time: "2018-07-08 07:36:15",
+        id: 0,
+        message: "Welcome! Thank you for using this app and please feel free to send us feedback! ;)",
+        receiver: chatbox.userId,
+        receivername: "",
+        sender: chatbox.chatbot.userId,
+        sendername: chatbox.chatbot.name,
+    },
+]
+var testData = [
+    {
+        create_time: "2018-07-08 07:36:15",
+        id: 1,
+        message: "😄😄😄 After the first talks since the Trump-Kim summit, Secretary of State Mike Pompeo insisted that Pyongyang is still negotiating in good faith, even as it condemned U.S. demands.",
+        receiver: chatbox.userId,
+        receivername: "",
+        sender: "10",
+        sendername: "Sue",
+    },
+    {
+        create_time: "2018-07-08 07:36:15",
+        id: 2,
+        message: "Secretary of State Mike Pompeo insisted that Pyongyang is still negotiating in good faith, even as it condemned U.S. demands.",
+        receiver: chatbox.userId,
+        receivername: "",
+        sender: "10",
+        sendername: "Sue",
+    },
+    {
+        create_time: "2018-07-08 07:36:15",
+        id: 3,
+        message: "Secretary of State Mike Pompeo insisted that Pyongyang is still negotiating in good faith, even as it condemned U.S. demands.",
+        receiver: "10",
+        receivername: "Sue",
+        sender: chatbox.userId,
+        sendername: "",
+    },
+    {
+        create_time: "2018-07-08 07:36:15",
+        id: 4,
+        message: "Secretary of State Mike Pompeo insisted that Pyongyang is still negotiating in good faith, even as it condemned U.S. demands.",
+        receiver: chatbox.userId,
+        receivername: "",
+        sender: "10",
+        sendername: "Sue",
+    },
+    {
+        create_time: "2018-07-08 07:36:15",
+        id: 5,
+        message: "After the 2016 Presidential election, the Trump Administration and the Republican-controlled Congress reduced U.S. support for climate-change-related research, causing the Centre’s program and similar initiatives around the world to scramble for funding. 😄😄😄 A U.S.A.I.D. official told me that American funding for the Centre’s project will end in 2019, instead of in 2020, because of a change in “the Administration’s foreign-policy and national-security priorities.”",
+        receiver: chatbox.userId,
+        receivername: "",
+        sender: "10",
+        sendername: "Sue",
+    }
+]
+</script>

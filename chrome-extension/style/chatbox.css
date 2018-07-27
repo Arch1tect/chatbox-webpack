@@ -46,6 +46,9 @@ ul {
 input.socketchatbox-inputMessage:disabled {
     background: lightgray;
 }
+button:hover {
+  cursor: pointer;
+}
 
 .tooltip-inner  {
   /*padding: 10px !important;*/
@@ -132,7 +135,7 @@ input.socketchatbox-inputMessage:disabled {
   filter: grayscale(100%);
   transform: scale(0.8);
   opacity: 0.7; /*because the other icon is too light*/
-  /* margin: 0; */
+   margin: 0; 
   border-radius: 0px;
   /* padding: 0; */
 }

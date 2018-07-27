@@ -60,9 +60,9 @@ import { EmojiPickerPlugin } from 'vue-emoji-picker'
 Vue.use(EmojiPickerPlugin)
 import { mixin as clickaway } from 'vue-clickaway';
 
-import chatboxUIState from './ui-state.js'
-import chatbox from './config.js'
-import chatboxUtils from './utils.js'
+import chatboxUIState from '../ui-state.js'
+import chatbox from '../config.js'
+import chatboxUtils from '../utils.js'
 
 
 

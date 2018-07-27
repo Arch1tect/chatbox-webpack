@@ -7,6 +7,12 @@ module.exports = {
     path: path.resolve(__dirname, './chrome-extension'),
     filename: 'build.js'
   },
+  plugins: [
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery"
+    })
+  ],
   module: {
     rules: [
       {
