@@ -16,7 +16,7 @@
     padding: 10px;
     padding-bottom: 5px;
     padding-top: 5px;
-    z-index: 99999;
+    z-index: 2147483647;
 }
 </style>
 <script>

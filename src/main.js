@@ -17,6 +17,21 @@ Vue.component('comment-body', comment);
 Vue.component('comment-btn', commentBtn);
 Vue.component('input-bar', inputBar);
 
+// fontawesome start
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faSmile, faLaughWink, faComments, faPaperclip, faInbox, faEdit, faTimes, faWindowClose } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+library.add(faComments)
+library.add(faEdit)
+library.add(faSmile)
+library.add(faTimes)
+library.add(faPaperclip)
+library.add(faLaughWink)
+library.add(faWindowClose)
+library.add(faInbox)
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+// fontawesome end
+
 new Vue({
   el: '#chatbox',
   render: h => h(chatboxMainVue)

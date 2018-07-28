@@ -35,7 +35,6 @@
   position: relative;
 }
 .socketchatbox-messages {
-  margin: 0;
   padding: 0;
 }
 .socketchatbox-msg-username {
@@ -123,7 +122,7 @@
 }
 
 .socketchatbox-chatArea {
-
+    box-sizing: border-box;
   width: 100%;
   height: calc(100% - 30px);
   overflow-y: auto; /*only show scroll bar when needs to*/

@@ -4,10 +4,10 @@
         </span>
         <div v-show="!state.mini" data-toggle="tooltip" data-placement="bottom" title='Edit your name' id='socketchatbox-username'>{{username}}</div>
         <span v-show="!state.mini" id='topbar-options' class='float-right'>
-            <span class="fa fa-pencil" title='Comments' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-comments' v-on:click='state.view=1' v-bind:class="{ selected: state.view==1 }"></span>
-            <span class="fa fa-comments" title='Live chat' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live' v-on:click='state.view=2' v-bind:class="{ selected: state.view==2 }"></span>
-            <span class="fa fa-inbox" title='Inbox' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-inbox' v-on:click='state.view=3' v-bind:class="{ selected: state.view==3 }"></span>
-            <span class="fa fa-close" title='Close' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-closeChatbox'></span>
+            <font-awesome-icon icon="edit" class="fa fa-pencil" title='Comments' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-comments' v-on:click='state.view=1' v-bind:class="{ selected: state.view==1 }" />
+            <font-awesome-icon icon="comments" class="fa fa-comments" title='Live chat' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live' v-on:click='state.view=2' v-bind:class="{ selected: state.view==2 }" />
+            <font-awesome-icon icon="inbox" class="fa fa-inbox" title='Inbox' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-inbox' v-on:click='state.view=3' v-bind:class="{ selected: state.view==3 }" />
+            <font-awesome-icon icon="times" class="fa fa-close" title='Close' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-closeChatbox' />
         </span>
     </div>
 </template>
@@ -34,20 +34,22 @@
   margin-right: 15px;
   font-size: 15px;
 }
-#topbar-options span {
+#topbar-options .fa {
     color: lightgray;
     line-height: 30px;
-    font-size: 20px;
+    font-size: 30px;
     padding-left: 7px;
     padding-right: 7px;
 }
-
-#topbar-options span:hover{
+#topbar-options .fa-close {
+  width: 0.9em;
+}
+#topbar-options .fa:hover{
   background: gray;;
   color:white;
 }
 
-#topbar-options span.selected{
+#topbar-options .fa.selected{
  background: white;;
   color:black;
 }

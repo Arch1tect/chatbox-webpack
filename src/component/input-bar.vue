@@ -47,17 +47,25 @@
 
         <input autoFocus ref="chatInput" v-model="content"  v-on:keyup.enter="sendInput" class="socketchatbox-inputMessage" v-bind:placeholder="InputPlaceHolder"/>
         <label v-show="state.view==2" data-toggle="tooltip" title='Send image or file' data-placement="left" class="btn" id='socketchatbox-sendFileBtn' for = "socketchatbox-sendMedia">
+            <font-awesome-icon icon="paperclip" style="width: 100%;height: 100%;"/>
             <input @change="sendFile" id="socketchatbox-sendMedia" type="file" style="display:none;">
         </label>
-        <button @click="toggleEmoji" data-toggle="tooltip" title='Send emoji' id = "socketchatbox-emoji-btn"></button>
-        <button v-on-clickaway="hideStickers" v-on:click="showStickers=!showStickers" data-toggle="tooltip" title='Send stickers' id = "socketchatbox-sticker-btn"></button>
+        <font-awesome-icon icon="smile" @click="toggleEmoji" data-toggle="tooltip" title='Send emoji' id = "socketchatbox-emoji-btn" />
+        <font-awesome-icon icon="laugh-wink" v-on-clickaway="hideStickers" v-on:click="showStickers=!showStickers" data-toggle="tooltip" title='Send stickers' id = "socketchatbox-sticker-btn" />
     </div>
 </template>
 <style>
+.socketchatbox-inputMessage-div .svg-inline--fa{
+    padding: 7px;
+    cursor: pointer;
+}
 .socketchatbox-inputMessage-div {
-  height: 35px; 
-  background-color: white;
-  border-top: 1px solid lightgray;
+    height: 35px; 
+    background-color: white;
+    border-top: 1px solid lightgray;
+}
+.socketchatbox-inputMessage-div input {
+    box-sizing: border-box;
 }
 .socketchatbox-inputMessage {
     width: calc(100% - 105px);
@@ -73,59 +81,43 @@ input.socketchatbox-inputMessage:disabled {
     background: lightgray;
 }
 #socketchatbox-sendFileBtn {
-  height: 34px; /*-1px for border-top*/
-  width: 35px;
-  float: right;
-  background: transparent;
-  /*background-image: url(send-file.png);*/
-  background-repeat: no-repeat;
-  background-position-x: 50%;
-  color: white;
-  overflow: hidden;
-  filter: grayscale(100%);
-  transform: scale(0.8);
-  opacity: 0.7; /*because the other icon is too light*/
-   margin: 0; 
-  border-radius: 0px;
-  /* padding: 0; */
+    float: right;
+    overflow: hidden;
+    height: 34px;
+    width: 35px;
+    float: right;
+    color: lightgrey;
+    border: none;
+    outline: none;
 }
 #socketchatbox-emoji-btn {
-  /*background: url(emoji.png) center center no-repeat;*/
-  float: right;
-  overflow: hidden;
-  height: 34px;
-  width: 35px;
-  float: right;
-  border: none;
-  outline: none;
-  background-color: transparent;
-  filter: grayscale(100%);
-  transform: scale(0.8);
-
+    float: right;
+    overflow: hidden;
+    height: 34px;
+    width: 35px;
+    float: right;
+    color: lightgrey;
+    border: none;
+    outline: none;
 }
 #socketchatbox-sticker-btn {
-  /*background: url(stickers.png) center center no-repeat;*/
-  float: right;
-  overflow: hidden;
-  height: 34px;
-  width: 35px;
-  float: right;
-  border: none;
-  outline: none;
-  background-color: transparent;
-  filter: grayscale(100%);
-  transform: scale(0.8);
-  opacity: 0.5; /*because the other icon is too light*/
-
+    float: right;
+    overflow: hidden;
+    height: 34px;
+    width: 35px;
+    float: right;
+    color: lightgrey;
+    border: none;
+    outline: none;
 }
 #socketchatbox-sticker-btn:hover {
-  background-color:lightgray;
+    color: gray;
 }
 #socketchatbox-emoji-btn:hover {
-  background-color:lightgray;
+    color: gray;
 }
 #socketchatbox-sendFileBtn:hover {
-  background-color:lightgray;
+    color: gray;
 }
 
 #socketchatbox-sticker-picker {
