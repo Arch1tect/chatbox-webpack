@@ -14,7 +14,49 @@
         </div>
     </div>
 </template>
+<style>
+.socketchatbox-comments {
+  width: 100%;
+  height: 100%;
+  background: #eceff1;
+}
+.socketchatbox-commentsArea {
+  overflow-wrap: break-word;
+  width: 100%;
+  height: calc(100% - 30px);
+  overflow-y: auto; /*only show scroll bar when needs to*/
+  border: none; 
+  padding-right: 10px;
+  padding-left: 10px;
+  padding-top: 30px;
+}
 
+.socketchatbox-commentsArea .comment-body {
+  margin-top: 5px;
+  white-space: pre-line;
+  display: inline-block;
+  margin-bottom: 15px;
+  max-width: 85%;
+  background-color: #FFFFFF;
+  border-radius: 5px;
+  box-shadow: 0 0 6px #B2B2B2;
+  padding: 10px 18px;
+  vertical-align: top;
+  line-height: 1.25em;
+  font-size: 12px;
+  word-wrap: break-word;
+  background: white;
+}
+
+.socketchatbox-commentsArea .comment-header span {
+  margin: 3px;
+}
+
+.socketchatbox-commentsArea .comment-header small {
+  color: gray;
+  margin-left: 10px;
+}
+</style>
 <script>
 import * as moment from 'moment'
 

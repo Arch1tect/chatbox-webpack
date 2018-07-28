@@ -53,7 +53,164 @@
         <button v-on-clickaway="hideStickers" v-on:click="showStickers=!showStickers" data-toggle="tooltip" title='Send stickers' id = "socketchatbox-sticker-btn"></button>
     </div>
 </template>
+<style>
+.socketchatbox-inputMessage-div {
+  height: 35px; 
+  background-color: white;
+  border-top: 1px solid lightgray;
+}
+.socketchatbox-inputMessage {
+    width: calc(100% - 105px);
+    padding: 0px;
+    padding-left: 10px;
+    height: 34px;
+    border: 0px;
+    margin: 0px;
+    line-height: 2;
+    float: left;
+}
+input.socketchatbox-inputMessage:disabled {
+    background: lightgray;
+}
+#socketchatbox-sendFileBtn {
+  height: 34px; /*-1px for border-top*/
+  width: 35px;
+  float: right;
+  background: transparent;
+  /*background-image: url(send-file.png);*/
+  background-repeat: no-repeat;
+  background-position-x: 50%;
+  color: white;
+  overflow: hidden;
+  filter: grayscale(100%);
+  transform: scale(0.8);
+  opacity: 0.7; /*because the other icon is too light*/
+   margin: 0; 
+  border-radius: 0px;
+  /* padding: 0; */
+}
+#socketchatbox-emoji-btn {
+  /*background: url(emoji.png) center center no-repeat;*/
+  float: right;
+  overflow: hidden;
+  height: 34px;
+  width: 35px;
+  float: right;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  filter: grayscale(100%);
+  transform: scale(0.8);
 
+}
+#socketchatbox-sticker-btn {
+  /*background: url(stickers.png) center center no-repeat;*/
+  float: right;
+  overflow: hidden;
+  height: 34px;
+  width: 35px;
+  float: right;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  filter: grayscale(100%);
+  transform: scale(0.8);
+  opacity: 0.5; /*because the other icon is too light*/
+
+}
+#socketchatbox-sticker-btn:hover {
+  background-color:lightgray;
+}
+#socketchatbox-emoji-btn:hover {
+  background-color:lightgray;
+}
+#socketchatbox-sendFileBtn:hover {
+  background-color:lightgray;
+}
+
+#socketchatbox-sticker-picker {
+    position: absolute;
+    box-shadow: 0 0 7px #555;
+    border-radius: 5px;
+    z-index: 999999;
+    bottom: 35px;
+    overflow-x: hidden;
+    overflow-y: overlay;
+    height: 350px;
+    width: 390px;
+    padding: 5px;
+    max-height: calc(100% - 65px);
+    max-width: 100%;
+    background: white;
+    right: 0px;
+}
+#socketchatbox-sticker-picker img {
+  width: 80px;
+  margin:5px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+#socketchatbox-sticker-picker img:hover {
+  background: #e4e4e4;
+}
+
+
+/*====================================================
+==========================Emoji=======================
+======================================================*/
+.emoji-picker {
+    position: absolute;
+    z-index: 999;
+    font-family: Montserrat;
+    border: 1px solid #ccc;
+    width: 100%;
+    /* height: 20rem; */
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 1rem;
+    box-sizing: border-box;
+    border-radius: 0.5rem;
+    background: #fff;
+    box-shadow: 1px 1px 8px #c7dbe6;
+}
+.emoji-picker__search {
+  display: flex;
+}
+.emoji-picker__search > input {
+  flex: 1;
+  border-radius: 10rem;
+  border: 1px solid #ccc;
+  padding: 0.5rem 1rem;
+  outline: none;
+}
+.emoji-picker h5 {
+  margin-bottom: 10px;
+  color: #b1b1b1;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  cursor: default;
+}
+.emoji-picker .emojis {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.emoji-picker .emojis:after {
+  content: "";
+  flex: auto;
+}
+.emoji-picker .emojis span {
+    border-radius: 5px;
+    padding: 3px;
+    font-size: 25px;
+    line-height: 25px;
+}
+.emoji-picker .emojis span:hover {
+  background: #ececec;
+  cursor: pointer;
+}
+
+</style>
 <script>
 import Vue from 'vue'
 import { EmojiPickerPlugin } from 'vue-emoji-picker'
@@ -169,16 +326,23 @@ export default {
             // therefore first time loading is very slow, preload it
             // through hacky way
             // TODO: switch to other library
-            if (!newVal) {
-                this.refreshEmoji();
-                if (this.state.view !== 1)
-                    this.focusOnInput();
-            }
+            // if (!newVal) {
+            //     this.refreshEmoji();
+            //     if (this.state.view !== 1)
+            //         this.focusOnInput();
+            // }
         },
         'state.view': function (newVal, oldVal) {
             if (newVal !== 1)
                 this.focusOnInput()
         }
+    },
+    mounted () {
+        // emoji library is using v-if instead of v-show 
+        // therefore first time loading is very slow, preload it
+        // through hacky way
+        // TODO: switch to other library
+        this.refreshEmoji();    
     }
 }
 </script>

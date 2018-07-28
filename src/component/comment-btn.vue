@@ -4,13 +4,28 @@
         <span>Add your comment!</span>
     </button>
 </template>
-
+<style>
+#socketchatbox-comment-btn-wrapper {
+  width: 100%;
+  height: 35px;
+  border: none;
+  border-top: 1px solid lightgray;
+  float: left;
+  border-radius: 0;
+}
+#socketchatbox-comment-btn-wrapper:hover {
+  /*background:white;*/
+  cursor: pointer;
+}
+#socketchatbox-comment-btn-wrapper span.fa {
+  margin-right: 5px; 
+}
+</style>
 <script>
 import * as moment from 'moment';
 
 import chatboxUIState from '../ui-state.js'
 import chatbox from '../config.js'
-
 
 "use strict";
 

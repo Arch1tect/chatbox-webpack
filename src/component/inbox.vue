@@ -23,7 +23,88 @@
         </div>
     </div>
 </template>
+<style>
+.socketchatbox-inbox-wrapper {
+  height: calc(100% - 30px);
+  width: 100%;
+}
+.socketchatbox-inbox {
+  width: 100%;
+  height: 100%;
+  background: #eceff1;
+}
+.socketchatbox-inbox-message {
+  width: 100%;
+  display: inline-block;
+  margin-bottom: 0px;
+}
+.inbox-conversation-no-message {
+  position: relative;
+  top: 45%;
+  text-align: center;
+  color: gray;
+    font-size: 15px;
+    font-weight: bold;
+}
+.socketchatbox-friend-messages {
+  height: 100%;
+  padding: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 
+.socketchatbox-friend-list {
+  width: 25%;
+  height: 100%;
+  overflow: auto;
+  float: left;
+  background: rgba(0, 0, 0, 0.75);
+  /*border-right: 1px solid lightgray;*/
+  color: white;
+
+}
+
+.socketchatbox-friend-list div {
+  padding: 10px;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.socketchatbox-friend-list div:hover {
+  background-color: black;
+  cursor: pointer;
+}
+.socketchatbox-friend-list .message-unread {
+    border-radius: 50%;
+    background: orange;
+    height: 8px;
+    float: left;
+    width: 8px;
+    display: inline-block;
+    margin-left: -5px;
+    margin-top: 1px;
+    margin-right: 5px;
+}
+.socketchatbox-friend-list div.selected {
+    background-color: #eceff1;
+    color: black;
+}
+#socketchatbox-toggle-friend-list {
+  position: absolute;
+  display: none;
+  z-index: 2;
+  top: 50%;
+  left: 70px;
+  padding: 10px;
+  color: gray;
+  cursor: pointer;
+  background: white;
+  outline: 1px solid lightgray;
+}
+#socketchatbox-toggle-friend-list:hover {
+  color: black;
+}
+</style>
 <script>
 /*
 message object:

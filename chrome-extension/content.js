@@ -7,8 +7,9 @@ function createChatbox() {
 
 	if (!chatboxCreated) {
 
-		chatboxIFrame  = document.createElement ("iframe");
-		chatboxIFrame.src  = chrome.extension.getURL ("index.html?"+location.href);
+		chatboxIFrame  = document.createElement ("div");
+		chatboxIFrame.innerHTML='<div id="chatbox"></div><div id="comment-modal"></div><div id="danmu"></div>'
+		// chatboxIFrame.src  = chrome.extension.getURL ("index.html?"+location.href);
 		chatboxIFrame.id = "chatbox-iframe";
 
 		document.body.insertBefore(chatboxIFrame, document.body.firstChild);

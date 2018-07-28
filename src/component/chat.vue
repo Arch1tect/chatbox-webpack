@@ -25,7 +25,114 @@
         </div>
     </div>
 </template>
+<style>
+.socketchatbox-messagetime {
+  color: gray;
+}
+.inline-emoji {
+  font-size: 18px;
+  bottom: -3px;
+  position: relative;
+}
+.socketchatbox-messages {
+  margin: 0;
+  padding: 0;
+}
+.socketchatbox-msg-username {
+  display: table-cell;
+  cursor: pointer;
+}
+.socketchatbox-message-me .socketchatbox-msg-username {
+  float: right;
+  padding-right: 5px;
+}
+.socketchatbox-message-others .socketchatbox-msg-username {
+  cursor: pointer;
+  padding-left: 5px;
+}
+.socketchatbox-message-others .socketchatbox-msg-username:hover {
+  color: #0089ff;
+}
+.socketchatbox-message {
+  width: 100%;
+  display: inline-block;
+  margin-bottom: 15px;
+}
+.socketchatbox-message img{
+  max-width: 50%;
+  border-radius: 5px;
+}
+.socketchatbox-message video{
+  max-width: 100%;
+}
+.socketchatbox-log {
+  color: #9E9E9E;
+  font-size: 11px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  padding: 0px;
+  text-align: center;
+}
+.socketchatbox-messageBody {
+  max-width: 70%;
+  margin-top: 7px;
+  background-color: #FFFFFF;
+  border-radius: 5px;
+  box-shadow: 0 0 6px #B2B2B2;
+  display: inline-block;
+  padding: 10px;
+  position: relative;
+  vertical-align: top;
+  line-height: 18px;
+  font-size: 12px;
+  word-wrap: break-word;
+}
+.merge-above .socketchatbox-messageBody{
+  margin-top:-20px;
+}
+.socketchatbox-message-me .socketchatbox-messageBody {
+  background: #BBFF00;
+}
+.socketchatbox-message-me .socketchatbox-messageBody {
+  float: right;
+}
+.socketchatbox-message-me img {
+  float: right;
+}
+.socketchatbox-messageBody.emoji-only {
+  font-size:xx-large;
+  background:none;
+  box-shadow:none;
+  padding: 0px;
+}
+.socketchatbox-messageBody.image-or-video {
+  background:none;
+  box-shadow:none;
+  padding: 0px;
+  border-radius: 5px;
+}
+</style>
+<style>
 
+#socketchatbox-chatroom-url {
+  cursor: pointer;
+}
+#socketchatbox-chatroom-title {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.socketchatbox-chatArea {
+
+  width: 100%;
+  height: calc(100% - 30px);
+  overflow-y: auto; /*only show scroll bar when needs to*/
+  border: none; 
+  padding-right: 10px;
+  padding-left: 10px;
+  padding-top: 30px;
+}
+</style>
 <script>
 import * as io from 'socket.io-client'
 import * as moment from 'moment';

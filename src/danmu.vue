@@ -6,7 +6,19 @@
         </div>
     </div>
 </template>
-
+<style>
+.danmu {
+    position: fixed;
+    box-shadow: 0 0 6px #B2B2B2;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.75);
+    max-width: 800px;
+    padding: 10px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    z-index: 99999;
+}
+</style>
 <script>
 import Vue from 'vue'
 
