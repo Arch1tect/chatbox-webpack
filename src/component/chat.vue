@@ -1,7 +1,7 @@
 <template>
     <div v-show="state.view==2" class="socketchatbox-chatroom-wrapper">
         <div id="socketchatbox-chatroom-title" class="socketchatbox-page-title">
-            <span class="fa fa-refresh" title='Re-enter chatroom' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-refresh'></span>
+            <font-awesome-icon icon="sync-alt" title='Re-enter chatroom' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-refresh' />
             <span id="socketchatbox-chatroom-url" data-toggle="tooltip" data-placement="bottom">{{chatbox.location}}</span>
         </div>
         <div ref="chatArea" class="socketchatbox-chatArea">

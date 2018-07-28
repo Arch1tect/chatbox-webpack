@@ -1,7 +1,7 @@
 <template>
     <div v-show="state.view==1" class="socketchatbox-comments">
         <div class="socketchatbox-page-title">
-            <span v-bind:class="{fa: true, 'fa-refresh': true, 'fa-spin': loading }" v-on:click="userClickedRefresh" title='Refresh comments' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-refresh-comments'></span>
+            <font-awesome-icon icon="sync-alt" v-bind:class="{fa: true, 'fa-refresh': true, 'fa-spin': loading }" v-on:click="userClickedRefresh" title='Refresh comments' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-refresh-comments' />
             <span>{{title}}</span>
         </div>
         <div ref="commentArea" class="socketchatbox-commentsArea">

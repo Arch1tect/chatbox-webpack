@@ -20,6 +20,9 @@
 .float-right {
   float: right;
 }
+.svg-inline--fa:active {
+  background: gray;
+}
 .socketchatbox-page {
     box-sizing: border-box;
     border: 1px solid lightgray;
@@ -47,7 +50,7 @@
     background: white;
     padding: 8px;
 }
-.socketchatbox-page-title span.fa {
+.socketchatbox-page-title .svg-inline--fa {
     margin-right: 10px;
     cursor: pointer;
 }
