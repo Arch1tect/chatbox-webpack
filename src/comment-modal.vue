@@ -80,9 +80,9 @@
     -o-transition: opacity .15s linear;
     transition: opacity .15s linear;
 }
-*, ::after, ::before {
+/**, ::after, ::before {
     box-sizing: border-box;
-}
+}*/
 </style>
 <script>
 import chatboxUIState from './ui-state.js'

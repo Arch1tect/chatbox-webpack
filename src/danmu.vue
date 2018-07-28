@@ -11,12 +11,14 @@
     position: fixed;
     box-shadow: 0 0 6px #B2B2B2;
     border-radius: 5px;
-    background: rgba(255, 255, 255, 0.75);
+    background: rgba(255, 255, 255, 0.9);
     max-width: 800px;
     padding: 10px;
     padding-bottom: 5px;
     padding-top: 5px;
     z-index: 2147483647;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
 }
 </style>
 <script>
@@ -118,8 +120,8 @@ export default {
                 el.style.top = 10 + msg.row*35 + 'px';
                 var startX = window.innerWidth + 'px';
                 var time = 10;
-
-                time = 20 - msg.content.length/10;
+                if (msg.content)
+                    time = 20 - msg.content.length/10;
                 if (time < 8)
                     time = 8;
                 msg.animation = el.animate([

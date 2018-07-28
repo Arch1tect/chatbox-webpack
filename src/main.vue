@@ -2,7 +2,7 @@
     <div id="chatbox-main-vue">
 
         <div id="socketchatbox-all" class="socketchatbox-page">
-            <div id="socketchatbox-ne" class="socketchatbox-resize"></div>
+            <div id="socketchatbox-ne" class="socketchatbox-resize" @mousedown="resizeStart"></div>
             <top-bar></top-bar>
             <div :style="{ height: height + 'px', width: width + 'px'}" id='socketchatbox-body' v-show="!state.mini">
                 <div class='socketchatbox-onlineusers'></div>
@@ -16,12 +16,13 @@
         </div>
     </div>
 </template>
+
 <style>
 .float-right {
   float: right;
 }
 .svg-inline--fa:active {
-  background: gray;
+  background: lightgray;
 }
 .socketchatbox-page {
     box-sizing: border-box;
@@ -33,6 +34,7 @@
     font-size:12px;
     line-height: 1;
     z-index: 2147483646;
+    text-align: left;
 }
 .socketchatbox-page * {
     box-sizing: border-box;
@@ -83,14 +85,56 @@
 import chatboxUIState from './ui-state.js'
 import chatbox from './config.js'
 
+var MIN_WIDTH = 250;
+var MIN_HEIGHT = 100;
+
 export default {
     name: 'chatbox-main-vue',
     data () {
         return {
             state: chatboxUIState,
             height: 350,
-            width:350
+            width:350,
+            prevX:-1,
+            prevY:-1,
+            dragX:-1 // TODO: for moving horizontally
         }
+    },
+    methods: {
+        resizeStart (e) {
+            this.prevX = e.screenX;
+            this.prevY = e.screenY;
+        },
+        resizeEnd (e) {
+            this.prevX = -1;
+            this.prevY = -1;
+        },
+        resizing (e) {
+            if (this.prevX !== -1) {
+                var dx = e.screenX - this.prevX;
+                var dy = e.screenY - this.prevY;
+                this.height -= dy;
+                this.width += dx;
+                this.prevX = e.screenX;
+                this.prevY = e.screenY;
+                if(this.width<MIN_WIDTH) {
+                    this.width = MIN_WIDTH;
+                }
+                if(this.height<MIN_HEIGHT) {
+                    this.height = MIN_HEIGHT;
+                }
+
+            }
+        }
+    },
+    created () {
+        var _this = this;
+        $(document).mouseup(function(e){
+            _this.resizeEnd(e);
+        });
+        $(document).mousemove(function(e){
+            _this.resizing(e);
+        })
     }
 }
 </script>

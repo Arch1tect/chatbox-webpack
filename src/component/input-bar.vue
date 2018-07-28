@@ -46,7 +46,7 @@
         </emoji-picker>
 
         <input autoFocus ref="chatInput" v-model="content"  v-on:keyup.enter="sendInput" class="socketchatbox-inputMessage" v-bind:placeholder="InputPlaceHolder"/>
-        <label v-show="state.view==2" data-toggle="tooltip" title='Send image or file' data-placement="left" class="btn" id='socketchatbox-sendFileBtn' for = "socketchatbox-sendMedia">
+        <label v-show="state.view==2" data-toggle="tooltip" title='Send image or file' data-placement="left" id='socketchatbox-sendFileBtn' for = "socketchatbox-sendMedia">
             <font-awesome-icon icon="paperclip" style="width: 100%;height: 100%;"/>
             <input @change="sendFile" id="socketchatbox-sendMedia" type="file" style="display:none;">
         </label>
@@ -63,6 +63,7 @@
     height: 35px; 
     background-color: white;
     border-top: 1px solid lightgray;
+    padding-right: 10px;
 }
 .socketchatbox-inputMessage-div input {
     box-sizing: border-box;
@@ -119,7 +120,6 @@ input.socketchatbox-inputMessage:disabled {
 #socketchatbox-sendFileBtn:hover {
     color: gray;
 }
-
 #socketchatbox-sticker-picker {
     position: absolute;
     box-shadow: 0 0 7px #555;
