@@ -12,6 +12,7 @@
   float: left;
   border-radius: 0;
   background: white;
+  color: black;
 }
 #socketchatbox-comment-btn-wrapper:hover {
   /*background:white;*/

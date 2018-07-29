@@ -5,7 +5,7 @@
             <span id="socketchatbox-chatroom-url" data-toggle="tooltip" data-placement="bottom">{{chatbox.location}}</span>
         </div>
         <div ref="chatArea" class="socketchatbox-chatArea">
-            <ul class="socketchatbox-messages">
+            <div class="socketchatbox-messages">
 
                 <div v-bind:class="{ 'socketchatbox-message': true, 'socketchatbox-message-me': msg.me, 'merge-above': msg.fromSameUser && !msg.loggingTime }" v-for="msg in messages">
                     <div class="socketchatbox-log" v-if="msg.isLog">{{msg.message}}</div>
@@ -21,7 +21,7 @@
                         <div v-if="msg.renderType=='emoji-only'" class="socketchatbox-messageBody emoji-only">{{msg.message}}</div>
                     </div>
                 </div>
-            </ul>
+            </div>
         </div>
     </div>
 </template>
