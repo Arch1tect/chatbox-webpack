@@ -1,5 +1,5 @@
 <template>
-    <button v-show="state.view == 1" type="button" data-toggle="modal" data-target="#socketchatbox-comment-modal" id="socketchatbox-comment-btn-wrapper">
+    <button v-show="state.view == 1" @click="chatbox.openCommentModal" id="socketchatbox-comment-btn-wrapper">
         <span>Add your comment!</span>
     </button>
 </template>

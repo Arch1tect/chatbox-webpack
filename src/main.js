@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import 'bootstrap'
 import chatboxMainVue from './main.vue'
 import commentModal from './comment-modal.vue'
 import danmu from './danmu.vue'
@@ -33,10 +32,9 @@ library.add(faInbox)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 // fontawesome end
 
-new Vue({
-  el: '#chatbox',
-  render: h => h(chatboxMainVue)
-})
+import VModal from 'vue-js-modal'
+Vue.use(VModal, { componentName: "vue-modal" })
+
 
 new Vue({
   el: '#comment-modal',
@@ -46,4 +44,8 @@ new Vue({
 new Vue({
   el: '#danmu',
   render: h => h(danmu)
+})
+new Vue({
+  el: '#chatbox',
+  render: h => h(chatboxMainVue)
 })

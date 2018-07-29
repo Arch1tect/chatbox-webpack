@@ -14,6 +14,7 @@
                 <comment-btn></comment-btn>
             </div>
         </div>
+
     </div>
 </template>
 
@@ -135,6 +136,8 @@ export default {
         $(document).mousemove(function(e){
             _this.resizing(e);
         })
+        // this.$modal.show('hello-world');
+
     }
 }
 </script>

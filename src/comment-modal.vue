@@ -1,88 +1,44 @@
 <template>
-    <div class="modal fade" id="socketchatbox-comment-modal" tabindex="-1" role="dialog"  aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <textarea ref="commentInput" v-model="comment" placeholder="Add your comment here..." id="socketchatbox-comment-content"></textarea>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="button" id="submit-comment-btn" class="btn btn-primary" v-on:click="submit" data-dismiss="modal">Submit!</button>
-                </div>
-            </div>
+    <vue-modal @opened="autoFocus" height="auto" :scrollable="true" name="comment-modal">
+        <div>
+            <textarea ref="commentInput" v-model="comment" placeholder="Add your comment here..." id="socketchatbox-comment-content"></textarea>
         </div>
-    </div>
+        <div class="comment-modal-footer">
+            <span @click="$modal.hide('comment-modal')" >Cancel</span>
+            <span id="submit-comment-btn" v-on:click="submit">Submit!</span>
+        </div>
+    </vue-modal>
 </template>
 <style>
-.modal.show .modal-dialog {
-    -webkit-transform: translate(0,0);
-    transform: translate(0,0);
+.v--modal-overlay {
+    z-index: 2147483647;
 }
-.modal.fade .modal-dialog {
-    transition: -webkit-transform .3s ease-out;
-    transition: transform .3s ease-out;
-    transition: transform .3s ease-out,-webkit-transform .3s ease-out;
-    -webkit-transform: translate(0,-25%);
-    transform: translate(0,-25%);
+.v--modal-box {
+    padding: 20px;
+    background-color: #eceff1;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:15px;
 }
-.modal-dialog {
-    max-width: 500px;
-    margin: 1.75rem auto;
-}
-.modal-dialog {
-    position: relative;
-    width: auto;
-    margin: .5rem;
-    pointer-events: none;
-}
-.modal-content {
-    position: relative;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: column;
-    flex-direction: column;
+.v--modal-box textarea {
     width: 100%;
-    pointer-events: auto;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid rgba(0,0,0,.2);
-    border-radius: .3rem;
-    outline: 0;
+    font-size:15px;
+    height: 200px;
 }
-.modal-open .modal {
-    overflow-x: hidden;
-    overflow-y: auto;
+.comment-modal-footer {
+    float: right;
+    margin-top: 15px;
 }
-.fade.in {
-    opacity: 1;
+.comment-modal-footer span {
+    padding: 8px;
+    border-radius: 4px;
+    color: white;
+    background: gray;
+    cursor: pointer;
 }
-.fade.show {
-    opacity: 1;
+.comment-modal-footer #submit-comment-btn {
+    background: #00a1ff;
 }
-.modal {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1050;
-    display: none;
-    overflow: hidden;
-    -webkit-overflow-scrolling: touch;
-    outline: 0;
-}
-.fade {
-    opacity: 0;
-    -webkit-transition: opacity .15s linear;
-    -o-transition: opacity .15s linear;
-    transition: opacity .15s linear;
-}
-/**, ::after, ::before {
-    box-sizing: border-box;
-}*/
+
 </style>
 <script>
 import chatboxUIState from './ui-state.js'
@@ -105,16 +61,20 @@ export default {
             }
             $.post(chatbox.commentUrl + "/db/comments/url/"+ chatbox.location, payload, function(resp) {
                 console.log(resp);
+                _this.$modal.hide('comment-modal');
                 _this.comment = '';
                 chatbox.loadComments();
             });
+        },
+        autoFocus: function () {
+            this.$refs.commentInput.focus();
         }
     },
-    mounted () {
+    created () {
         var _this = this;
-        $('#socketchatbox-comment-modal').on('shown.bs.modal', function () {
-            _this.$refs.commentInput.focus();
-        });
+        chatbox.openCommentModal = function () {
+            _this.$modal.show('comment-modal');
+        }
     }
 }
 </script>

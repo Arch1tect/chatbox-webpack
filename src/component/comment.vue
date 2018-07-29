@@ -33,6 +33,7 @@
 
 .socketchatbox-commentsArea .comment-body {
   margin-top: 5px;
+  width: auto;
   white-space: pre-line;
   display: inline-block;
   margin-bottom: 15px;
