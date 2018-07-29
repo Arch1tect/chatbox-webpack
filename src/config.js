@@ -16,7 +16,7 @@ if (localInboxServer) {
 export default {
 
 	location: 'https://www.zhihu.com/',
-	userId: '97aa43c3-fdsdf-67d5eaba7cc7',
+	userId: '97aa43c3-67d5eaba7cc7',
 	userName: 'haha',
 	socketUrl: socketUrl,
 	commentUrl : commentUrl,

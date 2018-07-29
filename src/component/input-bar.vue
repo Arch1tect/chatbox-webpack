@@ -1,30 +1,7 @@
 <template>
     <div id="chatbox-input" v-show="state.view != 1" class = "socketchatbox-inputMessage-div">
         <div v-show="showStickers" id="socketchatbox-sticker-picker">
-            <img v-on:click="sendSticker" src="stickers/bunny/hi.gif"/>
-            <img v-on:click="sendSticker" src="stickers/bunny/yes.gif"/>
-            <img v-on:click="sendSticker" src="stickers/bunny/cute.gif"/>
-            <img v-on:click="sendSticker" src="stickers/bunny/rubber_face.gif"/>
-            <img v-on:click="sendSticker" src="stickers/bunny/cheers.gif"/>
-            <img v-on:click="sendSticker" src="stickers/bunny/together.gif"/>
-            <img v-on:click="sendSticker" src="stickers/bunny/chase_butterfly.gif"/>
-            <img v-on:click="sendSticker" src="stickers/bunny/heart.gif"/>
-            <img v-on:click="sendSticker" src="stickers/bunny/happy_tear.gif"/>
-            <img v-on:click="sendSticker" src="stickers/bunny/swim_in_tear.gif"/>
-            <img v-on:click="sendSticker" src="stickers/bunny/rub_your_head.gif"/>
-            <img v-on:click="sendSticker" src="stickers/bunny/no_way.gif"/>
-            <img v-on:click="sendSticker" src="stickers/bunny/sad.gif"/>
-            <img v-on:click="sendSticker" src="stickers/bunny/pro.gif"/>
-            <img v-on:click="sendSticker" src="stickers/bunny/kiss.gif"/>
-            <img v-on:click="sendSticker" src="stickers/bunny/kiss_face.gif"/>
-            <img v-on:click="sendSticker" src="stickers/bunny/cute_baby.gif"/>
-            <br/>
-            <img v-on:click="sendSticker" src="stickers/seal/beat.gif"/>
-            <img v-on:click="sendSticker" src="stickers/seal/cold.gif"/>
-            <img v-on:click="sendSticker" src="stickers/seal/eat.gif"/>
-            <img v-on:click="sendSticker" src="stickers/seal/hand_cold.gif"/>
-            <img v-on:click="sendSticker" src="stickers/seal/kiss.gif"/>
-            <img v-on:click="sendSticker" src="stickers/seal/miao.gif"/>
+            <img v-for="sticker in stickers" v-on:click="sendSticker" v-bind:src="sticker" />
         </div>
 
         <emoji-picker v-bind:style="{ visibility: emojiPickerVisibility }" ref="emojiComponent" @emoji="addEmoji" :search="emojiSearch">
@@ -225,6 +202,7 @@ export default {
             emojiSearch: '',
             showStickers: false,
             emojiPickerVisibility: 'hidden',
+            stickers: []
         }
     },
     mixins: [clickaway],
@@ -323,10 +301,45 @@ export default {
             //     if (this.state.view !== 1)
             //         this.focusOnInput();
             // }
+            // Above is causing maximize animation to jump, therefore commented out
         },
         'state.view': function (newVal, oldVal) {
             if (newVal !== 1)
                 this.focusOnInput()
+        }
+    },
+    created () {
+        this.stickers = [
+            "assets/stickers/bunny/hi.gif",
+            "assets/stickers/bunny/yes.gif",
+            "assets/stickers/bunny/rubber_face.gif",
+            "assets/stickers/bunny/cheers.gif",
+            "assets/stickers/bunny/together.gif",
+            "assets/stickers/bunny/chase_butterfly.gif",
+            "assets/stickers/bunny/heart.gif",
+            "assets/stickers/bunny/happy_tear.gif",
+            "assets/stickers/bunny/swim_in_tear.gif",
+            "assets/stickers/bunny/rub_your_head.gif",
+            "assets/stickers/bunny/no_way.gif",
+            "assets/stickers/bunny/sad.gif",
+            "assets/stickers/bunny/pro.gif",
+            "assets/stickers/bunny/kiss.gif",
+            "assets/stickers/bunny/kiss_face.gif",
+            "assets/stickers/bunny/cute_baby.gif",
+
+            "assets/stickers/seal/beat.gif",
+            "assets/stickers/seal/cold.gif",
+            "assets/stickers/seal/eat.gif",
+            "assets/stickers/seal/hand_cold.gif",
+            "assets/stickers/seal/kiss.gif",
+            "assets/stickers/seal/miao.gif",
+        ];
+
+        if (typeof convertAssetURL !== 'undefined') {
+            var i = 0;
+            for (; i<this.stickers.length; i++) {
+                this.stickers[i] = convertAssetURL(this.stickers[i]);
+            }
         }
     },
     mounted () {

@@ -364,12 +364,12 @@ var testData = [
     {
         username: chatbox.userName,
         sender: chatbox.userId,
-        message: 'stickers/bunny/cheers.gif'
+        message: 'assets/stickers/bunny/cheers.gif'
     },
     {
         username: 'Luna',
         sender: '1',
-        message: 'stickers/bunny/rubber_face.gif'
+        message: 'assets/stickers/bunny/rubber_face.gif'
     },
     {
         username: 'Luna',

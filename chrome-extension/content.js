@@ -17,6 +17,9 @@ function createChatbox() {
 	}
 }
 
+function convertAssetURL(url) {
+	return chrome.extension.getURL(url);
+}
 
 function resizeIFrameToFitContent(e) {
 
