@@ -1,5 +1,5 @@
 <template>
-    <vue-modal @opened="autoFocus" height="auto" :scrollable="true" name="comment-modal">
+    <vue-modal @closed="modalClosed" @opened="autoFocus" height="auto" name="comment-modal">
         <div>
             <textarea ref="commentInput" v-model="comment" placeholder="Add your comment here..." id="socketchatbox-comment-content"></textarea>
         </div>
@@ -18,6 +18,7 @@
     background-color: #eceff1;
     font-family:Arial,Helvetica,sans-serif;
     font-size:15px;
+    max-width: 100%;
 }
 .v--modal-box textarea {
     width: 100%;
@@ -68,12 +69,16 @@ export default {
         },
         autoFocus: function () {
             this.$refs.commentInput.focus();
+        },
+        modalClosed: function () {
+            chatboxUtils.updateIframeSize('fit');
         }
     },
     created () {
         var _this = this;
         chatbox.openCommentModal = function () {
             _this.$modal.show('comment-modal');
+            chatboxUtils.updateIframeSize('full size');
         }
     }
 }

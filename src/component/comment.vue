@@ -60,6 +60,7 @@
 </style>
 <script>
 import * as moment from 'moment'
+import Vue from 'vue'
 
 import chatboxUIState from '../ui-state.js'
 import chatbox from '../config.js'
@@ -118,6 +119,9 @@ export default {
                     data.content = chatboxUtils.addClassToEmoji(data.content);
                     _this.messages.push(data);
                 }
+                Vue.nextTick(function(){
+                    _this.scrollToBottom();
+                });
                 if (callback)
                     callback(resp);
                 chatbox.addMsgsToDanmu(resp);
