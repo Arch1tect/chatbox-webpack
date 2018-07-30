@@ -4,9 +4,9 @@
         </span>
         <div v-show="!state.mini" data-toggle="tooltip" data-placement="bottom" title='Edit your name' id='socketchatbox-username'>{{username}}</div>
         <span v-show="!state.mini" id='topbar-options' class='float-right'>
-            <font-awesome-icon icon="edit" class="fa fa-pencil" title='Comments' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-comments' v-on:click='state.view=1' v-bind:class="{ selected: state.view==1 }" />
-            <font-awesome-icon icon="comments" class="fa fa-comments" title='Live chat' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live' v-on:click='state.view=2' v-bind:class="{ selected: state.view==2 }" />
-            <font-awesome-icon icon="inbox" class="fa fa-inbox" title='Inbox' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-inbox' v-on:click='state.view=3' v-bind:class="{ selected: state.view==3 }" />
+            <span title='Comments' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-comments'><font-awesome-icon icon="edit" class="fa fa-pencil" v-on:click='state.view=1' v-bind:class="{ selected: state.view==1 }" /></span>
+            <span title='Live chat' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live'><font-awesome-icon icon="comments" class="fa fa-comments" v-on:click='state.view=2' v-bind:class="{ selected: state.view==2 }" /></span>
+            <span title='Inbox' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-inbox'><font-awesome-icon icon="inbox" class="fa fa-inbox" v-on:click='state.view=3' v-bind:class="{ selected: state.view==3 }" /></span>
             <font-awesome-icon icon="times" class="fa fa-close" title='Close' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-closeChatbox' />
         </span>
     </div>

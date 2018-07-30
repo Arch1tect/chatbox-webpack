@@ -1,17 +1,27 @@
+var CHATBOX_ELEMENT_ID = 'chatbox-iframe';
 var chatboxCreated = false;
 var chatboxIFrame;
 var chatboxLeft = 0;
 
 function createChatbox() {
-	console.log('creating iframe');
+	console.log('creating chatbox div');
 
 	if (!chatboxCreated) {
-
 		chatboxIFrame  = document.createElement ("div");
 		chatboxIFrame.innerHTML='<div id="chatbox"></div><div id="comment-modal"></div><div id="danmu"></div>'
-		// chatboxIFrame.src  = chrome.extension.getURL ("index.html?"+location.href);
-		chatboxIFrame.id = "chatbox-iframe";
+		chatboxIFrame.id = CHATBOX_ELEMENT_ID;
+		document.body.insertBefore(chatboxIFrame, document.body.firstChild);
+		chatboxCreated = true;
+	}
+}
 
+function createChatboxIframe() {
+	console.log('creating chatbox iframe');
+
+	if (!chatboxCreated) {
+		chatboxIFrame  = document.createElement ("iframe");
+		chatboxIFrame.src  = chrome.extension.getURL ("index.html?"+location.href);
+		chatboxIFrame.id = CHATBOX_ELEMENT_ID;
 		document.body.insertBefore(chatboxIFrame, document.body.firstChild);
 		chatboxCreated = true;
 	}
@@ -42,17 +52,11 @@ function resizeIFrameToFitContent(e) {
 		console.log('resize iframe to 100%');
 	}
 	else if (msg.state === 'minimize') {
-		chatboxIFrame.style.display  = "block";
-		chatboxIFrame.style.width  = "100px";
-		chatboxIFrame.style.height = "32px";
-		chatboxIFrame.style.minHeight = "32px";
-		console.log('resize iframe to 100 x 32');
-
+		fitChatboxIframe(msg);
 	}
 	else if (msg.state === 'close') {	//only hide but still running
 		chatboxIFrame.style.display  = "none";
 		console.log('hide iframe');
-
 	}
 	else if (msg.state === 'move start') {
 		chatboxLeft = chatboxIFrame.style.left.replace('px','');
@@ -64,13 +68,16 @@ function resizeIFrameToFitContent(e) {
 	else if (msg.state === 'moving') {
 		chatboxIFrame.style.left = chatboxLeft + msg.dx + 'px';
 	}
-	else { // fit - make page same size as chatbox
-		var size = msg.size;
-		chatboxIFrame.style.display  = "block";
-		chatboxIFrame.style.width  = size.width + "px";
-		chatboxIFrame.style.height = size.height + "px";
-		// console.log('resize iframe to ' + size.width + ' x ' + size.height);
+	else if (msg.state === 'fit') { // fit - make page same size as chatbox
+		fitChatboxIframe(msg);
 	}
+}
+
+function fitChatboxIframe (msg) {
+	console.log('fitting iframe to chatbox');
+	chatboxIFrame.style.display  = "block";
+	chatboxIFrame.style.width  = msg.width;
+	chatboxIFrame.style.height = msg.height;
 }
 
 // NOTE: window.addEventListener("message" ...) only receive msg from tab,
@@ -78,4 +85,5 @@ function resizeIFrameToFitContent(e) {
 // use chrome.runtime.onMessage.addListener
 window.addEventListener("message", resizeIFrameToFitContent, false);
 
-createChatbox(); // always create the chatbox and make connections, if user don't want it, he can disable the extension
+// createChatbox(); // always create the chatbox and make connections, if user don't want it, he can disable the extension
+createChatboxIframe(); // always create the chatbox and make connections, if user don't want it, he can disable the extension

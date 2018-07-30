@@ -83,8 +83,11 @@
 }
 </style>
 <script>
+import Vue from 'vue'
+
 import chatboxUIState from './ui-state.js'
 import chatbox from './config.js'
+import chatboxUtils from './utils.js'
 
 var MIN_WIDTH = 250;
 var MIN_HEIGHT = 100;
@@ -105,10 +108,12 @@ export default {
         resizeStart (e) {
             this.prevX = e.screenX;
             this.prevY = e.screenY;
+            chatboxUtils.updateIframeSize('full size');
         },
         resizeEnd (e) {
             this.prevX = -1;
             this.prevY = -1;
+            chatboxUtils.updateIframeSize('fit');
         },
         resizing (e) {
             if (this.prevX !== -1) {
@@ -128,6 +133,16 @@ export default {
             }
         }
     },
+    watch: {
+        'state.mini': function (newVal, oldVal) {
+            var state = 'fit';
+            if (newVal)
+                state = 'minimize';
+            Vue.nextTick(function(){
+                chatboxUtils.updateIframeSize(state);
+            });
+        }
+    },
     created () {
         var _this = this;
         $(document).mouseup(function(e){
@@ -136,8 +151,6 @@ export default {
         $(document).mousemove(function(e){
             _this.resizing(e);
         })
-        // this.$modal.show('hello-world');
-
     }
 }
 </script>

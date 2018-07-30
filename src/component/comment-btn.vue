@@ -13,6 +13,7 @@
   border-radius: 0;
   background: white;
   color: black;
+  font-weight: 400;
 }
 #socketchatbox-comment-btn-wrapper:hover {
   /*background:white;*/

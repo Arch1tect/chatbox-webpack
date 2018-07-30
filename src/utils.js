@@ -8,5 +8,13 @@ export default {
     },
     deepCopy: function (data) {
     	return JSON.parse(JSON.stringify(data));
+    },
+    updateIframeSize: function (state) {
+        // send chat box size to content.js
+        var resizeMsg = {};
+        resizeMsg.state = state;
+        resizeMsg.width  = document.getElementById('socketchatbox-all').offsetWidth + 8 + "px";
+        resizeMsg.height = document.getElementById('socketchatbox-all').offsetHeight + "px";
+        window.parent.postMessage(resizeMsg, "*");
     }
 }
