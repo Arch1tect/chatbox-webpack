@@ -32,6 +32,7 @@ function createDanmu(msg) {
         {
           // timing options
           duration: time*1000,
+          easing: 'ease-in-out'
         }
     );
     danmuAnimation.onfinish = function () {
@@ -49,18 +50,23 @@ function createDanmu(msg) {
 }
 
 function checkDanmu() {
-    while(waitlist.length) {
+    if (waitlist.length) {
         var spot = findSpot();
         if (spot) {
             var msg = waitlist.shift();
             msg.row = spot;
             createDanmu(msg);
+            // Only create one danmu at a time because
+            // creating multiple at the same time makes
+            // animation laggy
+            setTimeout(function(){
+                checkDanmu();
+            }, 300);
         } else {
             // If no available spot, wait and check again later
             setTimeout(function(){
                 checkDanmu();
             }, 3*1000);
-            break;
         }
     }
 }
@@ -73,7 +79,6 @@ function findSpot() {
     var i = 0;
     for (; i < messages.length; i++) {
         var msg = messages[i];
-        console.log(msg.el.offsetLeft);
         if (msg.el.getBoundingClientRect().left + msg.el.offsetWidth > window.innerWidth)
             occupied[msg.row] = true;
     }
