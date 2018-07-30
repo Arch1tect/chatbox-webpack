@@ -310,37 +310,30 @@ export default {
     },
     created () {
         this.stickers = [
-            "assets/stickers/bunny/hi.gif",
-            "assets/stickers/bunny/yes.gif",
-            "assets/stickers/bunny/rubber_face.gif",
-            "assets/stickers/bunny/cheers.gif",
-            "assets/stickers/bunny/together.gif",
-            "assets/stickers/bunny/chase_butterfly.gif",
-            "assets/stickers/bunny/heart.gif",
-            "assets/stickers/bunny/happy_tear.gif",
-            "assets/stickers/bunny/swim_in_tear.gif",
-            "assets/stickers/bunny/rub_your_head.gif",
-            "assets/stickers/bunny/no_way.gif",
-            "assets/stickers/bunny/sad.gif",
-            "assets/stickers/bunny/pro.gif",
-            "assets/stickers/bunny/kiss.gif",
-            "assets/stickers/bunny/kiss_face.gif",
-            "assets/stickers/bunny/cute_baby.gif",
+            "stickers/bunny/hi.gif",
+            "stickers/bunny/yes.gif",
+            "stickers/bunny/rubber_face.gif",
+            "stickers/bunny/cheers.gif",
+            "stickers/bunny/together.gif",
+            "stickers/bunny/chase_butterfly.gif",
+            "stickers/bunny/heart.gif",
+            "stickers/bunny/happy_tear.gif",
+            "stickers/bunny/swim_in_tear.gif",
+            "stickers/bunny/rub_your_head.gif",
+            "stickers/bunny/no_way.gif",
+            "stickers/bunny/sad.gif",
+            "stickers/bunny/pro.gif",
+            "stickers/bunny/kiss.gif",
+            "stickers/bunny/kiss_face.gif",
+            "stickers/bunny/cute_baby.gif",
 
-            "assets/stickers/seal/beat.gif",
-            "assets/stickers/seal/cold.gif",
-            "assets/stickers/seal/eat.gif",
-            "assets/stickers/seal/hand_cold.gif",
-            "assets/stickers/seal/kiss.gif",
-            "assets/stickers/seal/miao.gif",
+            "stickers/seal/beat.gif",
+            "stickers/seal/cold.gif",
+            "stickers/seal/eat.gif",
+            "stickers/seal/hand_cold.gif",
+            "stickers/seal/kiss.gif",
+            "stickers/seal/miao.gif",
         ];
-
-        if (typeof convertAssetURL !== 'undefined') {
-            var i = 0;
-            for (; i<this.stickers.length; i++) {
-                this.stickers[i] = convertAssetURL(this.stickers[i]);
-            }
-        }
     },
     mounted () {
         // emoji library is using v-if instead of v-show 

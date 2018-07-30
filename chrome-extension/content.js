@@ -1,34 +1,26 @@
 var CHATBOX_ELEMENT_ID = 'chatbox-iframe';
+var CHATBOX_FRAME_SRC = 'chatbox-frame.html';
 var chatboxCreated = false;
 var chatboxIFrame;
 var chatboxLeft = 0;
 
-function createChatbox() {
-	console.log('creating chatbox div');
-
-	if (!chatboxCreated) {
-		chatboxIFrame  = document.createElement ("div");
-		chatboxIFrame.innerHTML='<div id="chatbox"></div><div id="comment-modal"></div><div id="danmu"></div>'
-		chatboxIFrame.id = CHATBOX_ELEMENT_ID;
-		document.body.insertBefore(chatboxIFrame, document.body.firstChild);
-		chatboxCreated = true;
-	}
-}
+var runningExtension = false;
+if (chrome.extension)
+	runningExtension = true;
 
 function createChatboxIframe() {
 	console.log('creating chatbox iframe');
-
 	if (!chatboxCreated) {
 		chatboxIFrame  = document.createElement ("iframe");
-		chatboxIFrame.src  = chrome.extension.getURL ("index.html?"+location.href);
+		if (runningExtension)
+			chatboxIFrame.src = chrome.extension.getURL(CHATBOX_FRAME_SRC);
+		else
+			chatboxIFrame.src = CHATBOX_FRAME_SRC;
+		chatboxIFrame.src +=  "?"+location.href;
 		chatboxIFrame.id = CHATBOX_ELEMENT_ID;
 		document.body.insertBefore(chatboxIFrame, document.body.firstChild);
 		chatboxCreated = true;
 	}
-}
-
-function convertAssetURL(url) {
-	return chrome.extension.getURL(url);
 }
 
 function resizeIFrameToFitContent(e) {

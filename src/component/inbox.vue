@@ -364,9 +364,7 @@ export default {
 function sortByMsgId(a, b) {
     return a.id > b.id ? -1 : 1;
 }
-var welcomeBunnyGif = "assets/stickers/bunny/hi.gif";
-if (typeof convertAssetURL !== 'undefined')
-    welcomeBunnyGif = convertAssetURL(welcomeBunnyGif);
+var welcomeBunnyGif = "stickers/bunny/hi.gif";
 
 var welcomeMessagesFromChatbot = [
     {
