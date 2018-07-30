@@ -111,9 +111,13 @@ export default {
             chatboxUtils.updateIframeSize('full size');
         },
         resizeEnd (e) {
-            this.prevX = -1;
-            this.prevY = -1;
-            chatboxUtils.updateIframeSize('fit');
+            // on document mouse up event is fired
+            // very often, only handle resize end if need to
+            if (this.prevX !== -1) {
+                this.prevX = -1;
+                this.prevY = -1;
+                chatboxUtils.updateIframeSize('fit');
+            }
         },
         resizing (e) {
             if (this.prevX !== -1) {
