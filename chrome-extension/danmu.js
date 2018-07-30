@@ -1,6 +1,6 @@
 (function() {
     "use strict";
-const ROW_NUM = 10;
+const ROW_NUM = 7;
 var messages = []; // keep list of active danmu
 var waitlist = [];
 var danmuWrapper = document.createElement("div");
@@ -9,13 +9,14 @@ document.body.insertBefore(danmuWrapper, document.body.firstChild);
 function createDanmu(msg) {
     messages.push(msg);
     var danmu  = document.createElement("div");
+    msg.el = danmu;
     danmu.className = 'danmu';
     if (msg.live)
         danmu.className += ' live';
     danmu.innerHTML = msg.content;
     if (!msg.content)
         danmu.innerHTML = msg.message;
-    danmu.style.top = 10 + msg.row*35 + 'px';
+    danmu.style.top = 30 + msg.row*35 + 'px';
     var startX = window.innerWidth + 'px';
     var time = 10;
     if (msg.content)
@@ -72,7 +73,9 @@ function findSpot() {
     var i = 0;
     for (; i < messages.length; i++) {
         var msg = messages[i];
-        occupied[msg.row] = true;
+        console.log(msg.el.offsetLeft);
+        if (msg.el.getBoundingClientRect().left + msg.el.offsetWidth > window.innerWidth)
+            occupied[msg.row] = true;
     }
     var j = 1;
     for (; j < ROW_NUM; j ++) {
