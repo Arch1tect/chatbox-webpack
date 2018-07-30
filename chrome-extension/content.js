@@ -1,3 +1,5 @@
+(function() {
+
 var CHATBOX_ELEMENT_ID = 'chatbox-iframe';
 var CHATBOX_FRAME_SRC = 'chatbox-frame.html';
 var chatboxCreated = false;
@@ -22,12 +24,6 @@ function createChatboxIframe() {
         chatboxCreated = true;
     }
 }
-
-// function createChatboxCommentModal() {
-//     var commentModal = document.createElement ("div");
-//     // commentModal.
-//         <div id="danmu"></div>
-// }
 
 function resizeIFrameToFitContent(e) {
 
@@ -83,5 +79,5 @@ function fitChatboxIframe (msg) {
 // use chrome.runtime.onMessage.addListener
 window.addEventListener("message", resizeIFrameToFitContent, false);
 
-// createChatbox(); // always create the chatbox and make connections, if user don't want it, he can disable the extension
 createChatboxIframe(); // always create the chatbox and make connections, if user don't want it, he can disable the extension
+})();

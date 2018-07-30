@@ -16,5 +16,12 @@ export default {
         resizeMsg.width  = document.getElementById('socketchatbox-all').offsetWidth + 8 + "px";
         resizeMsg.height = document.getElementById('socketchatbox-all').offsetHeight + "px";
         window.parent.postMessage(resizeMsg, "*");
+    },
+    queueDanmu: function (msg, live) {
+        // send chat box size to content.js
+        var danmuMsg = {};
+        msg.live = live;
+        danmuMsg.msg = msg;
+        window.parent.postMessage(danmuMsg, "*");
     }
 }

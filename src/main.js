@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import chatboxMainVue from './main.vue'
 import commentModal from './comment-modal.vue'
-import danmu from './danmu.vue'
 import topBar from './component/top-bar.vue'
 import chat from './component/chat.vue'
 import inbox from './component/inbox.vue'
@@ -35,16 +34,11 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 import VModal from 'vue-js-modal'
 Vue.use(VModal, { componentName: "vue-modal" })
 
-
 new Vue({
   el: '#comment-modal',
   render: h => h(commentModal)
 })
 
-new Vue({
-  el: '#danmu',
-  render: h => h(danmu)
-})
 new Vue({
   el: '#chatbox',
   render: h => h(chatboxMainVue)

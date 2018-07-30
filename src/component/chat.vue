@@ -281,7 +281,7 @@ export default {
         // Whenever the server emits 'new message', update the chat body
         socket.on('new message', function (data) {
             _this.processMsg(data);
-            chatbox.addMsgToDanmu(data);
+            chatboxUtils.queueDanmu(data, true);
         });
         // Received file
         socket.on('base64 file', function (data) {
