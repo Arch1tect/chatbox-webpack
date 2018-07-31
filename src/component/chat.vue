@@ -176,7 +176,7 @@ export default {
                 // try testcase by me and by others
                 this.processMsg(data);
                 dataCopy.sender = chatbox.userId;
-                dataCopy.username = chatbox.userName;
+                dataCopy.username = chatbox.username;
                 this.processMsg(dataCopy);
             }
             i = 0;
@@ -271,7 +271,7 @@ export default {
         // Once connected, user will receive the invitation to login using uuid
         socket.on('login', function (data) {
             socket.emit('login', {
-                username: chatbox.userName,
+                username: chatbox.username,
                 uuid: chatbox.userId,
                 roomID: chatbox.location,
                 url: location.href,
@@ -302,7 +302,7 @@ Nick: 3
 */
 var testData = [
     {
-        username: chatbox.userName,
+        username: chatbox.username,
         sender: chatbox.userId,
         message: 'The resize property does not apply to inline elements or to block elements where overflow="visible".'
     },
@@ -312,7 +312,7 @@ var testData = [
         message: 'Sounds good.'
     },
     {
-        username: chatbox.userName,
+        username: chatbox.username,
         sender: chatbox.userId,
         message: 'Yeah.'
     },
@@ -327,7 +327,7 @@ var testData = [
         message: 'The resize property controls if and how an element can be resized by the user by clicking and dragging the bottom right corner of the element.'
     },
     {
-        username: chatbox.userName,
+        username: chatbox.username,
         sender: chatbox.userId,
         message: 'My cool emoji 😂😂😂'
     },
@@ -337,7 +337,7 @@ var testData = [
         message: 'Super cool emoji 😎😎😎'
     },
     {
-        username: chatbox.userName,
+        username: chatbox.username,
         sender: chatbox.userId,
         message: '😝'
     },
@@ -357,12 +357,12 @@ var testData = [
         message: '😄😄😄😄😄😄😄😄😄😄😄😄😄😄😄😄😄😄'
     },
     {
-        username: chatbox.userName,
+        username: chatbox.username,
         sender: chatbox.userId,
         message: "From its humble beginnings in 1999, Emojis are all the rage these days. 😄😄 It's no longer something that only people half our age use to communicate. 😄😄😄"
     },
     {
-        username: chatbox.userName,
+        username: chatbox.username,
         sender: chatbox.userId,
         message: 'stickers/bunny/cheers.gif'
     },

@@ -92,6 +92,11 @@ import chatboxUtils from './utils.js'
 var MIN_WIDTH = 250;
 var MIN_HEIGHT = 100;
 
+// expose chatbox to window so it's easy to debug
+window.chatbox = chatbox;
+window.chatboxUIState = chatboxUIState;
+// window.Vue = Vue;
+
 export default {
     name: 'chatbox-main-vue',
     data () {

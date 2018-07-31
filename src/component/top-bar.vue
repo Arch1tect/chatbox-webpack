@@ -104,12 +104,13 @@
 }
 </style>
 <script>
+import chatbox from '../config.js'
 import chatboxUIState from '../ui-state.js'
 export default {
     name: 'top-bar',
     data () {
         return {
-            username: 'Hello Vue!',
+            username: chatbox.username,
             state: chatboxUIState
         }
     }

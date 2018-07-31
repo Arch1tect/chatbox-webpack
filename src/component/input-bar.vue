@@ -252,7 +252,7 @@ export default {
         },
         sendLiveChatMsg: function (msg) {
             var data = {};
-            data.username = chatbox.userName;
+            data.username = chatbox.username;
             data.msg = msg; //need to clean input!
             chatbox.socket.emit('new message', data);
         },
@@ -282,7 +282,7 @@ export default {
             var reader = new FileReader();
             reader.onload = function(evt){
                 var msg ={};
-                msg.username = chatbox.userName;
+                msg.username = chatbox.username;
                 msg.file = evt.target.result;
                 msg.fileName = data.name;
                 chatbox.socket.emit('base64 file', msg);

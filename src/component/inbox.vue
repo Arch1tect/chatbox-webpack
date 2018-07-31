@@ -310,13 +310,13 @@ export default {
         scrollToBottom: function () {
             this.$refs.msgArea.scrollTop = this.$refs.msgArea.scrollHeight;
         },
-        goToMessage: function (userId, userName) {
+        goToMessage: function (userId, username) {
             this.state.view = 3;
             var friend = null;
             if (userId in this.friendDict) {
                 friend = this.friendDict[userId];
             } else {
-                friend = this.buildFriendObj(userId, userName);
+                friend = this.buildFriendObj(userId, username);
                 this.addFriend(friend);
                 this.messageDict[userId] = [];
             }
