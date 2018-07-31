@@ -47,6 +47,7 @@ new Vue({
 import chatboxConfig from './config.js'
 import chatboxUtils from './utils.js'
 // load data from local storage / chrome storage
-chatboxUtils.storage.get('username', function (val) {
-	chatboxConfig.username = val;
+chatboxUtils.storage.get('username', function (item) {
+	chatboxConfig.username = item['username'];
+	console.log(item);
 })

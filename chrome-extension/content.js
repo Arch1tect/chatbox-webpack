@@ -9,7 +9,7 @@ var chatboxLeft = 0;
 var runningExtension = false;
 if (typeof(chrome) !== 'undefined' && chrome.extension)
     runningExtension = true;
-window.runningExtension = runningExtension;
+
 function createChatboxIframe() {
     console.log('creating chatbox iframe');
     if (!chatboxCreated) {
