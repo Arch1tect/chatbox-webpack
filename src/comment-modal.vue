@@ -43,7 +43,7 @@
 </style>
 <script>
 import chatboxUIState from './ui-state.js'
-import chatbox from './config.js'
+import chatboxConfig from './config.js'
 import chatboxUtils from './utils.js'
 
 export default {
@@ -57,14 +57,14 @@ export default {
         submit: function () {
             var _this = this;
             var payload = {
-                'user_id': chatbox.userId,
+                'user_id': chatboxConfig.userId,
                 'message': this.comment
             }
-            $.post(chatbox.commentUrl + "/db/comments/url/"+ chatbox.location, payload, function(resp) {
+            $.post(chatboxConfig.commentUrl + "/db/comments/url/"+ chatboxConfig.location, payload, function(resp) {
                 console.log(resp);
                 _this.$modal.hide('comment-modal');
                 _this.comment = '';
-                chatbox.loadComments();
+                chatboxUtils.loadComments();
             });
         },
         autoFocus: function () {
@@ -76,7 +76,7 @@ export default {
     },
     created () {
         var _this = this;
-        chatbox.openCommentModal = function () {
+        chatboxUtils.openCommentModal = function () {
             _this.$modal.show('comment-modal');
             chatboxUtils.updateIframeSize('full size');
         }

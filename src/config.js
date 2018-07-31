@@ -13,6 +13,7 @@ if (localInboxServer) {
 	commentUrl = 'http://localhost:9000';
 	inboxUrl = 'http://localhost:9000';
 }
+
 export default {
 
 	location: 'https://www.zhihu.com/',

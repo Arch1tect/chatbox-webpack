@@ -187,9 +187,9 @@ Vue.use(EmojiPickerPlugin)
 import { mixin as clickaway } from 'vue-clickaway';
 
 import chatboxUIState from '../ui-state.js'
-import chatbox from '../config.js'
+import chatboxConfig from '../config.js'
 import chatboxUtils from '../utils.js'
-
+import chatboxSocket from '../socket.js'
 
 
 export default {
@@ -252,9 +252,9 @@ export default {
         },
         sendLiveChatMsg: function (msg) {
             var data = {};
-            data.username = chatbox.username;
+            data.username = chatboxConfig.username;
             data.msg = msg; //need to clean input!
-            chatbox.socket.emit('new message', data);
+            chatboxSocket.socket.emit('new message', data);
         },
         sendInput: function () {
             // Fired when enter key pressed, handle differently depending on
@@ -262,7 +262,7 @@ export default {
             if (this.state.view == 2)
                 this.sendLiveChatMsg(this.content);
             else 
-                chatbox.sendPM(this.content);
+                chatboxUtils.sendPM(this.content);
 
             this.content = '';
             this.$refs.emojiComponent.hide();
@@ -272,7 +272,7 @@ export default {
             if (this.state.view == 2)
                 this.sendLiveChatMsg(msg);
             else
-                chatbox.sendPM(msg);
+                chatboxUtils.sendPM(msg);
 
             this.focusOnInput();
         },
@@ -282,10 +282,10 @@ export default {
             var reader = new FileReader();
             reader.onload = function(evt){
                 var msg ={};
-                msg.username = chatbox.username;
+                msg.username = chatboxConfig.username;
                 msg.file = evt.target.result;
                 msg.fileName = data.name;
-                chatbox.socket.emit('base64 file', msg);
+                chatboxSocket.socket.emit('base64 file', msg);
             };
             reader.readAsDataURL(data);
         }

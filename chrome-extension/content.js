@@ -9,7 +9,7 @@ var chatboxLeft = 0;
 var runningExtension = false;
 if (typeof(chrome) !== 'undefined' && chrome.extension)
     runningExtension = true;
-
+window.runningExtension = runningExtension;
 function createChatboxIframe() {
     console.log('creating chatbox iframe');
     if (!chatboxCreated) {
@@ -68,7 +68,6 @@ function resizeIFrameToFitContent(e) {
 }
 
 function fitChatboxIframe (msg) {
-    console.log('fitting iframe to chatbox');
     chatboxIFrame.style.display  = "block";
     chatboxIFrame.style.width  = msg.width;
     chatboxIFrame.style.height = msg.height;

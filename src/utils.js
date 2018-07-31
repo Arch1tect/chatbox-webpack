@@ -23,5 +23,22 @@ export default {
         msg.live = live;
         danmuMsg.msg = msg;
         window.parent.postMessage(danmuMsg, "*");
+    },
+    storage: {
+        get: function (key, callback) {
+            if (window.runningExtension) {
+                chrome.storage.local.get(key, callback);
+            } else {
+                callback(localStorage.getItem(key));
+            }
+        },
+        set: function (key, value) {
+            if (window.runningExtension) {
+                chrome.storage.local.set({key:value});
+            } else {
+                localStorage.setItem(key, value);
+            }
+            
+        }
     }
 }

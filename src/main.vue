@@ -86,16 +86,15 @@
 import Vue from 'vue'
 
 import chatboxUIState from './ui-state.js'
-import chatbox from './config.js'
+import chatboxConfig from './config.js'
 import chatboxUtils from './utils.js'
 
 var MIN_WIDTH = 250;
 var MIN_HEIGHT = 100;
 
-// expose chatbox to window so it's easy to debug
-window.chatbox = chatbox;
+// expose chatbox config to window so it's easier to debug
+window.chatbox = chatboxConfig;
 window.chatboxUIState = chatboxUIState;
-// window.Vue = Vue;
 
 export default {
     name: 'chatbox-main-vue',

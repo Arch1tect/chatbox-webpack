@@ -43,3 +43,10 @@ new Vue({
   el: '#chatbox',
   render: h => h(chatboxMainVue)
 })
+
+import chatboxConfig from './config.js'
+import chatboxUtils from './utils.js'
+// load data from local storage / chrome storage
+chatboxUtils.storage.get('username', function (val) {
+	chatboxConfig.username = val;
+})

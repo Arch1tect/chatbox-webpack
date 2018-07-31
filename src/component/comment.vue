@@ -63,7 +63,7 @@ import * as moment from 'moment'
 import Vue from 'vue'
 
 import chatboxUIState from '../ui-state.js'
-import chatbox from '../config.js'
+import chatboxConfig from '../config.js'
 import chatboxUtils from '../utils.js'
 
 
@@ -76,7 +76,7 @@ export default {
     data () {
         return {
             state: chatboxUIState,
-            chatbox: chatbox,
+            chatbox: chatboxConfig,
             lastCommentId: -1,
             loading: true,
             messages: [],
@@ -86,7 +86,7 @@ export default {
     },
     methods: {
         viewUser: function (msg) {
-            chatbox.goToMessage(msg.user_id, msg.name);
+            chatboxUtils.goToMessage(msg.user_id, msg.name);
         },
         scrollToBottom: function () {
             this.$refs.commentArea.scrollTop = this.$refs.commentArea.scrollHeight;
@@ -133,7 +133,7 @@ export default {
     created () {
         this.loadComments();
         // Make the method accessible from comment modal
-        chatbox.loadComments = this.loadComments;
+        chatboxUtils.loadComments = this.loadComments;
     }
 }
 

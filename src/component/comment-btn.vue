@@ -1,5 +1,5 @@
 <template>
-    <button v-show="state.view == 1" @click="chatbox.openCommentModal" id="socketchatbox-comment-btn-wrapper">
+    <button v-show="state.view == 1" @click="chatboxUtils.openCommentModal" id="socketchatbox-comment-btn-wrapper">
         <span>Add your comment!</span>
     </button>
 </template>
@@ -27,7 +27,8 @@
 import * as moment from 'moment';
 
 import chatboxUIState from '../ui-state.js'
-import chatbox from '../config.js'
+import chatboxConfig from '../config.js'
+import chatboxUtils from '../utils.js'
 
 "use strict";
 
@@ -38,7 +39,7 @@ export default {
     data () {
         return {
             state: chatboxUIState,
-            chatbox: chatbox
+            chatboxUtils: chatboxUtils
         }
     }
 }

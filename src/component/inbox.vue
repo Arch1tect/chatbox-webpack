@@ -136,7 +136,7 @@ import Vue from 'vue'
 import * as moment from 'moment';
 
 import chatboxUIState from '../ui-state.js'
-import chatbox from '../config.js'
+import chatboxConfig from '../config.js'
 import chatboxUtils from '../utils.js'
 
 
@@ -220,7 +220,7 @@ export default {
             // 2. add friend if first message of conversation
             // 3. mark if message need to display friend's name - lastBySelf
             var friend = null;
-            if (data.sender == chatbox.userId) {
+            if (data.sender == chatboxConfig.userId) {
                 data.me = true;
                 friend = this.buildFriendObj(data.receiver, data.receivername);
             } else {
@@ -260,12 +260,11 @@ export default {
         sendPM: function (msg) {
             var _this = this;
             var payload = {
-                'sender': chatbox.userId,
+                'sender': chatboxConfig.userId,
                 'receiver': this.selectedFriend.userId,
                 'message': msg
             }
-            console.log(msg);
-            $.post(chatbox.inboxUrl + "/db/message", payload, function(resp) {
+            $.post(chatboxConfig.inboxUrl + "/db/message", payload, function(resp) {
                 _this.pullMsgFromDB();
             });
         },
@@ -290,7 +289,7 @@ export default {
         pullMsgFromDB: function (callback) {
             this.loading = true;
             var _this = this;
-            $.get(chatbox.inboxUrl + "/db/message/offset/" + this.lastMsgId+"/user/" + chatbox.userId, function(data, status) {
+            $.get(chatboxConfig.inboxUrl + "/db/message/offset/" + this.lastMsgId+"/user/" + chatboxConfig.userId, function(data, status) {
                 // TODO: last message first so recent conversation on top
 
                 var i = 0;
@@ -353,8 +352,8 @@ export default {
     },
     created () {
         // expose sendPM method so input component can access it
-        chatbox.sendPM = this.sendPM;
-        chatbox.goToMessage = this.goToMessage;
+        chatboxUtils.sendPM = this.sendPM;
+        chatboxUtils.goToMessage = this.goToMessage;
         this.loadChatbotMsg();
         this.loadTestData();
         this.pullMsgFromDB();
@@ -371,19 +370,19 @@ var welcomeMessagesFromChatbot = [
         create_time: "2018-07-08 07:36:15",
         id: -1,
         message: welcomeBunnyGif,
-        receiver: chatbox.userId,
+        receiver: chatboxConfig.userId,
         receivername: "",
-        sender: chatbox.chatbot.userId,
-        sendername: chatbox.chatbot.name,
+        sender: chatboxConfig.chatbot.userId,
+        sendername: chatboxConfig.chatbot.name,
     },
     {
         create_time: "2018-07-08 07:36:15",
         id: 0,
         message: "Welcome! Thank you for using this app and please feel free to send us feedback! ;)",
-        receiver: chatbox.userId,
+        receiver: chatboxConfig.userId,
         receivername: "",
-        sender: chatbox.chatbot.userId,
-        sendername: chatbox.chatbot.name,
+        sender: chatboxConfig.chatbot.userId,
+        sendername: chatboxConfig.chatbot.name,
     },
 ]
 var testData = [
@@ -391,7 +390,7 @@ var testData = [
         create_time: "2018-07-08 07:36:15",
         id: 1,
         message: "😄😄😄 After the first talks since the Trump-Kim summit, Secretary of State Mike Pompeo insisted that Pyongyang is still negotiating in good faith, even as it condemned U.S. demands.",
-        receiver: chatbox.userId,
+        receiver: chatboxConfig.userId,
         receivername: "",
         sender: "10",
         sendername: "Sue",
@@ -400,7 +399,7 @@ var testData = [
         create_time: "2018-07-08 07:36:15",
         id: 2,
         message: "Secretary of State Mike Pompeo insisted that Pyongyang is still negotiating in good faith, even as it condemned U.S. demands.",
-        receiver: chatbox.userId,
+        receiver: chatboxConfig.userId,
         receivername: "",
         sender: "10",
         sendername: "Sue",
@@ -411,14 +410,14 @@ var testData = [
         message: "Secretary of State Mike Pompeo insisted that Pyongyang is still negotiating in good faith, even as it condemned U.S. demands.",
         receiver: "10",
         receivername: "Sue",
-        sender: chatbox.userId,
+        sender: chatboxConfig.userId,
         sendername: "",
     },
     {
         create_time: "2018-07-08 07:36:15",
         id: 4,
         message: "Secretary of State Mike Pompeo insisted that Pyongyang is still negotiating in good faith, even as it condemned U.S. demands.",
-        receiver: chatbox.userId,
+        receiver: chatboxConfig.userId,
         receivername: "",
         sender: "10",
         sendername: "Sue",
@@ -427,7 +426,7 @@ var testData = [
         create_time: "2018-07-08 07:36:15",
         id: 5,
         message: "After the 2016 Presidential election, the Trump Administration and the Republican-controlled Congress reduced U.S. support for climate-change-related research, causing the Centre’s program and similar initiatives around the world to scramble for funding. 😄😄😄 A U.S.A.I.D. official told me that American funding for the Centre’s project will end in 2019, instead of in 2020, because of a change in “the Administration’s foreign-policy and national-security priorities.”",
-        receiver: chatbox.userId,
+        receiver: chatboxConfig.userId,
         receivername: "",
         sender: "10",
         sendername: "Sue",

@@ -2,7 +2,7 @@
     <div v-on:click.self="state.mini=!state.mini" v-bind:class="{ mini: state.mini }" id='socketchatbox-top'>
         <span data-toggle="tooltip" data-placement="bottom" title='User in this room' id='socketchatbox-online-usercount' class='badge'> 
         </span>
-        <div v-show="!state.mini" data-toggle="tooltip" data-placement="bottom" title='Edit your name' id='socketchatbox-username'>{{username}}</div>
+        <div v-show="!state.mini" data-toggle="tooltip" data-placement="bottom" title='Edit your name' id='socketchatbox-username'>{{config.username}}</div>
         <span v-show="!state.mini" id='topbar-options' class='float-right'>
             <span title='Comments' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-comments'><font-awesome-icon icon="edit" class="fa fa-pencil" v-on:click='state.view=1' v-bind:class="{ selected: state.view==1 }" /></span>
             <span title='Live chat' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live'><font-awesome-icon icon="comments" class="fa fa-comments" v-on:click='state.view=2' v-bind:class="{ selected: state.view==2 }" /></span>
@@ -104,13 +104,13 @@
 }
 </style>
 <script>
-import chatbox from '../config.js'
+import chatboxConfig from '../config.js'
 import chatboxUIState from '../ui-state.js'
 export default {
     name: 'top-bar',
     data () {
         return {
-            username: chatbox.username,
+            config: chatboxConfig,
             state: chatboxUIState
         }
     }

@@ -2,7 +2,7 @@
     <div v-show="state.view==2" class="socketchatbox-chatroom-wrapper">
         <div id="socketchatbox-chatroom-title" class="socketchatbox-page-title">
             <font-awesome-icon icon="sync-alt" title='Re-enter chatroom' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-refresh' />
-            <span id="socketchatbox-chatroom-url" data-toggle="tooltip" data-placement="bottom">{{chatbox.location}}</span>
+            <span id="socketchatbox-chatroom-url" data-toggle="tooltip" data-placement="bottom">{{chatboxConfig.location}}</span>
         </div>
         <div ref="chatArea" class="socketchatbox-chatArea">
             <div class="socketchatbox-messages">
@@ -138,8 +138,9 @@ import * as moment from 'moment';
 import Vue from 'vue'
 
 import chatboxUIState from '../ui-state.js'
-import chatbox from '../config.js'
+import chatboxConfig from '../config.js'
 import chatboxUtils from '../utils.js'
+import chatboxSocket from '../socket.js'
 
 
 "use strict";
@@ -152,14 +153,14 @@ export default {
     data () {
         return {
             state: chatboxUIState,
-            chatbox: chatbox,
+            chatboxConfig: chatboxConfig,
             messages: [],
             lastMsg: {}
         }
     },
     methods: {
         viewUser: function (msg) {
-            chatbox.goToMessage(msg.sender, msg.username);
+            chatboxUtils.goToMessage(msg.sender, msg.username);
         },
         scrollToBottom: function () {
             this.$refs.chatArea.scrollTop = this.$refs.chatArea.scrollHeight;
@@ -175,8 +176,8 @@ export default {
                 var dataCopy = chatboxUtils.deepCopy(data);
                 // try testcase by me and by others
                 this.processMsg(data);
-                dataCopy.sender = chatbox.userId;
-                dataCopy.username = chatbox.username;
+                dataCopy.sender = chatboxConfig.userId;
+                dataCopy.username = chatboxConfig.username;
                 this.processMsg(dataCopy);
             }
             i = 0;
@@ -217,7 +218,7 @@ export default {
         },
         processMsg: function (data) {
             this.preprocessMsg(data);
-            if (data.sender == chatbox.userId)
+            if (data.sender == chatboxConfig.userId)
                 data.me = true;
 
             if (this.lastMsg && data.sender == this.lastMsg.sender)
@@ -263,17 +264,17 @@ export default {
     },
     created () {
         var _this = this;
-        var socket = io(chatbox.socketUrl, {path:'/socket.io'});
-        chatbox.socket = socket;
+        var socket = io(chatboxConfig.socketUrl, {path:'/socket.io'});
+        chatboxSocket.socket = socket;
         this.loadTestData();
         this.keepUpdatingLogTime();
 
         // Once connected, user will receive the invitation to login using uuid
         socket.on('login', function (data) {
             socket.emit('login', {
-                username: chatbox.username,
-                uuid: chatbox.userId,
-                roomID: chatbox.location,
+                username: chatboxConfig.username,
+                uuid: chatboxConfig.userId,
+                roomID: chatboxConfig.location,
                 url: location.href,
                 referrer: document.referrer
             });
@@ -302,8 +303,8 @@ Nick: 3
 */
 var testData = [
     {
-        username: chatbox.username,
-        sender: chatbox.userId,
+        username: chatboxConfig.username,
+        sender: chatboxConfig.userId,
         message: 'The resize property does not apply to inline elements or to block elements where overflow="visible".'
     },
     {
@@ -312,8 +313,8 @@ var testData = [
         message: 'Sounds good.'
     },
     {
-        username: chatbox.username,
-        sender: chatbox.userId,
+        username: chatboxConfig.username,
+        sender: chatboxConfig.userId,
         message: 'Yeah.'
     },
     {
@@ -327,8 +328,8 @@ var testData = [
         message: 'The resize property controls if and how an element can be resized by the user by clicking and dragging the bottom right corner of the element.'
     },
     {
-        username: chatbox.username,
-        sender: chatbox.userId,
+        username: chatboxConfig.username,
+        sender: chatboxConfig.userId,
         message: 'My cool emoji 😂😂😂'
     },
     {
@@ -337,8 +338,8 @@ var testData = [
         message: 'Super cool emoji 😎😎😎'
     },
     {
-        username: chatbox.username,
-        sender: chatbox.userId,
+        username: chatboxConfig.username,
+        sender: chatboxConfig.userId,
         message: '😝'
     },
     {
@@ -357,13 +358,13 @@ var testData = [
         message: '😄😄😄😄😄😄😄😄😄😄😄😄😄😄😄😄😄😄'
     },
     {
-        username: chatbox.username,
-        sender: chatbox.userId,
+        username: chatboxConfig.username,
+        sender: chatboxConfig.userId,
         message: "From its humble beginnings in 1999, Emojis are all the rage these days. 😄😄 It's no longer something that only people half our age use to communicate. 😄😄😄"
     },
     {
-        username: chatbox.username,
-        sender: chatbox.userId,
+        username: chatboxConfig.username,
+        sender: chatboxConfig.userId,
         message: 'stickers/bunny/cheers.gif'
     },
     {
