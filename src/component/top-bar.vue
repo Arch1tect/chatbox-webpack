@@ -1,5 +1,5 @@
 <template>
-    <div v-on:click.self="state.mini=!state.mini" v-bind:class="{ mini: state.mini }" id='socketchatbox-top'>
+    <div v-on:click.self="toggleChatbox" v-bind:class="{ mini: state.mini }" id='socketchatbox-top'>
         <span data-toggle="tooltip" data-placement="bottom" title='User in this room' id='socketchatbox-online-usercount' class='badge'> 
         </span>
         <div v-show="!state.mini" data-toggle="tooltip" data-placement="bottom" title='Edit your name' id='socketchatbox-username'>{{config.username}}</div>
@@ -106,12 +106,23 @@
 <script>
 import chatboxConfig from '../config.js'
 import chatboxUIState from '../ui-state.js'
+import chatboxUtils from '../utils.js'
+
 export default {
     name: 'top-bar',
     data () {
         return {
             config: chatboxConfig,
             state: chatboxUIState
+        }
+    },
+    methods: {
+        toggleChatbox: function () {
+            this.state.mini = !this.state.mini;
+            var isMini = '0';
+            if (this.state.mini)
+                isMini = '1';
+            chatboxUtils.storage.set('mini', isMini);
         }
     }
 }

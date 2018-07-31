@@ -1,12 +1,15 @@
 #chatbox-iframe {
-	position: fixed;
-	left: 0;
-	bottom: 0;
-	z-index: 2147483640;
-	height: 415px;
-	width: 360px;
-	border:none;
-	box-shadow: 15px 15px 5px rgba(0, 0, 0, 0.31);
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    z-index: 2147483640;
+/*    height: 415px;
+    width: 360px;*/
+    height: 30px;
+    width: 100px;
+    border:none;
+    box-shadow: 15px 15px 5px rgba(0, 0, 0, 0.31);
+    /*display: none;*/
 }
 
 .danmu {

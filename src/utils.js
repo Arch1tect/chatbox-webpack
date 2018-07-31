@@ -40,7 +40,9 @@ export default {
         },
         set: function (key, value) {
             if (runningExtension) {
-                chrome.storage.local.set({key:value});
+                var item = {};
+                item[key] = value;
+                chrome.storage.local.set(item);
             } else {
                 localStorage.setItem(key, value);
             }
