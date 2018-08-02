@@ -133,7 +133,6 @@
 }
 </style>
 <script>
-import * as io from 'socket.io-client'
 import * as moment from 'moment';
 import Vue from 'vue'
 
@@ -264,14 +263,9 @@ export default {
     },
     created () {
         var _this = this;
-        var socket = io(chatboxConfig.socketUrl, {path:'/socket.io'});
-        chatboxSocket.socket = socket;
-        this.loadTestData();
-        this.keepUpdatingLogTime();
-
         // Once connected, user will receive the invitation to login using uuid
-        socket.on('login', function (data) {
-            socket.emit('login', {
+        chatboxSocket.registerCallback('login', function (data) {
+            chatboxSocket.socket.emit('login', {
                 username: chatboxConfig.username,
                 uuid: chatboxConfig.userId,
                 roomID: chatboxConfig.location,
@@ -280,15 +274,19 @@ export default {
             });
         });
         // Whenever the server emits 'new message', update the chat body
-        socket.on('new message', function (data) {
+        chatboxSocket.registerCallback('new message', function (data) {
             _this.processMsg(data);
             chatboxUtils.queueDanmu(data, true);
         });
         // Received file
-        socket.on('base64 file', function (data) {
+        chatboxSocket.registerCallback('base64 file', function (data) {
             data.isFile = true;
             _this.processMsg(data);
         });
+
+        this.loadTestData();
+        this.keepUpdatingLogTime();
+
     }
 }
 

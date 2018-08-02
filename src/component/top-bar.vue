@@ -1,6 +1,6 @@
 <template>
     <div v-on:click.self="toggleChatbox" v-bind:class="{ mini: state.mini }" id='socketchatbox-top'>
-        <span data-toggle="tooltip" data-placement="bottom" title='User in this room' id='socketchatbox-online-usercount' class='badge'> 
+        <span data-toggle="tooltip" data-placement="bottom" title='User in this room' id='socketchatbox-online-usercount' class='badge'>{{userCount}}
         </span>
         <div v-show="!state.mini" data-toggle="tooltip" data-placement="bottom" title='Edit your name' id='socketchatbox-username'>{{config.username}}</div>
         <span v-show="!state.mini" id='topbar-options' class='float-right'>
@@ -71,6 +71,18 @@
     line-height: 15px;
     color: white;
     background: #0089FF;
+    display: inline-block;
+    min-width: 10px;
+    padding: 3px 7px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    margin-bottom: 2px;
+    /* background-color: #777; */
+    border-radius: 10px;
 }
 
 .socketchatbox-onlineusers {
@@ -107,13 +119,15 @@
 import chatboxConfig from '../config.js'
 import chatboxUIState from '../ui-state.js'
 import chatboxUtils from '../utils.js'
+import chatboxSocket from '../socket.js'
 
 export default {
     name: 'top-bar',
     data () {
         return {
             config: chatboxConfig,
-            state: chatboxUIState
+            state: chatboxUIState,
+            userCount: 3
         }
     },
     methods: {
@@ -124,6 +138,33 @@ export default {
                 isMini = '1';
             chatboxUtils.storage.set('mini', isMini);
         }
+
+    },
+    created () {
+        var _this = this;
+        chatboxSocket.registerCallback('user joined', function (data) {
+            console.log(data);
+            _this.userCount = data.numUsers;
+        });
+        chatboxSocket.registerCallback('user left', function (data) {
+            console.log(data);
+            _this.userCount = data.numUsers;
+        });
+        chatboxSocket.registerCallback('welcome new user', function (data) {
+            var userCount = 0;
+            for (var onlineUsername in data.onlineUsers){
+                userCount++;
+            }
+            _this.userCount = userCount;
+        });
+        chatboxSocket.registerCallback('welcome new connection', function (data) {
+            var userCount = 0;
+            for (var onlineUsername in data.onlineUsers){
+                userCount++;
+            }
+            _this.userCount = userCount;
+        });
+
     }
 }
 </script>
