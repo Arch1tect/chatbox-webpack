@@ -15,7 +15,7 @@ function createChatboxIframe() {
     if (!chatboxCreated) {
         chatboxIFrame  = document.createElement ("iframe");
         if (runningExtension)
-            chatboxIFrame.src = chrome.extension.getURL(CHATBOX_FRAME_SRC);
+            chatboxIFrame.src = chrome.extension.getURL('chatbox-only/'+CHATBOX_FRAME_SRC);
         else
             chatboxIFrame.src = CHATBOX_FRAME_SRC;
         chatboxIFrame.src +=  "?"+location.href;

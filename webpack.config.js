@@ -4,7 +4,7 @@ var webpack = require('webpack')
 module.exports = {
   entry: './src/main.js',
   output: {
-    path: path.resolve(__dirname, './chrome-extension'),
+    path: path.resolve(__dirname, './chrome-extension/chatbox-only'),
     filename: 'build.js'
   },
   plugins: [
@@ -52,7 +52,7 @@ module.exports = {
   },
   devServer: {
     historyApiFallback: true,
-    contentBase: path.join(__dirname, 'chrome-extension'),
+    contentBase: path.join(__dirname, 'chrome-extension/chatbox-only'),
     noInfo: true,
     overlay: true
   },
