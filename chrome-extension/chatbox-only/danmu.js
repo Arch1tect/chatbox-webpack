@@ -1,6 +1,6 @@
 (function() {
     "use strict";
-const ROW_NUM = 7;
+const ROW_NUM = 12;
 var messages = []; // keep list of active danmu
 var waitlist = [];
 var danmuWrapper = document.createElement("div");
@@ -16,11 +16,11 @@ function createDanmu(msg) {
     danmu.innerHTML = msg.content;
     if (!msg.content)
         danmu.innerHTML = msg.message;
-    danmu.style.top = 30 + msg.row*35 + 'px';
+    danmu.style.top = 30 + msg.row*40 + 'px';
     var startX = window.innerWidth + 'px';
     var time = 10;
     if (msg.content)
-        time = 20 - msg.content.length/10;
+        time = 20 - msg.content.length/5;
     if (time < 8)
         time = 8;
 
@@ -61,7 +61,7 @@ function checkDanmu() {
             // animation laggy
             setTimeout(function(){
                 checkDanmu();
-            }, 300);
+            }, 800);
         } else {
             // If no available spot, wait and check again later
             setTimeout(function(){
