@@ -15,27 +15,35 @@
 				<span id='user-count'></span>&nbsp; user on this page
 			</span>
 		</div>
-		<center id='qtime-title'>Settings</center>
-		Automatically display chatbox?<br>
-		<form>
-			<br>
-			<label>
-		  		<input type="radio" name="open_chatbox_when" value="full_size"> Always<br>
-		  	</label>
-		  	<label>
-		  		<input type="radio" name="open_chatbox_when" value="minimized"> Minimized<br>
-		  	</label>
-			<label>
-		  		<input type="radio" checked="checked" name="open_chatbox_when" value="when_msg"> When there is message <!-- <small><span class="red">(Recommended) </span></small> --><br>
-			</label>
-			<label>
-		  		<input type="radio" name="open_chatbox_when" value="never"> Never 
-			</label>
-
-		</form>
+		<center id='qtime-title'><b>Settings</b></center>
+			<div class="option-title"><b>Automatically display chatbox?</b></div>
+			<form>
+				<label>
+					<input type="radio" name="open_chatbox_when" value="full_size"> Always<br>
+				</label>
+				<label>
+					<input type="radio" name="open_chatbox_when" value="minimized"> Minimized<br>
+				</label>
+				<label>
+					<input type="radio" checked="checked" name="open_chatbox_when" value="when_msg"> When there is message <!-- <small><span class="red">(Recommended) </span></small> --><br>
+				</label>
+				<label>
+			  		<input type="radio" name="open_chatbox_when" value="never"> Never 
+				</label>
+			</form>
+			<br/>
+			<div class="option-title"><b>Show bullet screen?</b></div>
+			<form>
+				<label>
+					<input type="radio" checked="checked" name="toggle_danmu" value="block"> Yes
+				</label>
+				<label>
+					<input type="radio" name="toggle_danmu" value="none"> No
+				</label>
+			</form>
 		<center>
 			<footer>
-				<a href='https://quotime.me'>Help</a>
+				<!-- <a href='https://quotime.me'>Help</a> -->
 			</footer>
 		</center>
 	</body>

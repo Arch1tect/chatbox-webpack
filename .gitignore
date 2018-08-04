@@ -14,3 +14,9 @@ yarn-error.log
 chrome-extension/build.js
 
 chrome-extension/build.js.map
+
+chrome-extension/chatbox-only/build.js
+
+chrome-extension/chatbox-only/build.js
+
+chrome-extension/chatbox-only/build.js.map

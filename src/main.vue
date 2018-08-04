@@ -88,6 +88,7 @@ import Vue from 'vue'
 import chatboxUIState from './ui-state.js'
 import chatboxConfig from './config.js'
 import chatboxUtils from './utils.js'
+import chatboxSocket from './socket.js'
 
 var MIN_WIDTH = 250;
 var MIN_HEIGHT = 100;
@@ -159,6 +160,31 @@ export default {
         $(document).mousemove(function(e){
             _this.resizing(e);
         })
+        if (chatboxUtils.runningExtension) {
+            chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
+                // Receive message sent from extension
+                if (request.msg == "open_chatbox"){
+                    _this.state.mini = false;
+                    _this.state.show = true;
+                    chatboxUtils.updateIframeSize('fit'); 
+                    sendResponse({msg: "shown"});
+                }
+                if (request.msg == "close_chatbox"){ 
+                    _this.state.show = false;
+                    chatboxUtils.updateIframeSize('close'); 
+                    sendResponse({msg: "closed"}); // updateIframeSize is async so this response is wrong ??? why I thought this is wrong?
+                }
+
+                if (request.msg == "is_chatbox_open") {
+                    sendResponse(
+                        {
+                            is_chatbox_open: !_this.state.mini && _this.state.show,
+                            userCount: chatboxSocket.userCount
+                        }
+                    );
+                }
+            });
+        }
     }
 }
 </script>

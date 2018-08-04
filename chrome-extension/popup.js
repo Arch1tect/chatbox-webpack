@@ -13,7 +13,7 @@ function showHideChatbox() {
 		var activeTabId = activeTab.id; // or do whatever you need
 
 		// This message is listened by chatbox, but not content.js. 
-		// then chatbox pass msg to content.js
+		// then chatbox pass msg to content.js to resize iframe
 		chrome.tabs.sendMessage(activeTabId, {msg: msg}, function(resp){
 			if (resp && resp.msg == "shown") { 
 				$('#open-chatbox').text('Close Chatbox');
@@ -21,6 +21,27 @@ function showHideChatbox() {
 			if (resp && resp.msg == "closed") { 
 				$('#open-chatbox').text('Open Chatbox');
 			}
+
+		});
+
+	});
+}
+
+function showHideDanmu(display) {
+	var msg = {
+		'msg': 'toggle-danmu',
+		'display': display
+	}
+	chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
+
+		// since only one tab should be active and in the current window at once
+		// the return variable should only have one entry
+		var activeTab = arrayOfTabs[0];
+		var activeTabId = activeTab.id; // or do whatever you need
+
+		// This message is listened by chatbox, but not content.js. 
+		// then chatbox pass msg to content.js to resize iframe
+		chrome.tabs.sendMessage(activeTabId, {data: msg}, function(resp){
 
 		});
 
@@ -91,6 +112,15 @@ document.addEventListener('DOMContentLoaded', function () {
     	}
 
     });
+
+	$('input:radio[name="toggle_danmu"]').change(function() {
+
+		console.log('show danmu ' + $(this).val());
+		config.open_chatbox_when = $(this).val();
+		showHideDanmu($(this).val());
+		chrome.storage.local.set({ chatbox_config: config });
+
+	});
 
 	$('input:radio[name="open_chatbox_when"]').change(function() {
 

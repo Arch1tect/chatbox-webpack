@@ -1,11 +1,14 @@
 (function() {
     "use strict";
+
 const ROW_NUM = 12;
 var messages = []; // keep list of active danmu
 var waitlist = [];
 var danmuWrapper = document.createElement("div");
 document.body.insertBefore(danmuWrapper, document.body.firstChild);
-
+function toggleDanmu(display) {
+    danmuWrapper.style.display = display;
+}
 function createDanmu(msg) {
     messages.push(msg);
     var danmu  = document.createElement("div");
@@ -98,13 +101,31 @@ function receiveMsgFromChatboxFrame (e) {
         return;
     var danmuMsg = e.data;
 
-    if (!danmuMsg.msg)
-        return;
-    waitlist.push(danmuMsg.msg);
-    checkDanmu();
+    if (danmuMsg.msg) {
+        waitlist.push(danmuMsg.msg);
+        checkDanmu();
+    }
 }
 
 window.addEventListener("message", receiveMsgFromChatboxFrame, false);
+
+
+var runningExtension = false;
+if (typeof(chrome) !== 'undefined' && chrome.extension)
+    runningExtension = true;
+
+if (runningExtension) {
+    chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
+        // Receive message sent from extension
+        if (request.data && request.data.msg == "toggle-danmu"){
+            toggleDanmu(request.data.display);
+        }
+
+    });
+}
+
+
+
 
 // test cases below
 var testDanmu = [
