@@ -50,6 +50,8 @@ function createDanmu(msg) {
 }
 
 function checkDanmu() {
+    // If waitlist is not empty, continue checking spot
+    // Otherwise it's triggered when there's no item in waitlist
     if (waitlist.length) {
         var spot = findSpot();
         if (spot) {
@@ -61,7 +63,7 @@ function checkDanmu() {
             // animation laggy
             setTimeout(function(){
                 checkDanmu();
-            }, 800);
+            }, 2*1000);
         } else {
             // If no available spot, wait and check again later
             setTimeout(function(){
