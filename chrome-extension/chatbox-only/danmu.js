@@ -124,9 +124,6 @@ if (runningExtension) {
     });
 }
 
-
-
-
 // test cases below
 var testDanmu = [
     {
@@ -138,6 +135,5 @@ var testDanmu = [
 
 ]
 waitlist = testDanmu;
-
 checkDanmu();
 })();
