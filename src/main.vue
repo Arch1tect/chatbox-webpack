@@ -1,10 +1,10 @@
 <template>
     <div id="chatbox-main-vue">
 
-        <div id="socketchatbox-all" class="socketchatbox-page">
+        <div v-cloak v-show="state.display!='hidden'" id="socketchatbox-all" class="socketchatbox-page">
             <div id="socketchatbox-ne" class="socketchatbox-resize" @mousedown="resizeStart"></div>
-            <top-bar></top-bar>
-            <div :style="{ height: height + 'px', width: width + 'px'}" id='socketchatbox-body' v-show="!state.mini">
+            <top-bar v-cloak></top-bar>
+            <div :style="{ height: state.height + 'px', width: state.width + 'px'}" id='socketchatbox-body' v-show="state.display=='full'">
                 <div class='socketchatbox-onlineusers'></div>
                 <div class = "socketchatbox-typing"> </div>
                 <comment-body></comment-body>
@@ -14,7 +14,6 @@
                 <comment-btn></comment-btn>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -102,8 +101,6 @@ export default {
     data () {
         return {
             state: chatboxUIState,
-            height: 350,
-            width:350,
             prevX:-1,
             prevY:-1,
             dragX:-1 // TODO: for moving horizontally
@@ -122,37 +119,118 @@ export default {
                 this.prevX = -1;
                 this.prevY = -1;
                 chatboxUtils.updateIframeSize('fit');
+                chatboxUtils.storage.set('width', this.state.width);
+                chatboxUtils.storage.set('height', this.state.height);
             }
+        },
+        showChatboxFull () {
+            console.log('show chatbox full');
+            this.state.display = 'full';
+            Vue.nextTick(function(){
+                chatboxUtils.updateIframeSize('fit');
+            });
+        },
+        showChatboxMini () {
+            console.log('show chatbox mini');
+            this.state.display = 'mini';
+            Vue.nextTick(function(){
+                chatboxUtils.updateIframeSize('fit');
+            });
+        },
+        hideChatbox () {
+            // This is hiding entire iframe, not minimize
+            this.state.display = 'hidden';
+            chatboxUtils.updateIframeSize('close');
         },
         resizing (e) {
             if (this.prevX !== -1) {
+                e.preventDefault();
                 var dx = e.screenX - this.prevX;
                 var dy = e.screenY - this.prevY;
-                this.height -= dy;
-                this.width += dx;
+                this.state.height -= dy;
+                this.state.width += dx;
                 this.prevX = e.screenX;
                 this.prevY = e.screenY;
-                if(this.width<MIN_WIDTH) {
-                    this.width = MIN_WIDTH;
+                if(this.state.width<MIN_WIDTH) {
+                    this.state.width = MIN_WIDTH;
                 }
-                if(this.height<MIN_HEIGHT) {
-                    this.height = MIN_HEIGHT;
+                if(this.state.height<MIN_HEIGHT) {
+                    this.state.height = MIN_HEIGHT;
                 }
-
             }
-        }
-    },
-    watch: {
-        'state.mini': function (newVal, oldVal) {
-            var state = 'fit';
-            if (newVal)
-                state = 'minimize';
-            Vue.nextTick(function(){
-                chatboxUtils.updateIframeSize(state);
+        },
+        loadConfig () {
+            var _this = this;
+            // load data from local storage / chrome storage
+            chatboxUtils.storage.get('username', function (item) {
+                chatboxConfig.username = item['username'];
+            });
+            chatboxUtils.storage.get('width', function (item) {
+                if (item && item['width'])
+                    _this.state.width = parseInt(item['width']);
+            });
+            chatboxUtils.storage.get('height', function (item) {
+                if (item && item['height'])
+                    _this.state.height = parseInt(item['height']);
+            });
+            chatboxUtils.storage.get('display', function (item) {
+
+                if (item && item['display']) 
+                    _this.state.display = item['display'];
+
+                if (_this.state.display == 'full') {
+                    _this.showChatboxFull();
+                }
+                if (_this.state.display == 'mini') {
+                    _this.showChatboxMini();
+                }
+                if (_this.state.display == 'hidden') {
+                    _this.hideChatbox();
+                }
+            });
+            chatboxUtils.storage.get('danmu', function (item) {
+                chatboxUtils.toggleDanmu(item['danmu']);
+            });
+        },
+        listenToExtension () {
+            var _this = this;
+            // Listen to command from popup.js (extension only)
+            // command always go from popup.js to chatbox frame then
+            // go to content.js/danmu.js if needed, no direct messaging
+            // between pop.js and content/danmu.js
+            chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+                if (!request.chatboxMsg)
+                    return;
+                var msg = request.chatboxMsg;
+                console.log(msg);
+                // Receive message sent from extension
+                if (msg == "open_chatbox") {
+                    _this.showChatboxFull();
+                    sendResponse({msg: "shown"});
+                }
+                if (msg == "close_chatbox") {
+                    _this.hideChatbox();
+                    sendResponse({msg: "closed"}); // updateIframeSize is async so this response is wrong ??? why I thought this is wrong?
+                }
+                if (msg == "is_chatbox_open") {
+                    sendResponse(
+                        {
+                            is_chatbox_open: _this.state.display == 'full',
+                            userCount: chatboxSocket.userCount
+                        }
+                    );
+                }
+                if (msg.name == "toggle-danmu") {
+                    chatboxUtils.toggleDanmu(msg.value);
+                }
             });
         }
     },
-    created () {
+    mounted () {
+        this.loadConfig();
+        if (chatboxUtils.runningExtension) {
+            this.listenToExtension();
+        }
         var _this = this;
         $(document).mouseup(function(e){
             _this.resizeEnd(e);
@@ -160,31 +238,6 @@ export default {
         $(document).mousemove(function(e){
             _this.resizing(e);
         })
-        if (chatboxUtils.runningExtension) {
-            chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
-                // Receive message sent from extension
-                if (request.msg == "open_chatbox"){
-                    _this.state.mini = false;
-                    _this.state.show = true;
-                    chatboxUtils.updateIframeSize('fit'); 
-                    sendResponse({msg: "shown"});
-                }
-                if (request.msg == "close_chatbox"){ 
-                    _this.state.show = false;
-                    chatboxUtils.updateIframeSize('close'); 
-                    sendResponse({msg: "closed"}); // updateIframeSize is async so this response is wrong ??? why I thought this is wrong?
-                }
-
-                if (request.msg == "is_chatbox_open") {
-                    sendResponse(
-                        {
-                            is_chatbox_open: !_this.state.mini && _this.state.show,
-                            userCount: chatboxSocket.userCount
-                        }
-                    );
-                }
-            });
-        }
     }
 }
 </script>

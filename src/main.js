@@ -43,19 +43,3 @@ new Vue({
   el: '#chatbox',
   render: h => h(chatboxMainVue)
 })
-
-import chatboxConfig from './config.js'
-import chatboxUtils from './utils.js'
-import chatboxUIState from './ui-state.js'
-
-// load data from local storage / chrome storage
-chatboxUtils.storage.get('username', function (item) {
-	chatboxConfig.username = item['username'];
-});
-chatboxUtils.storage.get('mini', function (item) {
-	if (item['mini'] === '1')
-		chatboxUIState.mini = true;
-	else
-		chatboxUIState.mini = false;
-	chatboxUtils.updateIframeSize('fit');
-});

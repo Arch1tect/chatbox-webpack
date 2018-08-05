@@ -5,9 +5,16 @@ const ROW_NUM = 12;
 var messages = []; // keep list of active danmu
 var waitlist = [];
 var danmuWrapper = document.createElement("div");
+var showing = true;
 document.body.insertBefore(danmuWrapper, document.body.firstChild);
 function toggleDanmu(display) {
     danmuWrapper.style.display = display;
+    if (display == 'block') {
+        showing = true;
+        checkDanmu();
+    } else {
+        showing = false;
+    }
 }
 function createDanmu(msg) {
     messages.push(msg);
@@ -55,7 +62,7 @@ function createDanmu(msg) {
 function checkDanmu() {
     // If waitlist is not empty, continue checking spot
     // Otherwise it's triggered when there's no item in waitlist
-    if (waitlist.length) {
+    if (waitlist.length && showing) {
         var spot = findSpot();
         if (spot) {
             var msg = waitlist.shift();
@@ -84,7 +91,7 @@ function findSpot() {
     var i = 0;
     for (; i < messages.length; i++) {
         var msg = messages[i];
-        if (msg.el.getBoundingClientRect().left + msg.el.offsetWidth > window.innerWidth)
+        if (msg.el.getBoundingClientRect().left + msg.el.offsetWidth > window.innerWidth || !showing)
             occupied[msg.row] = true;
     }
     var j = 1;
@@ -100,29 +107,18 @@ function receiveMsgFromChatboxFrame (e) {
     if (!e || !e.data )
         return;
     var danmuMsg = e.data;
-
     if (danmuMsg.msg) {
         waitlist.push(danmuMsg.msg);
         checkDanmu();
     }
+
+    if (danmuMsg.display) {
+        console.log(danmuMsg);
+        toggleDanmu(danmuMsg.display);
+    }
 }
 
 window.addEventListener("message", receiveMsgFromChatboxFrame, false);
-
-
-var runningExtension = false;
-if (typeof(chrome) !== 'undefined' && chrome.extension)
-    runningExtension = true;
-
-if (runningExtension) {
-    chrome.runtime.onMessage.addListener( function(request, sender, sendResponse) {
-        // Receive message sent from extension
-        if (request.data && request.data.msg == "toggle-danmu"){
-            toggleDanmu(request.data.display);
-        }
-
-    });
-}
 
 // test cases below
 var testDanmu = [

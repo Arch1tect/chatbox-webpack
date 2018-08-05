@@ -1,6 +1,30 @@
+const DEFAULT_CHATBOX_WIDTH = 360;
+const DEFAULT_CHATBOX_HEIGHT = 415;
 var runningExtension = false;
 if (typeof(chrome) !== 'undefined' && chrome.extension)
     runningExtension = true;
+
+var storage = {
+    get: function (key, callback) {
+        if (runningExtension) {
+            chrome.storage.local.get(key, callback);
+        } else {
+            var res = {};
+            res[key] = localStorage.getItem(key);
+            callback(res);
+        }
+    },
+    set: function (key, value) {
+        if (runningExtension) {
+            var item = {};
+            item[key] = value;
+            chrome.storage.local.set(item);
+        } else {
+            localStorage.setItem(key, value);
+        }
+        
+    }
+}
 export default {
     runningExtension: runningExtension,
     isPureEmoji: function (content) {
@@ -15,10 +39,18 @@ export default {
     },
     updateIframeSize: function (state) {
         // send chat box size to content.js
+        // read size from DOM
         var resizeMsg = {};
         resizeMsg.state = state;
         resizeMsg.width  = document.getElementById('socketchatbox-all').offsetWidth + 8 + "px";
         resizeMsg.height = document.getElementById('socketchatbox-all').offsetHeight + "px";
+
+        if (resizeMsg.height == '0px') {
+            console.log('Cannot detect size, using default size');
+            resizeMsg.width  = DEFAULT_CHATBOX_WIDTH+'px';
+            resizeMsg.height = DEFAULT_CHATBOX_HEIGHT+'px';
+        }
+        console.log(resizeMsg);
         window.parent.postMessage(resizeMsg, "*");
     },
     queueDanmu: function (msg, live) {
@@ -28,25 +60,10 @@ export default {
         danmuMsg.msg = msg;
         window.parent.postMessage(danmuMsg, "*");
     },
-    storage: {
-        get: function (key, callback) {
-            if (runningExtension) {
-                chrome.storage.local.get(key, callback);
-            } else {
-                var res = {};
-                res[key] = localStorage.getItem(key);
-                callback(res);
-            }
-        },
-        set: function (key, value) {
-            if (runningExtension) {
-                var item = {};
-                item[key] = value;
-                chrome.storage.local.set(item);
-            } else {
-                localStorage.setItem(key, value);
-            }
-            
-        }
-    }
+    toggleDanmu: function (display) {
+        var danmuMsg = {};
+        danmuMsg.display = display;
+        window.parent.postMessage(danmuMsg, "*");
+    },
+    storage: storage
 }

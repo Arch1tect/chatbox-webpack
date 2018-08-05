@@ -5,16 +5,19 @@
     z-index: 2147483640;
 /*    height: 415px;
     width: 360px;*/
-    height: 30px;
-    width: 100px;
+/*    height: 30px;
+    width: 100px;*/
+    height: 0px;
+    width: 0px;
     border:none;
     box-shadow: 15px 15px 5px rgba(0, 0, 0, 0.31);
-    /*display: none;*/
+    display: block;
 }
 
 .danmu {
     position: fixed;
-    box-shadow: 0 0 6px #B2B2B2;
+    border: 1px solid lightgray;
+    box-shadow: 7px 7px 3px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
     background: rgba(255, 255, 255, 0.9);
     max-width: 700px;
