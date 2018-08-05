@@ -7,6 +7,8 @@
             <span title='Comments' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-comments'><font-awesome-icon icon="edit" class="fa fa-pencil" v-on:click='state.view=1' v-bind:class="{ selected: state.view==1 }" /></span>
             <span title='Live chat' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live'><font-awesome-icon icon="comments" class="fa fa-comments" v-on:click='state.view=2' v-bind:class="{ selected: state.view==2 }" /></span>
             <span title='Inbox' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-inbox'><font-awesome-icon icon="inbox" class="fa fa-inbox" v-on:click='state.view=3' v-bind:class="{ selected: state.view==3 }" /></span>
+            <span title='Profile' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-profile'><font-awesome-icon icon="user-circle" class="fa fa-user" v-on:click='state.view=0' v-bind:class="{ selected: state.view==0 }" /></span>
+
             <font-awesome-icon icon="times" class="fa fa-close" title='Close' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-closeChatbox' />
         </span>
     </div>

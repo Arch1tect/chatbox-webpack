@@ -17,8 +17,10 @@ Vue.component('input-bar', inputBar);
 
 // fontawesome start
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faSyncAlt, faSmile, faLaughWink, faComments, faPaperclip, faInbox, faEdit, faTimes, faWindowClose } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faUserCircle, faSyncAlt, faSmile, faLaughWink, faComments, faPaperclip, faInbox, faEdit, faTimes, faWindowClose } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+library.add(faUser)
+library.add(faUserCircle)
 library.add(faSyncAlt)
 library.add(faComments)
 library.add(faEdit)
