@@ -28,11 +28,11 @@ function createDanmu(msg) {
         danmu.innerHTML = msg.message;
     danmu.style.top = 30 + msg.row*40 + 'px';
     var startX = window.innerWidth + 'px';
-    var time = 10;
+    var time = 12;
     if (msg.content)
         time = 20 - msg.content.length/5;
-    if (time < 8)
-        time = 8;
+    if (time < 10)
+        time = 10;
 
     var danmuAnimation = danmu.animate([
           // keyframes, at least two
@@ -42,7 +42,7 @@ function createDanmu(msg) {
         {
           // timing options
           duration: time*1000,
-          easing: 'ease-in-out'
+          // easing: 'ease-in-out'
         }
     );
     danmuAnimation.onfinish = function () {
