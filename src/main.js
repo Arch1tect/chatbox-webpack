@@ -7,11 +7,13 @@ import inbox from './component/inbox.vue'
 import inputBar from './component/input-bar.vue'
 import comment from './component/comment.vue'
 import commentBtn from './component/comment-btn.vue'
+import profile from './component/profile.vue'
 
 Vue.component('top-bar', topBar);
 Vue.component('chat-body', chat);
 Vue.component('inbox-body', inbox);
 Vue.component('comment-body', comment);
+Vue.component('profile-body', profile);
 Vue.component('comment-btn', commentBtn);
 Vue.component('input-bar', inputBar);
 

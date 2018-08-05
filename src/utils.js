@@ -50,7 +50,6 @@ export default {
             resizeMsg.width  = DEFAULT_CHATBOX_WIDTH+'px';
             resizeMsg.height = DEFAULT_CHATBOX_HEIGHT+'px';
         }
-        console.log(resizeMsg);
         window.parent.postMessage(resizeMsg, "*");
     },
     queueDanmu: function (msg, live) {

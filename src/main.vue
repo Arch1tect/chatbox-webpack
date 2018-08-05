@@ -10,6 +10,7 @@
                 <comment-body></comment-body>
                 <chat-body></chat-body>
                 <inbox-body></inbox-body>
+                <profile-body></profile-body>
                 <input-bar></input-bar>
                 <comment-btn></comment-btn>
             </div>
