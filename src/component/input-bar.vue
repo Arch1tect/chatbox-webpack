@@ -1,5 +1,5 @@
 <template>
-    <div id="chatbox-input" v-show="state.view != 1" class = "socketchatbox-inputMessage-div">
+    <div id="chatbox-input" v-show="state.view == 2 || state.view==3" class = "socketchatbox-inputMessage-div">
         <div v-show="showStickers" id="socketchatbox-sticker-picker">
             <img v-for="sticker in stickers" v-on:click="sendSticker" v-bind:src="sticker" />
         </div>

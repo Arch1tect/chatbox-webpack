@@ -1,5 +1,5 @@
 <template>
-    <div v-show="state.view==1" class="socketchatbox-comments">
+    <div v-show="state.view==1">
         <div class="socketchatbox-page-title">
             <font-awesome-icon icon="sync-alt" v-bind:class="{fa: true, 'fa-refresh': true, 'fa-spin': loading }" v-on:click="userClickedRefresh" title='Refresh comments' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-refresh-comments' />
             <span>{{title}}</span>
@@ -12,20 +12,18 @@
                 <div v-html="msg.content" class="comment-body"></div>
             </div>
         </div>
+        <button v-show="state.view == 1" @click="chatboxUtils.openCommentModal" class="socketchatbox-bottom-btn-wrapper">
+            <span>Add your comment!</span>
+        </button>
     </div>
 </template>
 <style>
-.socketchatbox-comments {
-  width: 100%;
-  height: 100%;
-  background: #eceff1;
-}
+
 .socketchatbox-commentsArea {
   overflow-wrap: break-word;
   width: 100%;
   height: calc(100% - 30px);
   overflow-y: auto; /*only show scroll bar when needs to*/
-  border: none; 
   padding-right: 10px;
   padding-left: 10px;
   padding-top: 30px;
@@ -57,6 +55,24 @@
   color: gray;
   margin-left: 10px;
 }
+.socketchatbox-bottom-btn-wrapper {
+  width: 100%;
+  height: 35px;
+  border: none;
+  border-top: 1px solid lightgray;
+  float: left;
+  border-radius: 0;
+  background: white;
+  color: black;
+  font-weight: 400;
+}
+.socketchatbox-bottom-btn-wrapper:hover {
+  /*background:white;*/
+  cursor: pointer;
+}
+.socketchatbox-bottom-btn-wrapper span.fa {
+  margin-right: 5px; 
+}
 </style>
 <script>
 import * as moment from 'moment'
@@ -76,6 +92,7 @@ export default {
     data () {
         return {
             state: chatboxUIState,
+            chatboxUtils: chatboxUtils,
             chatbox: chatboxConfig,
             lastCommentId: -1,
             loading: true,

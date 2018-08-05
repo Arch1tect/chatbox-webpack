@@ -1,24 +1,23 @@
 <template>
-    <div v-show="state.view==0" class="socketchatbox-profile">
+    <div v-show="state.view==0">
         <div class="socketchatbox-page-title">
             <span>{{title}}</span>
         </div>
         <div class="socketchatbox-profileArea">
 
         </div>
+
+    <button  @click="viewUser" class="socketchatbox-bottom-btn-wrapper">
+        <span>Save!</span>
+    </button>
+
     </div>
 </template>
 <style>
 
-.socketchatbox-commentsArea {
-  overflow-wrap: break-word;
+.socketchatbox-profileArea {
   width: 100%;
   height: calc(100% - 30px);
-  overflow-y: auto; /*only show scroll bar when needs to*/
-  border: none; 
-  padding-right: 10px;
-  padding-left: 10px;
-  padding-top: 30px;
 }
 
 </style>

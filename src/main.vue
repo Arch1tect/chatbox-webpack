@@ -7,12 +7,11 @@
             <div :style="{ height: state.height + 'px', width: state.width + 'px'}" id='socketchatbox-body' v-show="state.display=='full'">
                 <div class='socketchatbox-onlineusers'></div>
                 <div class = "socketchatbox-typing"> </div>
-                <comment-body></comment-body>
-                <chat-body></chat-body>
-                <inbox-body></inbox-body>
-                <profile-body></profile-body>
+                <comment-body class="socketchatbox-body"></comment-body>
+                <chat-body class="socketchatbox-body"></chat-body>
+                <inbox-body class="socketchatbox-body"></inbox-body>
+                <profile-body class="socketchatbox-body"></profile-body>
                 <input-bar></input-bar>
-                <comment-btn></comment-btn>
             </div>
         </div>
     </div>
@@ -57,8 +56,8 @@
     margin-right: 10px;
     cursor: pointer;
 }
-
-.socketchatbox-chatroom-wrapper {
+.socketchatbox-body {
+  width: 100%;
   height: 100%;
   background: #eceff1;
 }

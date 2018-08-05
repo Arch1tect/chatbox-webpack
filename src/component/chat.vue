@@ -1,5 +1,5 @@
 <template>
-    <div v-show="state.view==2" class="socketchatbox-chatroom-wrapper">
+    <div v-show="state.view==2">
         <div id="socketchatbox-chatroom-title" class="socketchatbox-page-title">
             <font-awesome-icon icon="sync-alt" title='Re-enter chatroom' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-refresh' />
             <span id="socketchatbox-chatroom-url" data-toggle="tooltip" data-placement="bottom">{{chatboxConfig.location}}</span>
@@ -26,6 +26,14 @@
     </div>
 </template>
 <style>
+.socketchatbox-chatArea {
+  width: 100%;
+  height: calc(100% - 30px);
+  overflow-y: auto; /*only show scroll bar when needs to*/
+  padding-right: 10px;
+  padding-left: 10px;
+  padding-top: 30px;
+}
 .socketchatbox-messagetime {
   color: gray;
 }
@@ -119,17 +127,6 @@
 #socketchatbox-chatroom-title {
   white-space: nowrap;
   text-overflow: ellipsis;
-}
-
-.socketchatbox-chatArea {
-    box-sizing: border-box;
-  width: 100%;
-  height: calc(100% - 30px);
-  overflow-y: auto; /*only show scroll bar when needs to*/
-  border: none; 
-  padding-right: 10px;
-  padding-left: 10px;
-  padding-top: 30px;
 }
 </style>
 <script>
