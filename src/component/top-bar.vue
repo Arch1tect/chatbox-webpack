@@ -9,7 +9,7 @@
             <span title='Inbox' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-inbox'><font-awesome-icon icon="inbox" class="fa fa-inbox" v-on:click='state.view=3' v-bind:class="{ selected: state.view==3 }" /></span>
             <span title='Profile' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-profile'><font-awesome-icon icon="user-circle" class="fa fa-user" v-on:click='state.view=0' v-bind:class="{ selected: state.view==0 }" /></span>
 
-            <font-awesome-icon icon="times" class="fa fa-close" title='Close' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-closeChatbox' />
+            <font-awesome-icon v-on:click='hideChatbox' icon="times" class="fa fa-close" title='Close' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-closeChatbox' />
         </span>
     </div>
 </template>
@@ -145,6 +145,12 @@ export default {
                 chatboxUtils.updateIframeSize('fit');
             });
             // No need to change config setting here
+        },
+        hideChatbox () {
+            // This is hiding entire iframe, not minimize
+            // duplicate function in main.vue, should be the same
+            this.state.display = 'hidden';
+            chatboxUtils.updateIframeSize('close');
         }
 
     },
