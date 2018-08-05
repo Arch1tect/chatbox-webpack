@@ -1,28 +1,27 @@
-var config = {};
+function msgChatboxFrame(msg, callback) {
+    chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
+        // since only one tab should be active and in the current window at once
+        // the return variable should only have one entry
+        var activeTab = arrayOfTabs[0];
+        var activeTabId = activeTab.id;
+        // This message is listened by chatbox, but not content.js. 
+        // then chatbox pass msg to content.js to resize iframe
+        chrome.tabs.sendMessage(activeTabId, {chatboxMsg: msg}, callback);
+    });
+}
 
 function showHideChatbox() {
     var msg = 'open_chatbox';
     if ($('#open-chatbox').text().toLowerCase().indexOf("close") >= 0) {
         msg = 'close_chatbox';
     }
-    chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
-
-        // since only one tab should be active and in the current window at once
-        // the return variable should only have one entry
-        var activeTab = arrayOfTabs[0];
-        var activeTabId = activeTab.id; // or do whatever you need
-
-        // This message is listened by chatbox, but not content.js. 
-        // then chatbox pass msg to content.js to resize iframe
-        chrome.tabs.sendMessage(activeTabId, {chatboxMsg: msg}, function(resp){
-            if (resp && resp.msg == "shown") { 
-                $('#open-chatbox').text('Close Chatbox');
-            }
-            if (resp && resp.msg == "closed") { 
-                $('#open-chatbox').text('Open Chatbox');
-            }
-
-        });
+    msgChatboxFrame(msg, function(resp){
+        if (resp && resp.msg == "shown") { 
+            $('#open-chatbox').text('Close Chatbox');
+        }
+        if (resp && resp.msg == "closed") { 
+            $('#open-chatbox').text('Open Chatbox');
+        }
 
     });
 }
@@ -32,60 +31,37 @@ function showHideDanmu(display) {
         'name': 'toggle-danmu',
         'value': display
     }
-    chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
-
-        // since only one tab should be active and in the current window at once
-        // the return variable should only have one entry
-        var activeTab = arrayOfTabs[0];
-        var activeTabId = activeTab.id; // or do whatever you need
-        // This message is listened by chatbox, but not content.js. 
-        // then chatbox pass msg to content.js to resize iframe
-        chrome.tabs.sendMessage(activeTabId, {chatboxMsg: msg}, function(resp){
-        });
-    });
+    msgChatboxFrame(msg);
 }
 
 function checkChatboxStatus() {
     console.log('Check if chatbox open and get online user count');
-    chrome.tabs.query({active: true, currentWindow: true}, function(arrayOfTabs) {
+    // Ask chatbox whether it's open or not
+    // And how many users online at current page
+    msgChatboxFrame('is_chatbox_open', function(resp){
+        setTimeout(function(){
+            checkChatboxStatus();
+        }, 2000); 
 
-        // since only one tab should be active and in the current window at once
-        // the return variable should only have one entry
-        var activeTab = arrayOfTabs[0];
-        var activeTabId = activeTab.id; // or do whatever you need
-        
-        // TBD: activeTab.url and activeTab.title are available, no need
-        // to call .sendMessage if those are only info need from tab
-
-        // Ask chatbox whether it's open or not
-        // And how many users online at current page
-        chrome.tabs.sendMessage(activeTabId, {chatboxMsg: 'is_chatbox_open'}, function(resp){
-            setTimeout(function(){
-                checkChatboxStatus();
-            }, 2000); 
-
-            if (resp) {
-                if (resp.userCount > 0) {
-                    console.log('resp.userCount ' + resp.userCount);
-                    $('#user-count').text(resp.userCount);
-                    if (resp.is_chatbox_open) { 
-                        $('#open-chatbox').text('Close Chatbox');
-                    }
-                    else { 
-                        $('#open-chatbox').text('Open Chatbox');
-                    }
-                    $('#online-user-msg').show();
-
+        if (resp) {
+            if (resp.userCount > 0) {
+                console.log('resp.userCount ' + resp.userCount);
+                $('#user-count').text(resp.userCount);
+                if (resp.is_chatbox_open) { 
+                    $('#open-chatbox').text('Close Chatbox');
                 }
-                // do this every 2 sec to pull latest user count
-            } else {
-                $('#online-user-msg').text('Please try refreshing this page.');
+                else { 
+                    $('#open-chatbox').text('Open Chatbox');
+                }
                 $('#online-user-msg').show();
+
             }
-        }); 
+            // do this every 2 sec to pull latest user count
+        } else {
+            $('#online-user-msg').text('Please try refreshing this page.');
+            $('#online-user-msg').show();
+        }
     });
-
-
 }
 
 document.addEventListener('DOMContentLoaded', function () {
