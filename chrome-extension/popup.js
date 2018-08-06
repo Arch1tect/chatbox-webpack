@@ -44,15 +44,16 @@ function checkChatboxStatus() {
         }, 2000); 
 
         if (resp) {
+            if (resp.is_chatbox_open) { 
+                $('#open-chatbox').text('Close Chatbox');
+            }
+            else { 
+                $('#open-chatbox').text('Open Chatbox');
+            }
+            console.log(resp)
             if (resp.userCount > 0) {
                 console.log('resp.userCount ' + resp.userCount);
                 $('#user-count').text(resp.userCount);
-                if (resp.is_chatbox_open) { 
-                    $('#open-chatbox').text('Close Chatbox');
-                }
-                else { 
-                    $('#open-chatbox').text('Open Chatbox');
-                }
                 $('#online-user-msg').show();
 
             }

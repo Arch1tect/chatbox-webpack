@@ -95,6 +95,7 @@ var MIN_HEIGHT = 100;
 // expose chatbox config to window so it's easier to debug
 window.chatbox = chatboxConfig;
 window.chatboxUIState = chatboxUIState;
+window.chatboxUtils = chatboxUtils;
 
 export default {
     name: 'chatbox-main-vue',
