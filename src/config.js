@@ -18,7 +18,7 @@ export default {
 
 	location: 'https://www.zhihu.com/',
 	userId: '97aa43c3-67d5eaba7cc7',
-	username: 'haha',
+	username: 'King David',
 	socketUrl: socketUrl,
 	commentUrl : commentUrl,
 	inboxUrl : inboxUrl,

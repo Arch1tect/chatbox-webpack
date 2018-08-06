@@ -13,13 +13,14 @@
             </div>
         </div>
         <button v-show="state.view == 1" @click="chatboxUtils.openCommentModal" class="socketchatbox-bottom-btn-wrapper">
-            <span>Add your comment!</span>
+            <span>Add your comment</span>
         </button>
     </div>
 </template>
 <style>
 
 .socketchatbox-commentsArea {
+  /*background: #fffdf0;*/
   overflow-wrap: break-word;
   width: 100%;
   height: calc(100% - 30px);

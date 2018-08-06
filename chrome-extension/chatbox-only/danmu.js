@@ -5,6 +5,7 @@ const ROW_NUM = 12;
 var messages = []; // keep list of active danmu
 var waitlist = [];
 var danmuWrapper = document.createElement("div");
+danmuWrapper.className = 'danmuWrapper';
 var showing = true;
 document.body.insertBefore(danmuWrapper, document.body.firstChild);
 function toggleDanmu(display) {

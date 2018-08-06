@@ -13,7 +13,9 @@
     box-shadow: 15px 15px 5px rgba(0, 0, 0, 0.31);
     display: block;
 }
-
+.danmuWrapper {
+    display: none;
+}
 .danmu {
     position: fixed;
     color: black;

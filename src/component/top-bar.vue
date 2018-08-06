@@ -2,7 +2,7 @@
     <div v-on:click.self="toggleChatbox" v-bind:class="{ mini: state.display == 'mini' }" id='socketchatbox-top'>
         <span data-toggle="tooltip" data-placement="bottom" title='User in this room' id='socketchatbox-online-usercount' class='badge'>{{socket.userCount}}
         </span>
-        <div v-cloak v-show="state.display == 'full'" data-toggle="tooltip" data-placement="bottom" title='Edit your name' id='socketchatbox-username'>{{config.username}}</div>
+        <div v-cloak v-show="state.display == 'full'" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-username'>{{config.username}}</div>
         <span v-show="state.display == 'full'" id='topbar-options' class='float-right'>
             <span title='Comments' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-comments'><font-awesome-icon icon="edit" class="fa fa-pencil" v-on:click='state.view=1' v-bind:class="{ selected: state.view==1 }" /></span>
             <span title='Live chat' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live'><font-awesome-icon icon="comments" class="fa fa-comments" v-on:click='state.view=2' v-bind:class="{ selected: state.view==2 }" /></span>

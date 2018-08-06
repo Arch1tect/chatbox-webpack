@@ -27,6 +27,7 @@
 </template>
 <style>
 .socketchatbox-chatArea {
+    /*background: #eafaff;*/
   width: 100%;
   height: calc(100% - 30px);
   overflow-y: auto; /*only show scroll bar when needs to*/

@@ -63,21 +63,21 @@
 }
 [v-cloak] { display:none; }
 /* Let's get this party started */
-.socketchatbox-page::-webkit-scrollbar {
-    width: 5px;
+.socketchatbox-page ::-webkit-scrollbar {
+    width: 7px;
 }
  
 /* Track */
-.socketchatbox-page::-webkit-scrollbar-track {
+.socketchatbox-page ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 1px lightgray; 
 }
  
 /* Handle */
-.socketchatbox-page::-webkit-scrollbar-thumb {
+.socketchatbox-page ::-webkit-scrollbar-thumb {
     background: rgba(0,0,0,0.1); 
     /*-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); */
 }
-.socketchatbox-page::-webkit-scrollbar-thumb:window-inactive {
+.socketchatbox-page ::-webkit-scrollbar-thumb:window-inactive {
   background: rgba(0,0,0,0.05); 
 }
 </style>
@@ -163,7 +163,8 @@ export default {
             var _this = this;
             // load data from local storage / chrome storage
             chatboxUtils.storage.get('username', function (item) {
-                chatboxConfig.username = item['username'];
+                if (item['username'])
+                    chatboxConfig.username = item['username'];
             });
             chatboxUtils.storage.get('width', function (item) {
                 if (item && item['width'])
@@ -189,7 +190,13 @@ export default {
                 }
             });
             chatboxUtils.storage.get('danmu', function (item) {
-                chatboxUtils.toggleDanmu(item['danmu']);
+                var display = item['danmu'];
+                // Default danmu css is display: none
+                // But we want default behavior is to show danmu
+
+                if (!display)
+                    display = 'block';
+                chatboxUtils.toggleDanmu(display);
             });
         },
         listenToExtension () {

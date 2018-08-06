@@ -25,6 +25,7 @@
 </template>
 <style>
 .socketchatbox-inbox-wrapper {
+    /*background: #f4f5ff;*/
   height: calc(100% - 30px);
   width: 100%;
 }
