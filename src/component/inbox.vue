@@ -265,7 +265,7 @@ export default {
                 'receiver': this.selectedFriend.userId,
                 'message': msg
             }
-            $.post(chatboxConfig.inboxUrl + "/db/message", payload, function(resp) {
+            $.post(chatboxConfig.apiUrl + "/db/message", payload, function(resp) {
                 _this.pullMsgFromDB();
             });
         },
@@ -282,17 +282,19 @@ export default {
         },
         keepPulling: function () {
             var _this = this;
+            _this.pullMsgFromDB();
+            // Note that the code below doesn't care if the ajax
+            // call finish or success or fail
             setTimeout(function(){
                 _this.keepPulling();
-                _this.pullMsgFromDB();
-            }, 5*1000);
+            }, 1000*1000);
         },
         pullMsgFromDB: function (callback) {
+            // console.log('start pulling from db');
             this.loading = true;
             var _this = this;
-            $.get(chatboxConfig.inboxUrl + "/db/message/offset/" + this.lastMsgId+"/user/" + chatboxConfig.userId, function(data, status) {
+            $.get(chatboxConfig.apiUrl + "/db/message/offset/" + this.lastMsgId+"/user/" + chatboxConfig.userId, function(data, status) {
                 // TODO: last message first so recent conversation on top
-
                 var i = 0;
                 for (; i < data.length; i++) {
                     _this.lastMsgId = data[i].id;
@@ -357,7 +359,6 @@ export default {
         chatboxUtils.goToMessage = this.goToMessage;
         this.loadChatbotMsg();
         this.loadTestData();
-        this.pullMsgFromDB();
         this.keepPulling();
     }
 }

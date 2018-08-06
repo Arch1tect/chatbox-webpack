@@ -60,7 +60,7 @@ export default {
                 'user_id': chatboxConfig.userId,
                 'message': this.comment
             }
-            $.post(chatboxConfig.commentUrl + "/db/comments/url/"+ chatboxConfig.location, payload, function(resp) {
+            $.post(chatboxConfig.apiUrl + "/db/comments/url/"+ chatboxConfig.location, payload, function(resp) {
                 console.log(resp);
                 _this.$modal.hide('comment-modal');
                 _this.comment = '';

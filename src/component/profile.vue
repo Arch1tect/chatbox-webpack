@@ -5,14 +5,16 @@
         </div>
         <div class="socketchatbox-profileArea">
             <center>
-                <img src="http://www.swaves.com/Back_Issues/Dec04/AvrilCover2.gif" />
+                <img id="profile-img" v-bind:src="profileImgSrc" onerror="this.onerror=null;this.src='profile-empty.png';" />
+                <input type="file" @change="onFileChanged">
+
                 <input class="username" type="text" v-model="username">
                 <textarea v-model="aboutMe" placeholder="Introduce yourself here..." id="socketchatbox-aboutme"></textarea>
             </center>
         </div>
 
-    <button  @click="viewUser" class="socketchatbox-bottom-btn-wrapper">
-        <span>Save</span>
+    <button  @click="save" class="socketchatbox-bottom-btn-wrapper">
+        <span>{{saveStr}}</span>
     </button>
 
     </div>
@@ -58,6 +60,7 @@ input.username:focus{
 }
 .socketchatbox-profileArea img {
     width: 100%;
+    margin-bottom: 10px;
     /*border: 5px solid white;*/
     /*border-radius: 10px;*/
 }
@@ -73,7 +76,6 @@ import chatboxUtils from '../utils.js'
 "use strict";
 
 var titleStr = 'Profile';
-
 export default {
     name: 'profile-body',
     data () {
@@ -81,17 +83,86 @@ export default {
             state: chatboxUIState,
             chatbox: chatboxConfig,
             title: titleStr,
+            profileImgSrc: 'profile-empty.png',
+            imgFile: null,
             aboutMe: '',
-            username: 'No name'
+            username: 'No name',
+            saving: false
+        }
+    },
+    computed: {
+        saveStr: function () {
+            if (this.saving)
+                return 'Saving...';
+            else
+                return 'Save';
         }
     },
     methods: {
-        viewUser: function (msg) {
-            chatboxUtils.goToMessage(msg.user_id, msg.name);
+        onFileChanged (event) {
+            var file = event.target.files[0];
+            if (!file) return;
+            this.imgFile = new FormData();
+            var _this = this;
+
+            // TODO: only allow 1 file
+            $.each(event.target.files, function(key, value)
+            {
+                _this.imgFile.append('img', value);
+            });
+
+            // console.log(file);
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                _this.profileImgSrc = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        },
+        saveName () {
+            this.saving = true;
+            this.chatbox.username = this.username;
+            chatboxUtils.storage.set('username', this.username);
+            var payload = {
+                'uuid': chatboxConfig.userId,
+                'name': this.username
+            }
+            var _this = this;
+            $.post(chatboxConfig.apiUrl + "/db/user/change_name", payload, function(resp) {
+                console.log(resp);
+                _this.saving = false;
+            });
+        },
+        saveProfileImg () {
+            this.saving = true;
+            var _this = this;
+            $.ajax({
+                type: "POST",
+                url: chatboxConfig.apiUrl + "/user/change_profile_img/"+chatboxConfig.userId,
+                data: _this.imgFile,
+                enctype: 'multipart/form-data',
+                processData: false,  // Important!
+                contentType: false,
+                cache: false,
+                success: function () {
+                    _this.saving = false;
+                }
+            });
+        },
+        save () {
+            this.saveName();
+            this.saveProfileImg();
         }
     },
     created () {
+        // Can't rely on chatboxConfig because chatboxConfig
+        // hasn't loaded from storage, need to read from storage instead
         this.username = chatboxConfig.username;
+        var _this = this;
+        chatboxUtils.storage.get('username', function (item) {
+            if (item['username'])
+                _this.username = item['username'];
+        });
+        this.profileImgSrc = 'https://s3.amazonaws.com/chat.anywhere.user.img/'+chatboxConfig.userId+'.jpg';
     }
 }
 

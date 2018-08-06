@@ -125,7 +125,7 @@ export default {
         loadComments: function (callback) {
             this.loading = true;
             var _this = this;
-            $.get(chatbox.commentUrl + "/db/comments/offset/" + this.lastCommentId + "/url/" + chatbox.location, function(resp) {
+            $.get(chatbox.apiUrl + "/db/comments/offset/" + this.lastCommentId + "/url/" + chatbox.location, function(resp) {
                 var index = 0;
                 for (; index<resp.length; index++) {
                     var data = resp[index];

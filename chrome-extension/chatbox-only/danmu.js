@@ -34,7 +34,8 @@ function createDanmu(msg) {
         time = 20 - msg.content.length/5;
     if (time < 10)
         time = 10;
-
+    if (!danmu.animate)
+        return; // safari doesn't support this!
     var danmuAnimation = danmu.animate([
           // keyframes, at least two
           { transform: 'translateX('+startX+')' }, 
@@ -114,7 +115,6 @@ function receiveMsgFromChatboxFrame (e) {
     }
 
     if (danmuMsg.display) {
-        console.log(danmuMsg);
         toggleDanmu(danmuMsg.display);
     }
 }

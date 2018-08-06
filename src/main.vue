@@ -89,7 +89,7 @@ import chatboxConfig from './config.js'
 import chatboxUtils from './utils.js'
 import chatboxSocket from './socket.js'
 
-var MIN_WIDTH = 250;
+var MIN_WIDTH = 300;
 var MIN_HEIGHT = 100;
 
 // expose chatbox config to window so it's easier to debug
@@ -160,6 +160,7 @@ export default {
             }
         },
         loadConfig () {
+            console.log('Load config from storage');
             var _this = this;
             // load data from local storage / chrome storage
             chatboxUtils.storage.get('username', function (item) {
@@ -233,7 +234,7 @@ export default {
             });
         }
     },
-    mounted () {
+    created () {
         this.loadConfig();
         if (chatboxUtils.runningExtension) {
             this.listenToExtension();
