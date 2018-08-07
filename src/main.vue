@@ -11,6 +11,7 @@
                 <chat-body class="socketchatbox-body"></chat-body>
                 <inbox-body class="socketchatbox-body"></inbox-body>
                 <profile-body class="socketchatbox-body"></profile-body>
+                <others-profile class="socketchatbox-body"></others-profile>
                 <input-bar></input-bar>
             </div>
         </div>
@@ -18,6 +19,9 @@
 </template>
 
 <style>
+button:focus {
+    outline: none;
+}
 .float-right {
   float: right;
 }

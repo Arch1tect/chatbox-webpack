@@ -7,8 +7,7 @@
             <center>
                 <img id="profile-img" v-bind:src="profileImgSrc" onerror="this.onerror=null;this.src='profile-empty.png';" />
                 <input type="file" @change="onFileChanged">
-
-                <input class="username" type="text" v-model="username">
+                <input class="username" placeholder="Display name" type="text" v-model="username">
                 <textarea v-model="aboutMe" placeholder="Introduce yourself here..." id="socketchatbox-aboutme"></textarea>
             </center>
         </div>
@@ -41,6 +40,9 @@
     border-radius: 5px;
     margin-bottom: 30px;
 }
+#socketchatbox-aboutme:focus {
+    outline: none;
+}
 input.username {
     border: none;
     background: none;
@@ -61,6 +63,7 @@ input.username:focus{
 .socketchatbox-profileArea img {
     width: 100%;
     margin-bottom: 10px;
+    /*min-height: 250px;*/
     /*border: 5px solid white;*/
     /*border-radius: 10px;*/
 }
@@ -110,8 +113,6 @@ export default {
             {
                 _this.imgFile.append('img', value);
             });
-
-            // console.log(file);
             var reader = new FileReader();
             reader.onload = function (e) {
                 _this.profileImgSrc = e.target.result;
@@ -162,7 +163,7 @@ export default {
             if (item['username'])
                 _this.username = item['username'];
         });
-        this.profileImgSrc = 'https://s3.amazonaws.com/chat.anywhere.user.img/'+chatboxConfig.userId+'.jpg';
+        this.profileImgSrc = chatboxConfig.s3Url+chatboxConfig.userId+'.jpg';
     }
 }
 
