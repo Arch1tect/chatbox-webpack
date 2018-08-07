@@ -1,8 +1,11 @@
 const DEFAULT_CHATBOX_WIDTH = 360;
 const DEFAULT_CHATBOX_HEIGHT = 415;
+
 var runningExtension = false;
 if (typeof(chrome) !== 'undefined' && chrome.extension)
     runningExtension = true;
+
+import chatboxConfig from './config.js'
 
 var storage = {
     get: function (key, callback) {
@@ -64,5 +67,14 @@ export default {
         danmuMsg.display = display;
         window.parent.postMessage(danmuMsg, "*");
     },
-    storage: storage
+    storage: storage,
+    tryLoadingProfileImg: function (obj, user_id) {
+        obj.profileImgSrc = 'profile-empty.png';
+        var src = chatboxConfig.s3Url+user_id+'.jpg';
+        $("<img/>").on('load', function() {
+            obj.profileImgSrc = src;
+         }).on('error', function() {
+            // no profile image
+        }).attr("src", src);
+    }
 }

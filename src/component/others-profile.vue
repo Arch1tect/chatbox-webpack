@@ -5,7 +5,7 @@
         </div>
         <div class="socketchatbox-profileArea">
             <center>
-                <img v-bind:src="profileImgSrc" @error="useDefaultImg" />
+                <img v-bind:src="profileImgSrc" />
 
                 <input class="username" placeholder="Display name" type="text" v-model="username">
                 <textarea v-model="aboutMe" placeholder="Introduce yourself here..." id="socketchatbox-aboutme"></textarea>
@@ -38,7 +38,6 @@ import chatboxUtils from '../utils.js'
 
 
 "use strict";
-const DEFAULT_IMG_SRC = 'profile-empty.png';
 var titleStr = 'Profile';
 export default {
     name: 'other-profile',
@@ -47,7 +46,7 @@ export default {
             state: chatboxUIState,
             chatbox: chatboxConfig,
             title: titleStr,
-            profileImgSrc: DEFAULT_IMG_SRC,
+            profileImgSrc: '',
             aboutMe: '',
             user_id: '',
             username: 'No name',
@@ -59,26 +58,13 @@ export default {
         message () {
             chatboxUtils.goToMessage(this.user_id, this.username);
         },
-        useDefaultImg () {
-            this.profileImgSrc = 'profile-empty.png';
-        },
-        tryLoadingProfileImg () {
-            var src = chatboxConfig.s3Url+this.user_id+'.jpg';
-            var _this = this;
-            $("<img/>").on('load', function() {
-                _this.profileImgSrc = src;
-             }).on('error', function() {
-                // no profile image
-            }).attr("src", src);
-        },
         viewOthersProfile (view, user_id, username) {
             this.prevView = view;
             this.state.view = -1;
-            this.useDefaultImg();
             this.username = username;
             this.user_id = user_id
             this.title = username + "'s profile";
-            this.tryLoadingProfileImg();
+            chatboxUtils.tryLoadingProfileImg(this, user_id);
         }
     },
     created () {

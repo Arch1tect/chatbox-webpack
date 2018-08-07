@@ -7,7 +7,7 @@
         <div class="socketchatbox-inbox-wrapper">
             <span class="fa fa-chevron-left" id="socketchatbox-toggle-friend-list"></span>
             <div class="socketchatbox-friend-list">
-                <center v-bind:class="{friendnameWrapper: true, selected: friend.selected}" @click="selectFriend(friend)" v-for="friend in friends"><span class='message-unread' v-show='friend.unreadMsg'></span><img v-bind:src="friend.profileImgSrc" onerror="this.onerror=null;this.src='profile-empty.png';" /><div class="name-text">{{friend.name}}</div></center>
+                <center v-bind:class="{friendnameWrapper: true, selected: friend.selected}" @click="selectFriend(friend)" v-for="friend in friends"><span class='message-unread' v-show='friend.unreadMsg'></span><img v-bind:src="friend.profileImgSrc" /><div class="name-text">{{friend.name}}</div></center>
             </div>
             <div ref="msgArea" class="socketchatbox-friend-messages">
                 <div class="inbox-conversation-no-message" v-if="!selectedConversation.length">Start the conversation now!</div>
@@ -186,13 +186,15 @@ export default {
             var name = inName;
             if (!name)
                 name = 'no name';
-            return {
+            var friend = {
                 userId: id,
-                profileImgSrc: chatboxConfig.s3Url + id + '.jpg',
+                profileImgSrc: '',
                 name: name,
                 selected: false,
                 unreadMsg: true
             };
+            chatboxUtils.tryLoadingProfileImg(friend, id);
+            return friend;
         },
         selectFriend: function (friend) {
             if (friend.selected)

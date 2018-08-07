@@ -7,7 +7,7 @@
         <div ref="commentArea" class="socketchatbox-commentsArea">
             <div v-for="msg in messages">
                 <div class="comment-header socketchatbox-msg-username">
-                    <span @click="viewUser(msg)"><img onerror="this.onerror=null;this.src='profile-empty.png';" v-bind:src="msg.profileImgSrc" /><span class="commenter-name">{{msg.name}}</span></span><small>{{msg.time}}</small>
+                    <span @click="viewUser(msg)"><img v-bind:src="msg.profileImgSrc" /><span class="commenter-name">{{msg.name}}</span></span><small>{{msg.time}}</small>
                 </div>
                 <div v-html="msg.content" class="comment-body"></div>
             </div>
@@ -129,7 +129,7 @@ export default {
                     var data = resp[index];
                     if (!data.name)
                         data.name = 'no name';
-                    data.profileImgSrc = chatboxConfig.s3Url + data.user_id + '.jpg';
+                    chatboxUtils.tryLoadingProfileImg(data, data.user_id);
                     data.time = moment.utc(data.created_time).fromNow();
                     _this.lastCommentId = data.id;
                     data.content = chatboxUtils.addClassToEmoji(data.content);

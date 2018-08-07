@@ -11,7 +11,7 @@
                     <div class="socketchatbox-log" v-if="msg.isLog">{{msg.message}}</div>
                     <div v-else>
                         <div v-if="!msg.fromSameUser || msg.loggingTime" class="socketchatbox-msg-username">
-                            <span @click="viewUser(msg)"><img onerror="this.onerror=null;this.src='profile-empty.png';" v-bind:src="msg.profileImgSrc" /><span class="others-name" v-if="!msg.me">{{msg.username}}</span></span>
+                            <span @click="viewUser(msg)"><img v-bind:src="msg.profileImgSrc" /><span class="others-name" v-if="!msg.me">{{msg.username}}</span></span>
                         </div>
                         <br v-if="msg.me||msg.fromSameUser"/>
                         <div v-if="msg.renderType=='media'" class="socketchatbox-messageBody image-or-video"><img class="chatbox-image" v-bind:src="msg.message" /></div>
@@ -236,7 +236,7 @@ export default {
             if (this.lastMsg && data.sender == this.lastMsg.sender)
                 data.fromSameUser = true;
 
-            data.profileImgSrc = chatboxConfig.s3Url + data.sender + '.jpg';
+            chatboxUtils.tryLoadingProfileImg(data, data.sender);
             // Maybe move some of this logic to backend, it's messy here
             // Message is considered media type if
             // 1. text: image url
