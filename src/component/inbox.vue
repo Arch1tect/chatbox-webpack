@@ -2,7 +2,7 @@
     <div class="socketchatbox-inbox" v-show="state.view==3">
         <div class="socketchatbox-page-title">
             <font-awesome-icon icon="sync-alt" v-bind:class="{fa: true, 'fa-refresh': true, 'fa-spin': loading }" @click="userClickRefresh" title='Refresh' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-refresh-inbox' />
-            <span>{{title}}</span>
+            <span>Conversation with <a @click="viewProfile" href='#'>{{selectedFriend.name}}</a></span>
         </div>
         <div class="socketchatbox-inbox-wrapper">
             <span class="fa fa-chevron-left" id="socketchatbox-toggle-friend-list"></span>
@@ -24,6 +24,10 @@
     </div>
 </template>
 <style>
+.socketchatbox-page-title a {
+    color: black;
+    text-decoration: underline;
+}
 .socketchatbox-inbox-wrapper {
     /*background: #f4f5ff;*/
   height: calc(100% - 30px);
@@ -163,6 +167,9 @@ export default {
         }
     },
     methods: {
+        viewProfile: function () {
+            chatboxUtils.viewOthersProfile(this.selectedFriend.userId, this.selectedFriend.name);
+        },
         buildFriendObj: function (id, inName) {
             var name = inName;
             if (!name)
@@ -326,8 +333,8 @@ export default {
         }
     },
     watch: {
-        selectedFriend: function (newVal, oldVal) {
-            this.selectedConversation = this.messageDict[newVal.userId];
+        selectedFriend: function (newSelected, prevSelected) {
+            this.selectedConversation = this.messageDict[newSelected.userId];
         },
         selectedConversation: function (newVal, oldVal) {
             var _this = this;
@@ -337,7 +344,8 @@ export default {
         }
     },
     computed: {
-        title: function () {
+        // below code deprecated, will use notification box instead
+        titleDeprecated: function () {
             var i = 0;
             var unreadMsg = false;
             for (; i<this.friends.length; i++) {
