@@ -168,7 +168,7 @@ export default {
     },
     methods: {
         viewProfile: function () {
-            chatboxUtils.viewOthersProfile(this.selectedFriend.userId, this.selectedFriend.name);
+            chatboxUtils.viewOthersProfile(3, this.selectedFriend.userId, this.selectedFriend.name);
         },
         buildFriendObj: function (id, inName) {
             var name = inName;

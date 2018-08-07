@@ -104,7 +104,7 @@ export default {
     },
     methods: {
         viewUser: function (msg) {
-            chatboxUtils.viewOthersProfile(msg.user_id, msg.name);
+            chatboxUtils.viewOthersProfile(1, msg.user_id, msg.name);
         },
         scrollToBottom: function () {
             this.$refs.commentArea.scrollTop = this.$refs.commentArea.scrollHeight;

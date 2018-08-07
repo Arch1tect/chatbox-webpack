@@ -1,7 +1,7 @@
 <template>
     <div v-show="state.view==-1">
         <div class="socketchatbox-page-title">
-            <span>{{title}}</span>
+            <span class="leave-others-profile"><font-awesome-icon icon="long-arrow-alt-left" v-on:click='state.view=prevView' /></span><span>{{title}}</span>
         </div>
         <div class="socketchatbox-profileArea">
             <center>
@@ -19,7 +19,15 @@
     </div>
 </template>
 <style>
+.leave-others-profile {
+    display: block;
+    margin-top: -3px;
+    font-size: 18px;
+    position: absolute;
+    color: gray;
+    margin-left: 5px;
 
+}
 </style>
 <script>
 import Vue from 'vue'
@@ -43,6 +51,7 @@ export default {
             aboutMe: '',
             user_id: '',
             username: 'No name',
+            prevView: 1
 
         }
     },
@@ -62,7 +71,8 @@ export default {
                 // no profile image
             }).attr("src", src);
         },
-        viewOthersProfile (user_id, username) {
+        viewOthersProfile (view, user_id, username) {
+            this.prevView = view;
             this.state.view = -1;
             this.useDefaultImg();
             this.username = username;
