@@ -5,7 +5,7 @@
         </div>
         <div class="socketchatbox-profileArea">
             <center>
-                <img id="profile-img" v-bind:src="profileImgSrc" onerror="this.onerror=null;this.src='profile-empty.png';" />
+                <img v-bind:src="profileImgSrc" onerror="this.onerror=null;this.src='profile-empty.png';" />
                 <input type="file" @change="onFileChanged">
                 <input class="username" placeholder="Display name" type="text" v-model="username">
                 <textarea v-model="aboutMe" placeholder="Introduce yourself here..." id="socketchatbox-aboutme"></textarea>
@@ -50,7 +50,7 @@ input.username {
     /* border-radius: 3px; */
     display: block;
     margin: 0px;
-    margin-top: 15px;
+    /*margin-top: 15px;*/
     margin-bottom: 25px;
     padding: 5px;
     /* width: 80%; */

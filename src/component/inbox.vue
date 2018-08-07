@@ -7,7 +7,7 @@
         <div class="socketchatbox-inbox-wrapper">
             <span class="fa fa-chevron-left" id="socketchatbox-toggle-friend-list"></span>
             <div class="socketchatbox-friend-list">
-                <div v-bind:class="{selected: friend.selected}" @click="selectFriend(friend)" v-for="friend in friends"><span class='message-unread' v-show='friend.unreadMsg'></span>{{friend.name}}</div>
+                <center v-bind:class="{friendnameWrapper: true, selected: friend.selected}" @click="selectFriend(friend)" v-for="friend in friends"><span class='message-unread' v-show='friend.unreadMsg'></span><img v-bind:src="friend.profileImgSrc" onerror="this.onerror=null;this.src='profile-empty.png';" /><div class="name-text">{{friend.name}}</div></center>
             </div>
             <div ref="msgArea" class="socketchatbox-friend-messages">
                 <div class="inbox-conversation-no-message" v-if="!selectedConversation.length">Start the conversation now!</div>
@@ -68,29 +68,41 @@
   color: white;
 
 }
+.socketchatbox-friend-list img {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 100%;
+    box-shadow: 0 0 6px black;
 
-.socketchatbox-friend-list div {
-  padding: 10px;
-  width: 100%;
-  overflow-x: hidden;
 }
 
-.socketchatbox-friend-list div:hover {
-  background-color: black;
-  cursor: pointer;
+.friendnameWrapper .name-text {
+    /* margin: 10px; */
+    text-align: center;
+    margin-top: 3px;
 }
+
+/*.friendnameWrapper:hover {
+    background-color: #ffffff;
+    cursor: pointer;
+    color: black;
+}*/
 .socketchatbox-friend-list .message-unread {
     border-radius: 50%;
     background: orange;
-    height: 8px;
-    float: left;
-    width: 8px;
-    display: inline-block;
-    margin-left: -5px;
-    margin-top: 1px;
-    margin-right: 5px;
+    height: 10px;
+    position: absolute;
+    left: 5px;
+    margin-top: 10px;
+    width: 10px;
 }
-.socketchatbox-friend-list div.selected {
+.friendnameWrapper {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    cursor: pointer;
+}
+.friendnameWrapper.selected {
     background-color: #eceff1;
     color: black;
 }
@@ -176,6 +188,7 @@ export default {
                 name = 'no name';
             return {
                 userId: id,
+                profileImgSrc: chatboxConfig.s3Url + id + '.jpg',
                 name: name,
                 selected: false,
                 unreadMsg: true

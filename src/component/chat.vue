@@ -11,7 +11,7 @@
                     <div class="socketchatbox-log" v-if="msg.isLog">{{msg.message}}</div>
                     <div v-else>
                         <div v-if="!msg.fromSameUser || msg.loggingTime" class="socketchatbox-msg-username">
-                            <span @click="viewUser(msg)">{{msg.username}}</span>
+                            <span @click="viewUser(msg)"><img onerror="this.onerror=null;this.src='profile-empty.png';" v-bind:src="msg.profileImgSrc" /><span class="others-name" v-if="!msg.me">{{msg.username}}</span></span>
                         </div>
                         <br v-if="msg.me||msg.fromSameUser"/>
                         <div v-if="msg.renderType=='media'" class="socketchatbox-messageBody image-or-video"><img class="chatbox-image" v-bind:src="msg.message" /></div>
@@ -35,6 +35,11 @@
   padding-left: 10px;
   padding-top: 30px;
 }
+.others-name {
+  cursor: pointer;
+
+    margin-left: 5px;
+}
 .socketchatbox-messagetime {
   color: gray;
 }
@@ -48,11 +53,20 @@
 }
 .socketchatbox-msg-username {
   display: table-cell;
-  cursor: pointer;
+}
+.socketchatbox-msg-username img {
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+    border-radius: 100%;
+    /*border-radius: 5px;*/
+    /*border: 1px solid gray;*/
+    box-shadow: 0 0 6px black;
 }
 .socketchatbox-message-me .socketchatbox-msg-username {
   float: right;
-  padding-right: 5px;
+  width: 100%;
 }
 .socketchatbox-message-others .socketchatbox-msg-username {
   cursor: pointer;
@@ -66,7 +80,7 @@
   display: inline-block;
   margin-bottom: 15px;
 }
-.socketchatbox-message img{
+.socketchatbox-messageBody img{
   max-width: 50%;
   border-radius: 5px;
 }
@@ -82,7 +96,8 @@
   text-align: center;
 }
 .socketchatbox-messageBody {
-  max-width: 70%;
+  max-width: 90%;
+  /*min-width: 48px;*/
   margin-top: 7px;
   background-color: #FFFFFF;
   border-radius: 5px;
@@ -221,6 +236,7 @@ export default {
             if (this.lastMsg && data.sender == this.lastMsg.sender)
                 data.fromSameUser = true;
 
+            data.profileImgSrc = chatboxConfig.s3Url + data.sender + '.jpg';
             // Maybe move some of this logic to backend, it's messy here
             // Message is considered media type if
             // 1. text: image url

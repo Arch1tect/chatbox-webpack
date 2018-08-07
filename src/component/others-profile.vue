@@ -5,7 +5,7 @@
         </div>
         <div class="socketchatbox-profileArea">
             <center>
-                <img id="profile-img" v-bind:src="profileImgSrc" @error="useDefaultImg" />
+                <img v-bind:src="profileImgSrc" @error="useDefaultImg" />
 
                 <input class="username" placeholder="Display name" type="text" v-model="username">
                 <textarea v-model="aboutMe" placeholder="Introduce yourself here..." id="socketchatbox-aboutme"></textarea>
