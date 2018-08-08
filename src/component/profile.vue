@@ -90,12 +90,13 @@ export default {
             imgFile: null,
             aboutMe: '',
             username: 'No name',
-            saving: false
+            savingName: false,
+            savingImg: false
         }
     },
     computed: {
         saveStr: function () {
-            if (this.saving)
+            if (this.savingName || this.savingImg)
                 return 'Saving...';
             else
                 return 'Save';
@@ -104,7 +105,10 @@ export default {
     methods: {
         onFileChanged (event) {
             var file = event.target.files[0];
-            if (!file) return;
+            if (!file) {
+                this.imgFile = null;
+                return;
+            }
             this.imgFile = new FormData();
             var _this = this;
 
@@ -120,7 +124,7 @@ export default {
             reader.readAsDataURL(file);
         },
         saveName () {
-            this.saving = true;
+            this.savingName = true;
             this.chatbox.username = this.username;
             chatboxUtils.storage.set('username', this.username);
             var payload = {
@@ -129,12 +133,15 @@ export default {
             }
             var _this = this;
             $.post(chatboxConfig.apiUrl + "/db/user/change_name", payload, function(resp) {
-                console.log(resp);
-                _this.saving = false;
+                _this.savingName = false;
+                Vue.notify({
+                  title: 'Name saved!',
+                });
             });
         },
         saveProfileImg () {
-            this.saving = true;
+            if (!this.imgFile) return;
+            this.savingImg = true;
             var _this = this;
             $.ajax({
                 type: "POST",
@@ -144,9 +151,18 @@ export default {
                 processData: false,  // Important!
                 contentType: false,
                 cache: false,
-                success: function () {
-                    _this.saving = false;
-                }
+                timeout: 10*1000 // TODO: put this everywhere, no, put it in base class
+            }).done(function () {
+                Vue.notify({
+                  title: 'Profile image saved!',
+                });
+            }).fail(function () {
+                Vue.notify({
+                  title: 'Fail to save profile image',
+                  type: 'error'
+                });
+            }).always(function(){
+                _this.savingImg = false;
             });
         },
         save () {

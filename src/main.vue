@@ -12,6 +12,7 @@
                 <inbox-body class="socketchatbox-body"></inbox-body>
                 <profile-body class="socketchatbox-body"></profile-body>
                 <others-profile class="socketchatbox-body"></others-profile>
+                <notifications position="bottom"/>
                 <input-bar></input-bar>
             </div>
         </div>
@@ -19,6 +20,18 @@
 </template>
 
 <style>
+.notifications {
+    bottom: 35px !important;
+    width: 100% !important;
+}
+.vue-notification {
+    margin: 0px;
+    border-left: none;
+}
+.notification-title {
+    font-weight: 600;
+    text-align: center;
+}
 button:focus {
     outline: none;
 }
@@ -97,6 +110,7 @@ var MIN_WIDTH = 300;
 var MIN_HEIGHT = 100;
 
 // expose chatbox config to window so it's easier to debug
+window.Vue = Vue;
 window.chatbox = chatboxConfig;
 window.chatboxUIState = chatboxUIState;
 window.chatboxUtils = chatboxUtils;

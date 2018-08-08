@@ -111,19 +111,27 @@ export default {
             var _this = this;
             this.loadComments(function(data){
                 if (!data.length) {
-                    _this.title = 'No new comment';
+                    Vue.notify({
+                      title: 'No new comments',
+                    });
+                    // _this.title = 'No new comment';
                     if (_this.clearNoCommentMsgTimeout)
                         clearTimeout(_this.clearNoCommentMsgTimeout);
                     _this.clearNoCommentMsgTimeout = setTimeout(function(){
                         _this.title = titleStr;
                     },2000);
+                } else {
+                    Vue.notify({
+                      title: data.length + ' new comments',
+                    });
                 }
             });
         },
         loadComments: function (callback) {
             this.loading = true;
             var _this = this;
-            $.get(chatbox.apiUrl + "/db/comments/offset/" + this.lastCommentId + "/url/" + chatbox.location, function(resp) {
+
+            $.get(chatbox.apiUrl + "/db/comments/offset/" + this.lastCommentId + "/url/" + chatbox.location).done(function(resp) {
                 var index = 0;
                 for (; index<resp.length; index++) {
                     var data = resp[index];
@@ -141,6 +149,11 @@ export default {
                 });
                 if (callback)
                     callback(resp);
+            }).fail(function() {
+                Vue.notify({
+                  title: 'Fail to load comments',
+                  type: 'error'
+                });
             }).always(function(){
                 _this.loading = false;
             });

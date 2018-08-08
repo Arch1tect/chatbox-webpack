@@ -325,8 +325,20 @@ export default {
                     if (!(_this.selectedFriend && _this.selectedFriend.userId == friend.userId))
                         friend.unreadMsg = true;
                 }
+                var noty = "No new message";
+                if (data.length) {
+                    noty = 'Received '+ data.length + ' new messages';
+                }
+                Vue.notify({
+                    title: noty,
+                });
                 if (callback)
                     callback(data);
+            }).fail(function() {
+                Vue.notify({
+                  title: 'Fail to check new message',
+                  type: 'error'
+                });
             }).always(function(){
                 _this.loading = false;
             });

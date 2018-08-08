@@ -1,4 +1,9 @@
 import Vue from 'vue'
+import Notifications from 'vue-notification'
+Vue.use(Notifications)
+import VModal from 'vue-js-modal'
+Vue.use(VModal, { componentName: "vue-modal" })
+
 import chatboxMainVue from './main.vue'
 import commentModal from './comment-modal.vue'
 import topBar from './component/top-bar.vue'
@@ -37,8 +42,6 @@ library.add(faInbox)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 // fontawesome end
 
-import VModal from 'vue-js-modal'
-Vue.use(VModal, { componentName: "vue-modal" })
 
 new Vue({
   el: '#comment-modal',

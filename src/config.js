@@ -2,7 +2,7 @@
 
 var localSocketServer = false;
 var localInboxServer = false;
-var socketUrl = 'https://quotime.me'
+var socketUrl = 'https://quotime.mem'
 var apiUrl = socketUrl;
 
 if (localSocketServer){
@@ -14,7 +14,7 @@ if (localInboxServer) {
 
 export default {
 
-	location: 'https://www.zhihu.com/',
+	location: 'https://www.nytimes.com/',
 	userId: '97aa43c3-77767d5eaba7cc7',
 	// userId: '2',
 	username: 'King David',
