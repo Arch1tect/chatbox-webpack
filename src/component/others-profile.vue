@@ -8,7 +8,8 @@
                 <img v-bind:src="profileImgSrc" />
 
                 <input class="username" placeholder="Display name" type="text" v-model="username">
-                <textarea v-model="aboutMe" placeholder="Introduce yourself here..." id="socketchatbox-aboutme"></textarea>
+
+                <div class="socketchatbox-aboutme-others"></div>
             </center>
         </div>
 
@@ -59,6 +60,11 @@ export default {
             chatboxUtils.goToMessage(this.user_id, this.username);
         },
         viewOthersProfile (view, user_id, username) {
+            // User may clicked on their own msg
+            if (user_id == chatboxConfig.userId) {
+                this.state.view = 0;
+                return;
+            }
             this.prevView = view;
             this.state.view = -1;
             this.username = username;
