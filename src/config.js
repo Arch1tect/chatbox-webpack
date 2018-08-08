@@ -2,7 +2,7 @@
 
 var localSocketServer = false;
 var localInboxServer = false;
-var socketUrl = 'https://quotime.mem'
+var socketUrl = 'https://quotime.me'
 var apiUrl = socketUrl;
 
 if (localSocketServer){
