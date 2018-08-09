@@ -9,7 +9,7 @@
                     <img v-bind:src="profileImgSrc" onerror="this.onerror=null;this.src='profile-empty.png';" />
 
                     <div class="upload-profile-image-btn-wrapper">
-                      <button class="upload-profile-image">Upload profile picture</button>
+                      <button class="upload-profile-image-btn">Upload profile picture</button>
                       <input type="file" @change="onFileChanged">
                     </div>
                 </div>
@@ -35,21 +35,24 @@
     position: relative;
     margin-top: -50px;
     cursor: pointer !important;
+    font-size: large;
 }
 
-.upload-profile-image {
+.upload-profile-image-btn {
     border: none;
     width: 100%;
     height: 50px;
     background: rgba(0, 0, 0, 0.5);
     color: white;
+    font-size: large;
 }
-.upload-profile-image-btn-wrapper:hover .upload-profile-image{
+.upload-profile-image-btn-wrapper:hover .upload-profile-image-btn{
     background: rgba(0, 0, 0, 0.75);
 }
 
 .upload-profile-image-btn-wrapper input[type=file] {
     position: absolute;
+    cursor: pointer;
     width: 100%;
     height: 100%;
     left: 0;
