@@ -12,13 +12,19 @@
             </center>
         </div>
 
-    <button  @click="save" class="socketchatbox-bottom-btn-wrapper">
+    <button :disabled="disableSave" @click="save" class="socketchatbox-bottom-btn-wrapper">
         <span>{{saveStr}}</span>
     </button>
 
     </div>
 </template>
 <style>
+
+button:disabled,
+button[disabled]{
+  background-color: #cccccc;
+  cursor: not-allowed !important;
+}
 .socketchatbox-profileArea {
     width: 100%;
     height: calc(100% - 30px);
@@ -100,6 +106,10 @@ export default {
                 return 'Saving...';
             else
                 return 'Save';
+        },
+        disableSave: function () {
+            return this.username == this.chatbox.username &&
+            !this.imgFile || this.savingName || this.savingImg;
         }
     },
     methods: {
@@ -124,6 +134,9 @@ export default {
             reader.readAsDataURL(file);
         },
         saveName () {
+            if (this.username == this.chatbox.username) {
+                return;
+            }
             this.savingName = true;
             this.chatbox.username = this.username;
             chatboxUtils.storage.set('username', this.username);
@@ -153,6 +166,7 @@ export default {
                 cache: false,
                 timeout: 10*1000 // TODO: put this everywhere, no, put it in base class
             }).done(function () {
+                _this.imgFile = null;
                 Vue.notify({
                   title: 'Profile image saved!',
                 });
@@ -179,7 +193,7 @@ export default {
             if (item['username'])
                 _this.username = item['username'];
         });
-        this.profileImgSrc = chatboxConfig.s3Url+chatboxConfig.userId+'.jpg';
+        this.profileImgSrc = chatboxConfig.s3Url+chatboxConfig.userId+'.jpg?rand='+Math.random();
     }
 }
 

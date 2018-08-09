@@ -89,13 +89,16 @@
     color: black;
 }*/
 .socketchatbox-friend-list .message-unread {
-    border-radius: 50%;
+border-radius: 50%;
     background: orange;
     height: 10px;
-    position: absolute;
+    /* position: absolute; */
     left: 5px;
+    float: left;
+    margin-right: -15px;
     margin-top: 10px;
     width: 10px;
+    margin-left: 5px;
 }
 .friendnameWrapper {
     padding-top: 5px;
