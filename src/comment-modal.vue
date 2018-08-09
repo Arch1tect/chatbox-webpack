@@ -55,16 +55,24 @@ export default {
     },
     methods: {
         submit: function () {
+            // TODO: disable button and show loading when waiting for ajax to finish
             var _this = this;
             var payload = {
                 'user_id': chatboxConfig.userId,
                 'message': this.comment
             }
             $.post(chatboxConfig.apiUrl + "/db/comments/url/"+ chatboxConfig.location, payload, function(resp) {
-                console.log(resp);
                 _this.$modal.hide('comment-modal');
                 _this.comment = '';
                 chatboxUtils.loadComments();
+                Vue.notify({
+                  title: 'Success!',
+                });
+            }).fail(function(){
+                Vue.notify({
+                  title: 'Fail to leave comment!',
+                  type: 'error'
+                });
             });
         },
         autoFocus: function () {

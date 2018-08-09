@@ -115,14 +115,13 @@ import chatboxUtils from '../utils.js'
 
 "use strict";
 
-var titleStr = 'Profile';
+var titleStr = 'Your profile';
 export default {
     name: 'profile-body',
     data () {
         return {
             state: chatboxUIState,
             chatbox: chatboxConfig,
-            title: titleStr,
             profileImgSrc: 'profile-empty.png',
             imgFile: null,
             aboutMe: '',
@@ -132,6 +131,9 @@ export default {
         }
     },
     computed: {
+        title: function () {
+            return this.chatbox.username+"'s profile";
+        },
         saveStr: function () {
             if (this.savingName || this.savingImg)
                 return 'Saving...';
@@ -177,10 +179,16 @@ export default {
             }
             var _this = this;
             $.post(chatboxConfig.apiUrl + "/db/user/change_name", payload, function(resp) {
-                _this.savingName = false;
                 Vue.notify({
                   title: 'Name saved!',
                 });
+            }).fail(function () {
+                Vue.notify({
+                  title: 'Failed to save name',
+                  type: 'error'
+                });
+            }).always(function(){
+                _this.savingName = false;
             });
         },
         saveProfileImg () {
@@ -203,7 +211,7 @@ export default {
                 });
             }).fail(function () {
                 Vue.notify({
-                  title: 'Fail to save profile image',
+                  title: 'Failed to save profile image',
                   type: 'error'
                 });
             }).always(function(){
@@ -221,8 +229,9 @@ export default {
         this.username = chatboxConfig.username;
         var _this = this;
         chatboxUtils.storage.get('username', function (item) {
-            if (item['username'])
+            if (item['username']) {
                 _this.username = item['username'];
+            }
         });
         this.profileImgSrc = chatboxConfig.s3Url+chatboxConfig.userId+'.jpg?rand='+Math.random();
     }

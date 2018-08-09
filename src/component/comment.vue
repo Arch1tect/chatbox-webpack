@@ -13,7 +13,7 @@
             </div>
         </div>
         <button v-show="state.view == 1" @click="chatboxUtils.openCommentModal" class="socketchatbox-bottom-btn-wrapper">
-            <span>Add your comment</span>
+            <span>Leave a comment</span>
         </button>
     </div>
 </template>
@@ -54,24 +54,7 @@
   color: gray;
   margin-left: 10px;
 }
-.socketchatbox-bottom-btn-wrapper {
-  width: 100%;
-  height: 35px;
-  border: none;
-  border-top: 1px solid lightgray;
-  float: left;
-  border-radius: 0;
-  /*background: white;*/
-  /*color: black;*/
-  font-weight: 400;
-}
-.socketchatbox-bottom-btn-wrapper:hover {
-  /*background:white;*/
-  cursor: pointer;
-}
-.socketchatbox-bottom-btn-wrapper span.fa {
-  margin-right: 5px; 
-}
+
 </style>
 <script>
 import * as moment from 'moment'
@@ -151,7 +134,7 @@ export default {
                     callback(resp);
             }).fail(function() {
                 Vue.notify({
-                  title: 'Fail to load comments',
+                  title: 'Failed to load comments',
                   type: 'error'
                 });
             }).always(function(){

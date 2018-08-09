@@ -339,7 +339,7 @@ export default {
                     callback(data);
             }).fail(function() {
                 Vue.notify({
-                  title: 'Fail to check new message',
+                  title: 'Failed to check new message',
                   type: 'error'
                 });
             }).always(function(){
