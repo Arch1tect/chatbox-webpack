@@ -29,6 +29,7 @@
   position: relative;
   overflow: hidden;
   display: inline-block;
+  margin-top: 5px;
 }
 
 .upload-profile-image {
@@ -52,6 +53,7 @@
 }
 button:disabled, button[disabled]{
   background-color: #cccccc;
+  color: black;
   cursor: not-allowed !important;
 }
 .socketchatbox-profileArea {

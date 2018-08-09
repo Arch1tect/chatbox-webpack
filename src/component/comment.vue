@@ -61,8 +61,8 @@
   border-top: 1px solid lightgray;
   float: left;
   border-radius: 0;
-  background: white;
-  color: black;
+  /*background: white;*/
+  /*color: black;*/
   font-weight: 400;
 }
 .socketchatbox-bottom-btn-wrapper:hover {

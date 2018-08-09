@@ -144,6 +144,10 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+button {
+    background: #00a1ff;
+    color: white;
+}
 </style>
 <script>
 import * as moment from 'moment';
