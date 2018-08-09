@@ -6,7 +6,13 @@
         <div class="socketchatbox-profileArea">
             <center>
                 <img v-bind:src="profileImgSrc" onerror="this.onerror=null;this.src='profile-empty.png';" />
-                <input type="file" @change="onFileChanged">
+
+                <div class="upload-profile-image-btn-wrapper">
+                  <button class="upload-profile-image">Upload profile picture</button>
+                  <input type="file" @change="onFileChanged">
+                </div>
+
+                
                 <input class="username" placeholder="Display name" type="text" v-model="username">
                 <textarea v-model="aboutMe" placeholder="Introduce yourself here..." id="socketchatbox-aboutme"></textarea>
             </center>
@@ -19,9 +25,32 @@
     </div>
 </template>
 <style>
+.upload-profile-image-btn-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
 
-button:disabled,
-button[disabled]{
+.upload-profile-image {
+    border: 1px solid lightgray;
+    background-color: white;
+    border-radius: 5px;
+    background: #00a1ff;
+    padding: 8px;
+    color: white;
+    cursor: pointer;
+
+}
+
+.upload-profile-image-btn-wrapper input[type=file] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}
+button:disabled, button[disabled]{
   background-color: #cccccc;
   cursor: not-allowed !important;
 }
@@ -56,7 +85,7 @@ input.username {
     /* border-radius: 3px; */
     display: block;
     margin: 0px;
-    /*margin-top: 15px;*/
+    margin-top: 15px;
     margin-bottom: 25px;
     padding: 5px;
     /* width: 80%; */
@@ -68,7 +97,7 @@ input.username:focus{
 }
 .socketchatbox-profileArea img {
     width: 100%;
-    margin-bottom: 10px;
+    /*margin-bottom: 10px;*/
     /*min-height: 250px;*/
     /*border: 5px solid white;*/
     /*border-radius: 10px;*/

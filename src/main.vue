@@ -29,7 +29,7 @@
     border-left: none;
 }
 .notification-title {
-    font-weight: 600;
+    font-weight: 300;
     text-align: center;
 }
 button:focus {
