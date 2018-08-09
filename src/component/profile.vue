@@ -5,11 +5,13 @@
         </div>
         <div class="socketchatbox-profileArea">
             <center>
-                <img v-bind:src="profileImgSrc" onerror="this.onerror=null;this.src='profile-empty.png';" />
+                <div class="img-upload-file-wrapper">
+                    <img v-bind:src="profileImgSrc" onerror="this.onerror=null;this.src='profile-empty.png';" />
 
-                <div class="upload-profile-image-btn-wrapper">
-                  <button class="upload-profile-image">Upload profile picture</button>
-                  <input type="file" @change="onFileChanged">
+                    <div class="upload-profile-image-btn-wrapper">
+                      <button class="upload-profile-image">Upload profile picture</button>
+                      <input type="file" @change="onFileChanged">
+                    </div>
                 </div>
 
                 
@@ -25,22 +27,25 @@
     </div>
 </template>
 <style>
+.img-upload-file-wrapper:hover .upload-profile-image-btn-wrapper {
+    visibility: visible;
+}
 .upload-profile-image-btn-wrapper {
-  position: relative;
-  overflow: hidden;
-  display: inline-block;
-  margin-top: 5px;
+    visibility: hidden;
+    position: relative;
+    margin-top: -50px;
+    cursor: pointer !important;
 }
 
 .upload-profile-image {
-    border: 1px solid lightgray;
-    background-color: white;
-    border-radius: 5px;
-    background: #00a1ff;
-    padding: 8px;
+    border: none;
+    width: 100%;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.5);
     color: white;
-    cursor: pointer;
-
+}
+.upload-profile-image-btn-wrapper:hover .upload-profile-image{
+    background: rgba(0, 0, 0, 0.75);
 }
 
 .upload-profile-image-btn-wrapper input[type=file] {
