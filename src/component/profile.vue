@@ -10,7 +10,7 @@
 
                     <div class="upload-profile-image-btn-wrapper">
                       <button class="upload-profile-image-btn">Upload profile picture</button>
-                      <input type="file" @change="onFileChanged">
+                      <input accept="image/*" type="file" @change="onFileChanged">
                     </div>
                 </div>
 
