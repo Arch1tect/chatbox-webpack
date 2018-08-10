@@ -169,8 +169,6 @@ export default {
         return {
             state: chatboxUIState,
             loading: false,
-            userClickedRefresh: false,
-            userClickedRefreshTimeout: null,
             messageDict: {},
             friendDict: {},
             selectedConversation: [],
@@ -295,15 +293,7 @@ export default {
             });
         },
         userClickRefresh: function () {
-            var _this = this;
-            this.userClickedRefresh = true;
-            if (this.userClickedRefreshTimeout)
-                clearTimeout(this.userClickedRefreshTimeout);
-            this.pullMsgFromDB(function(data){
-                _this.userClickedRefreshTimeout = setTimeout(function(){
-                    _this.userClickedRefresh = false;
-                }, 2000);
-            });
+            this.pullMsgFromDB(true);
         },
         keepPulling: function () {
             var _this = this;
@@ -312,36 +302,42 @@ export default {
             // call finish or success or fail
             setTimeout(function(){
                 _this.keepPulling();
-            }, 1000*1000);
+            }, 5*1000);
         },
-        pullMsgFromDB: function (callback) {
+        pullMsgFromDB: function (reportStatus) {
             // console.log('start pulling from db');
             this.loading = true;
             var _this = this;
             $.get(chatboxConfig.apiUrl + "/db/message/offset/" + this.lastMsgId+"/user/" + chatboxConfig.userId, function(data, status) {
                 // TODO: last message first so recent conversation on top
+                var newMsgFromOthersCount = 0;
                 var i = 0;
                 for (; i < data.length; i++) {
+                    if (data[i].sender != chatboxConfig.userId)
+                        newMsgFromOthersCount ++;
                     _this.lastMsgId = data[i].id;
                     var friend = _this.processMsg(data[i]);
                     // Mark friend has unread message unless friend is being selected
                     if (!(_this.selectedFriend && _this.selectedFriend.userId == friend.userId))
                         friend.unreadMsg = true;
                 }
+
                 var noty = "No new message";
-                if (data.length) {
-                    noty = 'Received '+ data.length + ' new messages';
+                if (newMsgFromOthersCount) {
+                    noty = 'Received '+ newMsgFromOthersCount + ' new message';
                 }
-                Vue.notify({
-                    title: noty,
-                });
-                if (callback)
-                    callback(data);
+                if (newMsgFromOthersCount||reportStatus) {
+                    Vue.notify({
+                        title: noty,
+                    });
+                }
             }).fail(function() {
-                Vue.notify({
-                  title: 'Failed to check new message',
-                  type: 'error'
-                });
+                if (reportStatus) {
+                    Vue.notify({
+                      title: 'Failed to check new message',
+                      type: 'error'
+                    });
+                }
             }).always(function(){
                 _this.loading = false;
             });
@@ -374,22 +370,8 @@ export default {
         }
     },
     computed: {
-        // below code deprecated, will use notification box instead
-        titleDeprecated: function () {
-            var i = 0;
-            var unreadMsg = false;
-            for (; i<this.friends.length; i++) {
-                if (this.friends[i].unreadMsg)
-                    unreadMsg = true;
-            }
-            if (unreadMsg)
-                return 'You have new message!';
-            else {
-                if (this.userClickedRefresh)
-                    return 'No new message';
-            }
-            return 'Your private messages';
-        }
+        // below code deprecated, using notification box instead
+        titleDeprecated: function () {}
     },
     created () {
         // expose sendPM method so input component can access it

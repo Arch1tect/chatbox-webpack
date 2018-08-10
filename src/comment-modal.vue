@@ -66,7 +66,7 @@ export default {
                 _this.comment = '';
                 chatboxUtils.loadComments();
                 Vue.notify({
-                  title: 'Success!',
+                  title: 'Submitted!',
                 });
             }).fail(function(){
                 Vue.notify({

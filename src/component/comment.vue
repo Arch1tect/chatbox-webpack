@@ -80,7 +80,6 @@ export default {
             loading: true,
             messages: [],
             title: titleStr,
-            clearNoCommentMsgTimeout: null
         }
     },
     methods: {
@@ -95,17 +94,11 @@ export default {
             this.loadComments(function(data){
                 if (!data.length) {
                     Vue.notify({
-                      title: 'No new comments',
+                      title: 'No new comment',
                     });
-                    // _this.title = 'No new comment';
-                    if (_this.clearNoCommentMsgTimeout)
-                        clearTimeout(_this.clearNoCommentMsgTimeout);
-                    _this.clearNoCommentMsgTimeout = setTimeout(function(){
-                        _this.title = titleStr;
-                    },2000);
                 } else {
                     Vue.notify({
-                      title: data.length + ' new comments',
+                      title: data.length + ' new comment',
                     });
                 }
             });
