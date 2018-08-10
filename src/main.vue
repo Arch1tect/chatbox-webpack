@@ -80,7 +80,6 @@ button:focus {
 }
 .socketchatbox-page-title {
     height: 30px;
-    box-sizing: border-box;
     border-bottom: 1px solid lightgray;
     width: 100%;
     text-align: center;
@@ -272,6 +271,7 @@ export default {
         }
     },
     created () {
+        chatboxConfig.location = location.search.substring(1);
         this.loadConfig();
         if (chatboxUtils.runningExtension) {
             this.listenToExtension();

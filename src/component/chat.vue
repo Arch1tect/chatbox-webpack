@@ -1,7 +1,7 @@
 <template>
     <div v-show="state.view==2">
         <div id="socketchatbox-chatroom-title" class="socketchatbox-page-title">
-            <font-awesome-icon icon="sync-alt" title='Re-enter chatroom' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-refresh' />
+<!--             <font-awesome-icon icon="sync-alt" title='Re-enter chatroom' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-refresh' /> -->
             <span id="socketchatbox-chatroom-url" data-toggle="tooltip" data-placement="bottom">{{chatboxConfig.location}}</span>
         </div>
         <div ref="chatArea" class="socketchatbox-chatArea">
@@ -138,12 +138,12 @@
 <style>
 
 #socketchatbox-chatroom-url {
-  cursor: pointer;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+    overflow: hidden;
 }
-#socketchatbox-chatroom-title {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
+
 button {
     background: #00a1ff;
     color: white;
@@ -220,12 +220,13 @@ export default {
         },
         preprocessMsg: function (data) {
             // May need to add log
-            var now = moment.now();
-            data.time = now;
-            if (!this.lastMsg.time || (now - this.lastMsg.time > LOG_MESSAGE_TIME_AFTER)) {
+            // if loading from cache, there's timestamp on message
+            if (!data.time)
+                data.time = moment.now();
+            if (!this.lastMsg.time || (data.time - this.lastMsg.time > LOG_MESSAGE_TIME_AFTER)) {
                 var log = {
                     isLog: true,
-                    time: now,
+                    time: data.time,
                 };
                 this.messages.push(log);
                 this.updateLogTime();
@@ -295,6 +296,13 @@ export default {
         chatboxSocket.registerCallback('new message', function (data) {
             _this.processMsg(data);
             chatboxUtils.queueDanmu(data, true);
+            chatboxUtils.storage.get(chatboxConfig.location, function(item) {
+                var messages = [];
+                if (item && item[chatboxConfig.location])
+                    messages = JSON.parse(item[chatboxConfig.location]);
+                messages.push(data);
+                chatboxUtils.storage.set(chatboxConfig.location, JSON.stringify(messages));
+            });
         });
         // Received file
         chatboxSocket.registerCallback('base64 file', function (data) {
@@ -304,6 +312,15 @@ export default {
         if (chatboxConfig.testing)
             this.loadTestData();
         this.keepUpdatingLogTime();
+
+        chatboxUtils.storage.get(chatboxConfig.location, function(item) {
+            if (item && item[chatboxConfig.location]) {
+                var messages = JSON.parse(item[chatboxConfig.location]);
+                var i = 0;
+                for (; i< messages.length; i++)
+                    _this.processMsg(messages[i]);
+            }
+        });
 
     }
 }
