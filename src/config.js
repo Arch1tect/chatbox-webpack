@@ -13,7 +13,7 @@ if (localInboxServer) {
 }
 
 export default {
-
+	testing: true,
 	location: 'https://www.nytimes.com/',
 	userId: '97aa43c3-77767d5eaba7cc7',
 	// userId: '2',

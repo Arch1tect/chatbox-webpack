@@ -301,8 +301,8 @@ export default {
             data.isFile = true;
             _this.processMsg(data);
         });
-
-        this.loadTestData();
+        if (chatboxConfig.testing)
+            this.loadTestData();
         this.keepUpdatingLogTime();
 
     }

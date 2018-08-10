@@ -378,7 +378,8 @@ export default {
         chatboxUtils.sendPM = this.sendPM;
         chatboxUtils.goToMessage = this.goToMessage;
         this.loadChatbotMsg();
-        this.loadTestData();
+        if (chatboxConfig.testing)
+            this.loadTestData();
         this.keepPulling();
     }
 }
