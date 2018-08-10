@@ -23,9 +23,20 @@
                 </div>
             </div>
         </div>
+        <div v-show="typing" class="chat-typing">{{typing}}</div>
     </div>
 </template>
 <style>
+.chat-typing {
+    width: 100%;
+    z-index: 1;
+    position: fixed;
+    color: white;
+    text-align: center;
+    bottom: 35px;
+    padding: 8px;
+    background: #0189feba;
+}
 .socketchatbox-chatArea {
     /*background: #eafaff;*/
   width: 100%;
@@ -160,10 +171,11 @@ import chatboxSocket from '../socket.js'
 
 
 "use strict";
+const TYPING_STAY_TIME = 3*1000; // ms
 
 var useDifferentStyleForPureEmoji = false;
-var LOG_MESSAGE_TIME_AFTER = 1*60*1000 // 1 min
-
+var LOG_MESSAGE_TIME_AFTER = 1*60*1000; // 1 min
+var typingUserDict = {};
 export default {
     name: 'chat-body',
     data () {
@@ -171,7 +183,8 @@ export default {
             state: chatboxUIState,
             chatboxConfig: chatboxConfig,
             messages: [],
-            lastMsg: {}
+            lastMsg: {},
+            typing: null
         }
     },
     methods: {
@@ -277,6 +290,49 @@ export default {
                 // Media takes time to load
                 this.scrollToBottomLater();
             }
+        },
+        // Add typing user, auto remove after centain amount of time
+        addTypingUser: function (username) {
+            // username+=Math.random();
+            if (username === chatboxConfig.username) return;
+
+            if (username in typingUserDict) {
+                clearTimeout(typingUserDict[username]);
+            } 
+            var _this = this;
+            typingUserDict[username] = setTimeout(function() {
+                _this.removeTypingUser(username);
+            }, TYPING_STAY_TIME);
+
+            this.updateTypingInfo();
+        },
+        // Removes typing user
+        removeTypingUser: function (username) {
+            if (username in typingUserDict) {
+                clearTimeout(typingUserDict[username]);
+            } 
+            delete typingUserDict[username];
+            this.updateTypingInfo();
+        },
+        updateTypingInfo: function () {        
+            var msg = '';
+            var typingUserCount = Object.keys(typingUserDict).length;
+            if (typingUserCount > 0) {
+                if (typingUserCount === 1){
+                     msg = Object.keys(typingUserDict)[0] + ' is typing';
+                } else if (typingUserCount === 2) {
+                    msg = Object.keys(typingUserDict)[0] + ' and ' + Object.keys(typingUserDict)[1] + ' are typing';
+                } else if (typingUserCount ===3) {
+                    msg = Object.keys(typingUserDict)[0] + ', ' + Object.keys(typingUserDict)[1] + 
+                    ' and ' + Object.keys(typingUserDict)[2] + ' are typing';
+                } else {
+                    msg = Object.keys(typingUserDict)[0] + ', ' + Object.keys(typingUserDict)[1] + 
+                    ', ' + Object.keys(typingUserDict)[2] + ' and ' + (typingUserCount-3) + ' other users are typing';
+                }
+                this.typing = msg;
+            } else {
+                this.typing = null;
+            }
         }
 
     },
@@ -291,6 +347,12 @@ export default {
                 url: location.href,
                 referrer: document.referrer
             });
+        });
+        chatboxSocket.registerCallback('typing', function (data) {
+            _this.addTypingUser(data.username);
+        });
+        chatboxSocket.registerCallback('stop typing', function (data) {
+            _this.removeTypingUser(data.username);
         });
         // Whenever the server emits 'new message', update the chat body
         chatboxSocket.registerCallback('new message', function (data) {
