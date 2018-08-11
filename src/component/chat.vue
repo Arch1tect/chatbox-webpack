@@ -314,7 +314,7 @@ export default {
             delete typingUserDict[username];
             this.updateTypingInfo();
         },
-        updateTypingInfo: function () {        
+        updateTypingInfo: function () {
             var msg = '';
             var typingUserCount = Object.keys(typingUserDict).length;
             if (typingUserCount > 0) {
@@ -362,8 +362,18 @@ export default {
                 var messages = [];
                 if (item && item[chatboxConfig.location])
                     messages = JSON.parse(item[chatboxConfig.location]);
-                messages.push(data);
-                chatboxUtils.storage.set(chatboxConfig.location, JSON.stringify(messages));
+                // avoid saving message multiple times if
+                // user open multiple tabs of same page
+                if (!messages.length || messages[messages.length-1].message !== data.message) {
+                    var msg = {
+                        message: data.message+'',
+                        sender: data.sender+'',
+                        time: data.time,
+                        username: data.username+''
+                    }
+                    messages.push(msg);
+                    chatboxUtils.storage.set(chatboxConfig.location, JSON.stringify(messages));
+                }
             });
         });
         // Received file

@@ -162,7 +162,7 @@ import chatboxUtils from '../utils.js'
 
 "use strict";
 var LOG_MESSAGE_TIME_AFTER = 5*60*1000 // 5 mins
-
+const PULL_INTERVAL = 100;
 export default {
     name: 'inbox-body',
     data () {
@@ -302,7 +302,7 @@ export default {
             // call finish or success or fail
             setTimeout(function(){
                 _this.keepPulling();
-            }, 5*1000);
+            }, PULL_INTERVAL*1000);
         },
         pullMsgFromDB: function (reportStatus) {
             // console.log('start pulling from db');

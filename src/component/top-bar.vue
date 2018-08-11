@@ -1,6 +1,6 @@
 <template>
     <div v-on:click.self="toggleChatbox" v-bind:class="{ mini: state.display == 'mini' }" id='socketchatbox-top'>
-        <span data-toggle="tooltip" data-placement="bottom" title='User in this room' id='socketchatbox-online-usercount' class='badge'>{{socket.userCount}}
+        <span data-toggle="tooltip" data-placement="bottom" title='User in this room' id='socketchatbox-online-usercount' class='badge'>{{userCount}}
         </span>
         <div v-cloak v-show="state.display == 'full'" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-username'>{{config.username}}</div>
         <span v-show="state.display == 'full'" id='topbar-options' class='float-right'>
@@ -131,7 +131,8 @@ export default {
         return {
             config: chatboxConfig,
             state: chatboxUIState,
-            socket: chatboxSocket
+            socket: chatboxSocket,
+            userCount: 1
         }
     },
     methods: {
@@ -157,24 +158,26 @@ export default {
     created () {
         var _this = this;
         chatboxSocket.registerCallback('user joined', function (data) {
-            chatboxSocket.userCount = data.numUsers;
+            console.log('user joined');
+            console.log(data);
+            // _this.userCount = data.numUsers;
         });
         chatboxSocket.registerCallback('user left', function (data) {
-            chatboxSocket.userCount = data.numUsers;
+            // _this.userCount = data.numUsers;
         });
         chatboxSocket.registerCallback('welcome new user', function (data) {
             var userCount = 0;
             for (var onlineUsername in data.onlineUsers){
                 userCount++;
             }
-            chatboxSocket.userCount = userCount;
+            _this.userCount = userCount;
         });
         chatboxSocket.registerCallback('welcome new connection', function (data) {
             var userCount = 0;
             for (var onlineUsername in data.onlineUsers){
                 userCount++;
             }
-            chatboxSocket.userCount = userCount;
+            _this.userCount = userCount;
         });
 
     }

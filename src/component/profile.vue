@@ -241,7 +241,7 @@ export default {
                 _this.username = item['username'];
             }
         });
-        this.profileImgSrc = chatboxConfig.s3Url+chatboxConfig.userId+'.jpg?rand='+Math.random();
+        chatboxUtils.tryLoadingProfileImg(this, chatboxConfig.userId);
     }
 }
 

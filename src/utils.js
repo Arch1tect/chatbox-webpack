@@ -69,8 +69,9 @@ export default {
     },
     storage: storage,
     tryLoadingProfileImg: function (obj, user_id) {
+        // TODO: implement cache and bust cache image
         obj.profileImgSrc = 'profile-empty.png';
-        var src = chatboxConfig.s3Url+user_id+'.jpg';
+        var src = chatboxConfig.s3Url+user_id+'.jpg?v=';
         $("<img/>").on('load', function() {
             obj.profileImgSrc = src;
          }).on('error', function() {
