@@ -162,6 +162,7 @@ button {
 </style>
 <script>
 import * as moment from 'moment';
+import * as io from 'socket.io-client'
 import Vue from 'vue'
 
 import chatboxUIState from '../ui-state.js'
@@ -332,67 +333,83 @@ export default {
             } else {
                 this.typing = null;
             }
+        },
+        registerSocketEvents: function () {
+            var _this = this;
+            // Once connected, user will receive the invitation to login using uuid
+            chatboxSocket.registerCallback(chatboxSocket.socket, 'login', function (data) {
+                chatboxSocket.socket.emit('login', {
+                    username: chatboxConfig.username,
+                    uuid: chatboxConfig.userId,
+                    roomID: chatboxConfig.location,
+                    url: location.href,
+                    referrer: document.referrer
+                });
+            });
+            chatboxSocket.registerCallback(chatboxSocket.socket, 'name changed', function (data) {
+                var log = {
+                    isLog: true,
+                    message: data.oldName+' changed name to '+data.username
+                };
+                _this.messages.push(log);
+                _this.scrollToBottomLater();
+            });
+            chatboxSocket.registerCallback(chatboxSocket.socket, 'typing', function (data) {
+                _this.addTypingUser(data.username);
+            });
+            chatboxSocket.registerCallback(chatboxSocket.socket, 'stop typing', function (data) {
+                console.log('remove typing ' + data.username)
+                _this.removeTypingUser(data.username);
+            });
+            // Whenever the server emits 'new message', update the chat body
+            chatboxSocket.registerCallback(chatboxSocket.socket, 'new message', function (data) {
+                _this.processMsg(data);
+                chatboxUtils.queueDanmu(data, true);
+                chatboxUtils.storage.get(chatboxConfig.location, function(item) {
+                    var messages = [];
+                    if (item && item[chatboxConfig.location])
+                        messages = JSON.parse(item[chatboxConfig.location]);
+                    // avoid saving message multiple times if
+                    // user open multiple tabs of same page
+                    if (!messages.length || messages[messages.length-1].message !== data.message) {
+                        var msg = {
+                            message: data.message+'',
+                            sender: data.sender+'',
+                            time: data.time,
+                            username: data.username+''
+                        }
+                        messages.push(msg);
+                        chatboxUtils.storage.set(chatboxConfig.location, JSON.stringify(messages));
+                    }
+                });
+            });
+            // Received file
+            chatboxSocket.registerCallback(chatboxSocket.socket, 'base64 file', function (data) {
+                data.isFile = true;
+                _this.processMsg(data);
+            });
+        },
+        initSocket: function () {
+            if (chatboxConfig.username && chatboxConfig.userId) {
+                console.log('create web socket');
+                var socket = io(chatboxConfig.socketUrl, {path:'/socket.io'});
+                chatboxSocket.socket = socket;
+                this.registerSocketEvents();
+            } else {
+                var _this = this;
+                setTimeout(function () {
+                    _this.initSocket();
+                }, 500);
+            }
         }
 
     },
     created () {
-        var _this = this;
-        // Once connected, user will receive the invitation to login using uuid
-        chatboxSocket.registerCallback('login', function (data) {
-            chatboxSocket.socket.emit('login', {
-                username: chatboxConfig.username,
-                uuid: chatboxConfig.userId,
-                roomID: chatboxConfig.location,
-                url: location.href,
-                referrer: document.referrer
-            });
-        });
-        chatboxSocket.registerCallback('name changed', function (data) {
-            var log = {
-                isLog: true,
-                message: data.oldName+' changed name to '+data.username
-            };
-            _this.messages.push(log);
-            _this.scrollToBottomLater();
-        });
-        chatboxSocket.registerCallback('typing', function (data) {
-            _this.addTypingUser(data.username);
-        });
-        chatboxSocket.registerCallback('stop typing', function (data) {
-            console.log('remove typing ' + data.username)
-            _this.removeTypingUser(data.username);
-        });
-        // Whenever the server emits 'new message', update the chat body
-        chatboxSocket.registerCallback('new message', function (data) {
-            _this.processMsg(data);
-            chatboxUtils.queueDanmu(data, true);
-            chatboxUtils.storage.get(chatboxConfig.location, function(item) {
-                var messages = [];
-                if (item && item[chatboxConfig.location])
-                    messages = JSON.parse(item[chatboxConfig.location]);
-                // avoid saving message multiple times if
-                // user open multiple tabs of same page
-                if (!messages.length || messages[messages.length-1].message !== data.message) {
-                    var msg = {
-                        message: data.message+'',
-                        sender: data.sender+'',
-                        time: data.time,
-                        username: data.username+''
-                    }
-                    messages.push(msg);
-                    chatboxUtils.storage.set(chatboxConfig.location, JSON.stringify(messages));
-                }
-            });
-        });
-        // Received file
-        chatboxSocket.registerCallback('base64 file', function (data) {
-            data.isFile = true;
-            _this.processMsg(data);
-        });
+
         if (chatboxConfig.testing)
             this.loadTestData();
         this.keepUpdatingLogTime();
-
+        var _this = this;
         chatboxUtils.storage.get(chatboxConfig.location, function(item) {
             if (item && item[chatboxConfig.location]) {
                 var messages = JSON.parse(item[chatboxConfig.location]);
@@ -401,6 +418,7 @@ export default {
                     _this.processMsg(messages[i]);
             }
         });
+        this.initSocket();
 
     }
 }

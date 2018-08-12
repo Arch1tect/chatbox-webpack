@@ -208,8 +208,13 @@ export default {
                 }
             });
             chatboxUtils.storage.get('username', function (item) {
-                if (item['username'])
+                if (item['username']) {
                     chatboxConfig.username = item['username'];
+                } else {
+                    chatboxConfig.username = 'u'+Math.floor(Math.random() * 1*1000*1000);
+                    chatboxUtils.storage.set('username', chatboxConfig.username);
+                }
+
             });
             chatboxUtils.storage.get('width', function (item) {
                 if (item && item['width'])

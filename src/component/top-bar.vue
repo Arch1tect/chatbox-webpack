@@ -147,39 +147,47 @@ export default {
             });
             // No need to change config setting here
         },
-        hideChatbox () {
+        hideChatbox: function () {
             // This is hiding entire iframe, not minimize
             // duplicate function in main.vue, should be the same
             this.state.display = 'hidden';
             chatboxUtils.updateIframeSize('close');
+        },
+        registerSocketEvents: function () {
+            var _this = this;
+            if (chatboxSocket.socket) {
+                chatboxSocket.registerCallback(chatboxSocket.socket, 'user joined', function (data) {
+                  console.log('user joined');
+                  console.log(data);
+                  // _this.userCount = data.numUsers;
+                });
+                chatboxSocket.registerCallback(chatboxSocket.socket, 'user left', function (data) {
+                  // _this.userCount = data.numUsers;
+                });
+                chatboxSocket.registerCallback(chatboxSocket.socket, 'welcome new user', function (data) {
+                  var userCount = 0;
+                  for (var onlineUsername in data.onlineUsers){
+                      userCount++;
+                  }
+                  _this.userCount = userCount;
+                });
+                chatboxSocket.registerCallback(chatboxSocket.socket, 'welcome new connection', function (data) {
+                  var userCount = 0;
+                  for (var onlineUsername in data.onlineUsers){
+                      userCount++;
+                  }
+                  _this.userCount = userCount;
+                });
+            } else {
+                setTimeout(function () {
+                    _this.registerSocketEvents();
+                }, 500);
+            }
         }
 
     },
     created () {
-        var _this = this;
-        chatboxSocket.registerCallback('user joined', function (data) {
-            console.log('user joined');
-            console.log(data);
-            // _this.userCount = data.numUsers;
-        });
-        chatboxSocket.registerCallback('user left', function (data) {
-            // _this.userCount = data.numUsers;
-        });
-        chatboxSocket.registerCallback('welcome new user', function (data) {
-            var userCount = 0;
-            for (var onlineUsername in data.onlineUsers){
-                userCount++;
-            }
-            _this.userCount = userCount;
-        });
-        chatboxSocket.registerCallback('welcome new connection', function (data) {
-            var userCount = 0;
-            for (var onlineUsername in data.onlineUsers){
-                userCount++;
-            }
-            _this.userCount = userCount;
-        });
-
+        this.registerSocketEvents();
     }
 }
 </script>

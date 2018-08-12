@@ -6,9 +6,7 @@
         <div class="socketchatbox-profileArea">
             <center>
                 <img v-bind:src="profileImgSrc" />
-
-                <input class="username" placeholder="Display name" type="text" v-model="username">
-
+                <div class="username">{{username}}</div>
                 <div class="socketchatbox-aboutme-others"></div>
             </center>
         </div>
@@ -27,7 +25,6 @@
     position: absolute;
     color: gray;
     margin-left: 5px;
-
 }
 </style>
 <script>

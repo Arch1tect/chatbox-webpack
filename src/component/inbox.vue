@@ -162,7 +162,7 @@ import chatboxUtils from '../utils.js'
 
 "use strict";
 var LOG_MESSAGE_TIME_AFTER = 5*60*1000 // 5 mins
-const POLL_INTERVAL = 10; // seconds
+const POLL_INTERVAL = 7; // seconds
 export default {
     name: 'inbox-body',
     data () {
@@ -208,7 +208,7 @@ export default {
             }
             friend.selected = true;
             this.selectedFriend = friend;
-            this.setReadFlag(friend, true);
+            this.setReadFlag([friend], true);
         },
         loadChatbotMsg: function () {
             // chatbot welcoming message load without ajax call
@@ -360,12 +360,14 @@ export default {
             // friend marked as unread.
             var i = 0;
             var friend = null;
+            var friends = [];
             for (; i< data.length; i++) {
                 this.lastMsgId = data[i].id;
                 friend = this.processMsg(data[i]);
-                if (setAsUnread) {
-                    this.setReadFlag(friend, false);
-                }
+                friends.push(friend);
+            }
+            if (setAsUnread) {
+                this.setReadFlag(friends, false);
             }
             // If first time polling msg, select the latest conversation, also move it to top 
             // TODO: we have only made sure the latest one conversation is on the top
@@ -373,11 +375,13 @@ export default {
             if (friend) {
                 this.moveFriendToTop(friend);
                 if (this.shouldAutoSelect) {
-                    this.selectFriend(friend);
+                    // delay the auto select to ensure set message unread is finished
+                    var _this = this;
+                    setTimeout(function(){
+                        _this.selectFriend(friend);
+                    }, 1000);
                 }
             }
-            // In the end, always mark already read for selected conversation
-            this.setReadFlag(this.selectedFriend, true);
             return friend;
         },
         getReadFlags: function (callback) {
@@ -389,15 +393,25 @@ export default {
                 callback(alreadyReadFriends);
             });
         },
-        setReadFlag: function (friend, alreadyRead) {
-            friend.unreadMsg = !alreadyRead;
+        setReadFlag: function (friends, alreadyRead) {
+            if (document.hidden) {
+                console.log("won't set read flag on hidden tab")
+                return;
+            }
+
             this.getReadFlags(function(alreadyReadFriends){
-                if (alreadyRead) {
-                    alreadyReadFriends[friend.userId] = 1;
-                } else {
-                    delete alreadyReadFriends[friend.userId];
+                var i = 0; 
+                for (; i< friends.length; i++) {
+                    var friend = friends[i];
+                    friend.unreadMsg = !alreadyRead;
+
+                    if (alreadyRead) {
+                        alreadyReadFriends[friend.userId] = 1;
+                    } else {
+                        delete alreadyReadFriends[friend.userId];
+                    }
+                    chatboxUtils.storage.set('already-read-friends', JSON.stringify(alreadyReadFriends));
                 }
-                chatboxUtils.storage.set('already-read-friends', JSON.stringify(alreadyReadFriends));
             });
         },
         pollMsgFromDB: function (reportStatus) {

@@ -88,19 +88,20 @@ button:disabled, button[disabled]{
 #socketchatbox-aboutme:focus {
     outline: none;
 }
+.socketchatbox-profileArea .username {
+    margin: 0px;
+    margin-top: 15px;
+    margin-bottom: 25px;
+    padding: 5px;
+    text-align: center;
+    font-size: 15px;
+}
 input.username {
     border: none;
     background: none;
     border-bottom: 1px solid lightgray;
     /* border-radius: 3px; */
     display: block;
-    margin: 0px;
-    margin-top: 15px;
-    margin-bottom: 25px;
-    padding: 5px;
-    /* width: 80%; */
-    text-align: center;
-    font-size: 15px;
 }
 input.username:focus{
     outline: none;
@@ -231,19 +232,22 @@ export default {
         save () {
             this.saveName();
             this.saveProfileImg();
+        },
+        init () {
+            // TODO: Had to write below duplicate code to ensure user id has loaded from local storage
+            if (chatboxConfig.userId && chatboxConfig.username) {
+                this.username = chatboxConfig.username;
+                chatboxUtils.tryLoadingProfileImg(this, chatboxConfig.userId);
+            } else {
+                var _this = this;
+                setTimeout(function(){
+                    _this.init();
+                }, 100);
+            }
         }
     },
     created () {
-        // Can't rely on chatboxConfig because chatboxConfig
-        // hasn't loaded from storage, need to read from storage instead
-        this.username = chatboxConfig.username;
-        var _this = this;
-        chatboxUtils.storage.get('username', function (item) {
-            if (item['username']) {
-                _this.username = item['username'];
-            }
-        });
-        chatboxUtils.tryLoadingProfileImg(this, chatboxConfig.userId);
+        this.init();
     }
 }
 
