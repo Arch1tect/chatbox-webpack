@@ -57,7 +57,6 @@
   overflow-y: auto;
   overflow-x: hidden;
 }
-
 .socketchatbox-friend-list {
   width: 25%;
   height: 100%;
@@ -66,7 +65,6 @@
   background: rgba(0, 0, 0, 0.75);
   /*border-right: 1px solid lightgray;*/
   color: white;
-
 }
 .socketchatbox-friend-list img {
     width: 32px;

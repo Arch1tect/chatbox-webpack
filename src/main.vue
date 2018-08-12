@@ -108,7 +108,7 @@ button:focus {
  
 /* Handle */
 .socketchatbox-page ::-webkit-scrollbar-thumb {
-    background: rgba(0,0,0,0.1); 
+    background: #ccc; 
     /*-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); */
 }
 .socketchatbox-page ::-webkit-scrollbar-thumb:window-inactive {
