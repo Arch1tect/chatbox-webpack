@@ -162,7 +162,7 @@ import chatboxUtils from '../utils.js'
 
 "use strict";
 var LOG_MESSAGE_TIME_AFTER = 5*60*1000 // 5 mins
-const POLL_INTERVAL = 100;
+const POLL_INTERVAL = 10; // seconds
 export default {
     name: 'inbox-body',
     data () {
@@ -311,6 +311,7 @@ export default {
             }, POLL_INTERVAL*1000);
         },
         saveMsgToLocal: function (data) {
+            if (!data.length) return;
             // Todo: deep copy or create new simple data
             // since data may be modified when processing
             chatboxUtils.storage.get('chatbox-inbox', function (item) {
@@ -318,7 +319,16 @@ export default {
                 if (item && item['chatbox-inbox']) {
                     messages = JSON.parse(item['chatbox-inbox']);
                 }
-                messages = messages.concat(data);
+                var lastMsgIdInStorage = -1;
+                if (messages.length) {
+                    lastMsgIdInStorage = messages[messages.length-1].id;
+                }
+                var i = 0;
+                for (; i < data.length; i++) {
+                    if (data[i].id > lastMsgIdInStorage) {
+                        messages.push(data[i]);
+                    }
+                }
                 chatboxUtils.storage.set('chatbox-inbox', JSON.stringify(messages));
             });
         },
@@ -380,8 +390,6 @@ export default {
             });
         },
         setReadFlag: function (friend, alreadyRead) {
-            console.log('set read flag');
-            console.log(friend);
             friend.unreadMsg = !alreadyRead;
             this.getReadFlags(function(alreadyReadFriends){
                 if (alreadyRead) {
@@ -397,9 +405,7 @@ export default {
             this.loading = true;
             var _this = this;
             $.get(chatboxConfig.apiUrl + "/db/message/offset/" + this.lastMsgId+"/user/" + chatboxConfig.userId, function(data) {
-                if (data.length) {
-                    _this.saveMsgToLocal(data);
-                }
+                _this.saveMsgToLocal(data);
                 var lastConversationFriend = _this.processMsgInBatch(data, true);
                 var newMsgFromOthersCount = 0;
                 var i = 0;
