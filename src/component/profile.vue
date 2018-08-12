@@ -119,6 +119,7 @@ import Vue from 'vue'
 import chatboxUIState from '../ui-state.js'
 import chatboxConfig from '../config.js'
 import chatboxUtils from '../utils.js'
+import chatboxSocket from '../socket.js'
 
 
 "use strict";
@@ -185,6 +186,7 @@ export default {
                 'uuid': chatboxConfig.userId,
                 'name': this.username
             }
+            chatboxSocket.socket.emit('change name', {username: this.username});
             var _this = this;
             $.post(chatboxConfig.apiUrl + "/db/user/change_name", payload, function(resp) {
                 Vue.notify({

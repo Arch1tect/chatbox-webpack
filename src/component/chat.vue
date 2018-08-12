@@ -218,7 +218,7 @@ export default {
             var i = 0;
             for (; i < this.messages.length; i++) {
                 var msg = this.messages[i];
-                if (msg.isLog) {
+                if (msg.isLog && msg.time) {
                     msg.message = moment(msg.time).fromNow()
                     Vue.set(this.messages, i, msg);
                 }
@@ -346,6 +346,14 @@ export default {
                 url: location.href,
                 referrer: document.referrer
             });
+        });
+        chatboxSocket.registerCallback('name changed', function (data) {
+            var log = {
+                isLog: true,
+                message: data.oldName+' changed name to '+data.username
+            };
+            _this.messages.push(log);
+            _this.scrollToBottomLater();
         });
         chatboxSocket.registerCallback('typing', function (data) {
             _this.addTypingUser(data.username);
