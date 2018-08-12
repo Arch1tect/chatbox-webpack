@@ -360,14 +360,16 @@ export default {
             // friend marked as unread.
             var i = 0;
             var friend = null;
-            var friends = [];
+            var friendsWhoSentMail = [];
             for (; i< data.length; i++) {
                 this.lastMsgId = data[i].id;
                 friend = this.processMsg(data[i]);
-                friends.push(friend);
+                if (data[i].sender !== chatboxConfig.userId) {
+                    friendsWhoSentMail.push(friend);
+                }
             }
             if (setAsUnread) {
-                this.setReadFlag(friends, false);
+                this.setReadFlag(friendsWhoSentMail, false);
             }
             // If first time polling msg, select the latest conversation, also move it to top 
             // TODO: we have only made sure the latest one conversation is on the top
@@ -395,7 +397,6 @@ export default {
         },
         setReadFlag: function (friends, alreadyRead) {
             if (document.hidden) {
-                console.log("won't set read flag on hidden tab")
                 return;
             }
 
