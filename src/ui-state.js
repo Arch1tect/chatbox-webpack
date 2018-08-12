@@ -3,6 +3,6 @@ export default {
     view: 2,
 	// width/height must always be interger rather than string!
 	// Otherwise reisze will fail during calculation
-    width: 350,
+    width: 300,
     height: 350
 }

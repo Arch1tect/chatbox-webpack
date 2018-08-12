@@ -15,7 +15,7 @@
                 </div>
 
                 
-                <input class="username" placeholder="Display name" type="text" v-model="username">
+                <input class="username" placeholder="Display name" maxlength="8" type="text" v-model="username">
                 <textarea v-model="aboutMe" placeholder="Introduce yourself here..." id="socketchatbox-aboutme"></textarea>
             </center>
         </div>

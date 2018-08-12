@@ -195,6 +195,25 @@ export default {
                 }
             }
         },
+        registerUser () {
+            if (chatboxConfig.userId && chatboxConfig.username) {
+                var payload = {
+                    'uuid': chatboxConfig.userId,
+                    'name': chatboxConfig.username
+                }
+                $.post(chatboxConfig.apiUrl + "/db/user/change_name", payload, function(resp) {
+                    Vue.notify({
+                      title: 'Welcome to use chat anywhere!',
+                    });
+                })
+            } else {
+                var _this = this;
+                setTimeout(function () {
+                    _this.registerUser()
+                }, 500);
+            }
+
+        },
         loadConfigFromStorage () {
             console.log('Load config from storage');
             var _this = this;
@@ -203,8 +222,10 @@ export default {
                 if (item['user-id']) {
                     chatboxConfig.userId = item['user-id'];
                 } else {
+                    // 1st time open, also save user in DB
                     chatboxConfig.userId = chatboxUtils.genGuid();
                     chatboxUtils.storage.set('user-id', chatboxConfig.userId);
+                    _this.registerUser();
                 }
             });
             chatboxUtils.storage.get('username', function (item) {
