@@ -257,6 +257,8 @@ export default {
             chatboxSocket.socket.emit('new message', data);
         },
         typing: function (e) {
+            if (this.state.view !== 2) return;
+
             if (e.key == "Enter") {
             chatboxSocket.socket.emit('stop typing', {username: chatboxConfig.username});
             } else {
