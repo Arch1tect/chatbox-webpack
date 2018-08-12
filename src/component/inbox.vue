@@ -101,7 +101,7 @@ border-radius: 50%;
     margin-left: 5px;
 }
 .friendnameWrapper {
-    padding-top: 5px;
+    padding-top: 10px;
     padding-bottom: 5px;
     cursor: pointer;
 }
@@ -140,7 +140,7 @@ message object:
 friend object:
 {
     name: 'chat bot',
-    id: 'chat-bot-id',
+    userId: 'chat-bot-id',
     selected: false,
 }
 
@@ -162,7 +162,7 @@ import chatboxUtils from '../utils.js'
 
 "use strict";
 var LOG_MESSAGE_TIME_AFTER = 5*60*1000 // 5 mins
-const PULL_INTERVAL = 100;
+const POLL_INTERVAL = 100;
 export default {
     name: 'inbox-body',
     data () {
@@ -175,6 +175,7 @@ export default {
             selectedFriend: null,
             chatbotFriend: null,
             friends: [],
+            shouldAutoSelect: true,
             // track latest msg user received regardless of which friend it's from
             lastMsgId: -1
         }
@@ -206,15 +207,17 @@ export default {
                     this.friends[i].selected = false;
             }
             friend.selected = true;
-            friend.unreadMsg = false;
             this.selectedFriend = friend;
+            this.setReadFlag(friend, true);
         },
         loadChatbotMsg: function () {
+            // chatbot welcoming message load without ajax call
+            // set it as default selected friend so we don't
+            // need to hide input bar
             var i = 0;
             for (; i < welcomeMessagesFromChatbot.length; i++) {
                 this.chatbotFriend = this.processMsg(welcomeMessagesFromChatbot[i]);
             }
-            this.chatbotFriend.unreadMsg = false;
             this.selectFriend(this.chatbotFriend);
         },
         loadTestData: function () {
@@ -231,6 +234,11 @@ export default {
                 data.renderType = 'text';
                 data.message = chatboxUtils.addClassToEmoji(data.message);
             }
+        },
+        moveFriendToTop: function (friend) {
+            var index = this.friends.indexOf(friend);
+            this.friends.splice(index, 1);
+            this.friends.unshift(friend);
         },
         addFriend: function (friend) {
             this.friendDict[friend.userId] = friend;
@@ -250,7 +258,6 @@ export default {
             } else {
                 friend = this.buildFriendObj(data.sender, data.sendername);
             }
-
             // Figure out if need to log time before pushing message itself
             var messageTime = moment.utc(data.create_time);
             var log = {
@@ -265,7 +272,6 @@ export default {
                     lastMsg = conversation[conversation.length-1];
                 // important: use existing friend obj in friendDict
                 friend = this.friendDict[friend.userId];
-
                 // determine if need to log time
                 var curMsgTime = moment(data.create_time);
                 if (!lastMsg || messageTime.diff(moment.utc(lastMsg.create_time))  > LOG_MESSAGE_TIME_AFTER) {
@@ -289,39 +295,119 @@ export default {
                 'message': msg
             }
             $.post(chatboxConfig.apiUrl + "/db/message", payload, function(resp) {
-                _this.pullMsgFromDB();
+                _this.pollMsgFromDB();
             });
         },
         userClickRefresh: function () {
-            this.pullMsgFromDB(true);
+            this.pollMsgFromDB(true);
         },
-        keepPulling: function () {
+        keepPolling: function () {
             var _this = this;
-            _this.pullMsgFromDB();
+            _this.pollMsgFromDB();
             // Note that the code below doesn't care if the ajax
             // call finish or success or fail
             setTimeout(function(){
-                _this.keepPulling();
-            }, PULL_INTERVAL*1000);
+                _this.keepPolling();
+            }, POLL_INTERVAL*1000);
         },
-        pullMsgFromDB: function (reportStatus) {
-            // console.log('start pulling from db');
+        saveMsgToLocal: function (data) {
+            // Todo: deep copy or create new simple data
+            // since data may be modified when processing
+            chatboxUtils.storage.get('chatbox-inbox', function (item) {
+                var messages = [];
+                if (item && item['chatbox-inbox']) {
+                    messages = JSON.parse(item['chatbox-inbox']);
+                }
+                messages = messages.concat(data);
+                chatboxUtils.storage.set('chatbox-inbox', JSON.stringify(messages));
+            });
+        },
+        checkLocalMsgThenLongPollFromDB: function () {
+            // Must read from local then poll DB to avoid duplicate
+            // This is done by updating last msg id
+            var _this = this;
+            chatboxUtils.storage.get('chatbox-inbox',function(item) {
+                if (item && item['chatbox-inbox']) {
+                    var messages = JSON.parse(item['chatbox-inbox']);
+                    _this.processMsgInBatch(messages);
+                }
+                _this.getReadFlags(function(alreadyReadFriends) {
+                    var i = 0;
+                    for (; i < _this.friends.length; i++) {
+                        var friend = _this.friends[i];
+                        if (friend.userId in alreadyReadFriends) {
+                            friend.unreadMsg = false;
+                            console.log('friend '+friend.userId+' aready read');
+                        }
+                    }
+                });
+                _this.keepPolling();
+            });
+        },
+        processMsgInBatch: function (data, setAsUnread) {
+            // Generic logic, used by real poll from DB
+            // and reading from local storage
+            // friend marked as unread.
+            var i = 0;
+            var friend = null;
+            for (; i< data.length; i++) {
+                this.lastMsgId = data[i].id;
+                friend = this.processMsg(data[i]);
+                if (setAsUnread) {
+                    this.setReadFlag(friend, false);
+                }
+            }
+            // If first time polling msg, select the latest conversation, also move it to top 
+            // TODO: we have only made sure the latest one conversation is on the top
+            // Ideally entire friend list should be sorted by last conversation desc
+            if (friend) {
+                this.moveFriendToTop(friend);
+                if (this.shouldAutoSelect) {
+                    this.selectFriend(friend);
+                }
+            }
+            // In the end, always mark already read for selected conversation
+            this.setReadFlag(this.selectedFriend, true);
+            return friend;
+        },
+        getReadFlags: function (callback) {
+            chatboxUtils.storage.get('already-read-friends', function (item) {
+                var alreadyReadFriends = {};
+                if (item && item['already-read-friends']) {
+                    alreadyReadFriends = JSON.parse(item['already-read-friends']);
+                }
+                callback(alreadyReadFriends);
+            });
+        },
+        setReadFlag: function (friend, alreadyRead) {
+            console.log('set read flag');
+            console.log(friend);
+            friend.unreadMsg = !alreadyRead;
+            this.getReadFlags(function(alreadyReadFriends){
+                if (alreadyRead) {
+                    alreadyReadFriends[friend.userId] = 1;
+                } else {
+                    delete alreadyReadFriends[friend.userId];
+                }
+                chatboxUtils.storage.set('already-read-friends', JSON.stringify(alreadyReadFriends));
+            });
+        },
+        pollMsgFromDB: function (reportStatus) {
+            // console.log('start polling from db');
             this.loading = true;
             var _this = this;
-            $.get(chatboxConfig.apiUrl + "/db/message/offset/" + this.lastMsgId+"/user/" + chatboxConfig.userId, function(data, status) {
-                // TODO: last message first so recent conversation on top
+            $.get(chatboxConfig.apiUrl + "/db/message/offset/" + this.lastMsgId+"/user/" + chatboxConfig.userId, function(data) {
+                if (data.length) {
+                    _this.saveMsgToLocal(data);
+                }
+                var lastConversationFriend = _this.processMsgInBatch(data, true);
                 var newMsgFromOthersCount = 0;
                 var i = 0;
                 for (; i < data.length; i++) {
-                    if (data[i].sender != chatboxConfig.userId)
+                    if (data[i].sender != chatboxConfig.userId) {
                         newMsgFromOthersCount ++;
-                    _this.lastMsgId = data[i].id;
-                    var friend = _this.processMsg(data[i]);
-                    // Mark friend has unread message unless friend is being selected
-                    if (!(_this.selectedFriend && _this.selectedFriend.userId == friend.userId))
-                        friend.unreadMsg = true;
+                    }
                 }
-
                 var noty = "No new message";
                 if (newMsgFromOthersCount) {
                     noty = 'Received '+ newMsgFromOthersCount + ' new message';
@@ -340,6 +426,9 @@ export default {
                 }
             }).always(function(){
                 _this.loading = false;
+                // auto select only happens when chatbox just load
+                // that includes loading from cache and first call to DB
+                _this.shouldAutoSelect = false;
             });
         },
         scrollToBottom: function () {
@@ -380,7 +469,7 @@ export default {
         this.loadChatbotMsg();
         if (chatboxConfig.testing)
             this.loadTestData();
-        this.keepPulling();
+        this.checkLocalMsgThenLongPollFromDB();
     }
 }
 function sortByMsgId(a, b) {

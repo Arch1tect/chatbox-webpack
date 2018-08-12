@@ -195,10 +195,18 @@ export default {
                 }
             }
         },
-        loadConfig () {
+        loadConfigFromStorage () {
             console.log('Load config from storage');
             var _this = this;
             // load data from local storage / chrome storage
+            chatboxUtils.storage.get('user-id', function (item) {
+                if (item['user-id']) {
+                    chatboxConfig.userId = item['user-id'];
+                } else {
+                    chatboxConfig.userId = chatboxUtils.genGuid();
+                    chatboxUtils.storage.set('user-id', chatboxConfig.userId);
+                }
+            });
             chatboxUtils.storage.get('username', function (item) {
                 if (item['username'])
                     chatboxConfig.username = item['username'];
@@ -271,8 +279,10 @@ export default {
         }
     },
     created () {
-        chatboxConfig.location = location.search.substring(1);
-        this.loadConfig();
+        if (chatboxConfig.detectLocation) {
+            chatboxConfig.location = location.search.substring(1);
+        }
+        this.loadConfigFromStorage();
         if (chatboxUtils.runningExtension) {
             this.listenToExtension();
         }
