@@ -22,7 +22,7 @@
           </div>
         </emoji-picker>
 
-        <input autoFocus ref="chatInput" v-model="content"  v-on:keyup.enter="sendInput" class="socketchatbox-inputMessage" v-bind:placeholder="InputPlaceHolder"/>
+        <input autoFocus ref="chatInput" v-model="content"  v-on:keyup.enter="sendInput" @keyup="typing" class="socketchatbox-inputMessage" v-bind:placeholder="InputPlaceHolder"/>
         <label v-show="state.view==2" data-toggle="tooltip" title='Send image or file' data-placement="left" id='socketchatbox-sendFileBtn' for = "socketchatbox-sendMedia">
             <font-awesome-icon icon="paperclip" style="width: 100%;height: 100%;"/>
             <input @change="sendFile" id="socketchatbox-sendMedia" type="file" style="display:none;">
@@ -255,6 +255,13 @@ export default {
             data.username = chatboxConfig.username;
             data.msg = msg; //need to clean input!
             chatboxSocket.socket.emit('new message', data);
+        },
+        typing: function (e) {
+            if (e.key == "Enter") {
+            chatboxSocket.socket.emit('stop typing', {username: chatboxConfig.username});
+            } else {
+                chatboxSocket.socket.emit('typing', {username: chatboxConfig.username});
+            }
         },
         sendInput: function () {
             // Fired when enter key pressed, handle differently depending on

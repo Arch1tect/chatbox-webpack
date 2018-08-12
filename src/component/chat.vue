@@ -293,7 +293,6 @@ export default {
         },
         // Add typing user, auto remove after centain amount of time
         addTypingUser: function (username) {
-            // username+=Math.random();
             if (username === chatboxConfig.username) return;
 
             if (username in typingUserDict) {
@@ -352,6 +351,7 @@ export default {
             _this.addTypingUser(data.username);
         });
         chatboxSocket.registerCallback('stop typing', function (data) {
+            console.log('remove typing ' + data.username)
             _this.removeTypingUser(data.username);
         });
         // Whenever the server emits 'new message', update the chat body
