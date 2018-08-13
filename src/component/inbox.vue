@@ -465,7 +465,9 @@ export default {
                 this.addFriend(friend);
                 this.messageDict[userId] = [];
             }
-            this.selectFriend(friend);
+            if (!friend.selected) {
+                this.selectFriend(friend);
+            }
         }
     },
     watch: {
