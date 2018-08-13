@@ -197,8 +197,10 @@ export default {
             return friend;
         },
         selectFriend: function (friend) {
-            if (friend.selected)
+            if (friend.selected) {
+                this.viewProfile();
                 return;
+            }
             var i=0;
             for (; i < this.friends.length; i++) {
                 if (this.friends[i].selected)
