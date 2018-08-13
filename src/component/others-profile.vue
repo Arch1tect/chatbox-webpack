@@ -7,7 +7,7 @@
             <center>
                 <img v-bind:src="profileImgSrc" />
                 <div class="username">{{username}}</div>
-                <div class="socketchatbox-aboutme-others"></div>
+                <div class="socketchatbox-aboutme">{{aboutMe}}</div>
             </center>
         </div>
 
@@ -18,6 +18,13 @@
     </div>
 </template>
 <style>
+.socketchatbox-aboutme-others {
+    margin: 30px;
+    margin-top: 20px;
+    margin-bottom: 50px;
+    text-align: left;
+    line-height: 1.5;
+}
 .leave-others-profile {
     display: block;
     margin-top: -3px;
@@ -46,7 +53,8 @@ export default {
             title: titleStr,
             profileImgSrc: '',
             aboutMe: '',
-            user_id: '',
+            userId: '',
+            joinDate: null,
             username: 'No name',
             prevView: 1
 
@@ -54,20 +62,44 @@ export default {
     },
     methods: {
         message () {
-            chatboxUtils.goToMessage(this.user_id, this.username);
+            chatboxUtils.goToMessage(this.userId, this.username);
         },
-        viewOthersProfile (view, user_id, username) {
+        loadUserInfoFromDB () {
+            var _this = this;
+            $.get(chatbox.apiUrl + "/db/user/" + this.userId).done(function(resp) {
+                if (!resp.length) {
+                    Vue.notify({
+                      title: 'User not found',
+                      type: 'error'
+                    });
+                    return;
+                }
+                var user = resp[0];
+                _this.username = user.name;
+                _this.aboutMe = user.about;
+                _this.joinDate = user.create_time;
+
+            }).fail(function() {
+                Vue.notify({
+                  title: 'Failed to load profile',
+                  type: 'error'
+                });
+            }).always(function(){
+            });
+        },
+        viewOthersProfile (view, userId, username) {
             // User may clicked on their own msg
-            if (user_id == chatboxConfig.userId) {
+            if (userId == chatboxConfig.userId) {
                 this.state.view = 0;
                 return;
             }
             this.prevView = view;
             this.state.view = -1;
             this.username = username;
-            this.user_id = user_id
+            this.userId = userId
             this.title = username + "'s profile";
-            chatboxUtils.tryLoadingProfileImg(this, user_id);
+            chatboxUtils.tryLoadingProfileImg(this, userId);
+            this.loadUserInfoFromDB();
         }
     },
     created () {

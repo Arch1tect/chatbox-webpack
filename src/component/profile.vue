@@ -15,12 +15,12 @@
                 </div>
 
                 
-                <input class="username" placeholder="Display name" maxlength="8" type="text" v-model="username">
-                <textarea v-model="aboutMe" placeholder="Introduce yourself here..." id="socketchatbox-aboutme"></textarea>
+                <input class="username" placeholder="Display name" maxlength="10" type="text" v-model="username">
+                <textarea v-model="aboutMe" placeholder="Introduce yourself here..." class="socketchatbox-aboutme"></textarea>
             </center>
         </div>
 
-    <button :disabled="disableSave" @click="save" class="socketchatbox-bottom-btn-wrapper">
+    <button :disabled="!canSave" @click="save" class="socketchatbox-bottom-btn-wrapper">
         <span>{{saveStr}}</span>
     </button>
 
@@ -74,18 +74,19 @@ button:disabled, button[disabled]{
     overflow-x: hidden;
 
 }
-#socketchatbox-aboutme {
+.socketchatbox-aboutme {
     padding: 5px;
     width:80%;
     height: 100px;
     resize: none;
-        background: none;
-
+    background: none;
     border: 1px solid lightgray;
     border-radius: 5px;
     margin-bottom: 30px;
+    text-align: left;
+    line-height: 1.5;
 }
-#socketchatbox-aboutme:focus {
+.socketchatbox-aboutme:focus {
     outline: none;
 }
 .socketchatbox-profileArea .username {
@@ -95,11 +96,12 @@ button:disabled, button[disabled]{
     padding: 5px;
     text-align: center;
     font-size: 15px;
+    width: 150px;
+    border: none;
+    border-bottom: 1px solid lightgray;
 }
 input.username {
-    border: none;
     background: none;
-    border-bottom: 1px solid lightgray;
     /* border-radius: 3px; */
     display: block;
 }
@@ -137,7 +139,8 @@ export default {
             aboutMe: '',
             username: 'No name',
             savingName: false,
-            savingImg: false
+            savingImg: false,
+            savingAboutMe: false
         }
     },
     computed: {
@@ -150,9 +153,14 @@ export default {
             else
                 return 'Save';
         },
-        disableSave: function () {
-            return this.username == this.chatbox.username &&
-            !this.imgFile || this.savingName || this.savingImg;
+        canSave: function () {
+            var saving = this.savingName || this.savingImg;
+            if (saving) return false;
+            var profileImgUpdated = this.imgFile;
+            var nameUpdated = this.username !== this.chatbox.username;
+            var aboutUpdated = this.aboutMe !== chatboxConfig.aboutMe;
+
+            return profileImgUpdated || nameUpdated || aboutUpdated;
         }
     },
     methods: {
@@ -202,6 +210,31 @@ export default {
                 _this.savingName = false;
             });
         },
+        saveAboutMe () {
+            if (this.aboutMe == this.chatbox.aboutMe) {
+                return;
+            }
+            this.savingAboutMe = true;
+            this.chatbox.aboutMe = this.aboutMe;
+            chatboxUtils.storage.set('about-me', this.aboutMe);
+            var payload = {
+                'uuid': chatboxConfig.userId,
+                'aboutMe': this.aboutMe
+            }
+            var _this = this;
+            $.post(chatboxConfig.apiUrl + "/db/user/change_about_me", payload, function(resp) {
+                Vue.notify({
+                  title: 'Introduction saved!',
+                });
+            }).fail(function () {
+                Vue.notify({
+                  title: 'Failed to save introduction',
+                  type: 'error'
+                });
+            }).always(function(){
+                _this.savingAboutMe = false;
+            });
+        },
         saveProfileImg () {
             if (!this.imgFile) return;
             this.savingImg = true;
@@ -232,9 +265,10 @@ export default {
         save () {
             this.saveName();
             this.saveProfileImg();
+            this.saveAboutMe();
         },
         init () {
-            // TODO: Had to write below duplicate code to ensure user id has loaded from local storage
+            // TODO: Had to write below duplicate code to ensure user id has been loaded from local storage
             if (chatboxConfig.userId && chatboxConfig.username) {
                 this.username = chatboxConfig.username;
                 chatboxUtils.tryLoadingProfileImg(this, chatboxConfig.userId);
@@ -248,6 +282,11 @@ export default {
     },
     created () {
         this.init();
+        var _this = this;
+        chatboxUtils.storage.get('about-me', function(item){
+            _this.aboutMe = item['about-me'];
+            chatboxConfig.aboutMe = _this.aboutMe;
+        })
     }
 }
 
