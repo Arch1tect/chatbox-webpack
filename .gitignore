@@ -20,3 +20,5 @@ chrome-extension/chatbox-only/build.js
 chrome-extension/chatbox-only/build.js
 
 chrome-extension/chatbox-only/build.js.map
+
+*.zip
