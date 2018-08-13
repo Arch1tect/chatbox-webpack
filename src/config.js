@@ -23,7 +23,7 @@ export default {
 	apiUrl : apiUrl,
 	s3Url: 'https://s3.amazonaws.com/chat.anywhere.user.img/',
 	chatbot : {
-		name: 'chat bot',
+		name: 'Chat Bot',
 		userId: 'chat-bot-id'
 	}
 }
