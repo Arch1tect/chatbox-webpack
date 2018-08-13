@@ -78,6 +78,7 @@ export default {
                 _this.username = user.name;
                 _this.aboutMe = user.about;
                 _this.joinDate = user.create_time;
+                _this.title = user.name + "'s profile";
 
             }).fail(function() {
                 Vue.notify({
