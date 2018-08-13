@@ -131,6 +131,6 @@ var testDanmu = [
     }
 
 ]
-waitlist = testDanmu;
+// waitlist = testDanmu;
 checkDanmu();
 })();
