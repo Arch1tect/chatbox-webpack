@@ -1,6 +1,6 @@
 <template>
     <div v-on:click.self="toggleChatbox" v-bind:class="{ mini: state.display == 'mini' }" id='socketchatbox-top'>
-        <span data-toggle="tooltip" data-placement="bottom" title='User in this room' id='socketchatbox-online-usercount' class='badge'>{{userCount}}
+        <span v-on:click="toggleOnlineUsers" data-toggle="tooltip" data-placement="bottom" title='Users on this page' id='socketchatbox-online-usercount' class='badge'>{{socket.userCount}}
         </span>
         <div v-cloak v-show="state.display == 'full'" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-username'>{{config.username}}</div>
         <span v-show="state.display == 'full'" id='topbar-options' class='float-right'>
@@ -87,23 +87,6 @@
     border-radius: 10px;
 }
 
-.socketchatbox-onlineusers {
-  background: rgba(77, 172, 255, 0.8);
-  outline: 1px solid rgba(77, 172, 255, 0.8);
-  padding: 5px;
-  width: 100%;
-  position: absolute;
-  display: none;
-  z-index: 1;
-}
-
-.socketchatbox-onlineusers span{
-
-  display: inline-block;
-  padding: 5px;
-  color: #FFF;
-}
-
 #socketchatbox-top {
   min-width: 100px;
   cursor: pointer;
@@ -111,6 +94,10 @@
   background: rgba(0, 0, 0, 0.75);
   padding-left: 10px;
   line-height: 30px;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 #socketchatbox-top.mini {
@@ -136,6 +123,14 @@ export default {
         }
     },
     methods: {
+        toggleOnlineUsers: function () {
+            if (this.state.view != 2) {
+                this.state.view = 2;
+                this.state.showOnlineUsers = true;
+            } else {
+                this.state.showOnlineUsers = !this.state.showOnlineUsers;
+            }
+        },
         toggleChatbox: function () {
             if (this.state.display == 'mini') {
                 this.state.display = 'full';
@@ -152,42 +147,10 @@ export default {
             // duplicate function in main.vue, should be the same
             this.state.display = 'hidden';
             chatboxUtils.updateIframeSize('close');
-        },
-        registerSocketEvents: function () {
-            var _this = this;
-            if (chatboxSocket.socket) {
-                chatboxSocket.registerCallback(chatboxSocket.socket, 'user joined', function (data) {
-                  console.log('user joined');
-                  console.log(data);
-                  // _this.userCount = data.numUsers;
-                });
-                chatboxSocket.registerCallback(chatboxSocket.socket, 'user left', function (data) {
-                  // _this.userCount = data.numUsers;
-                });
-                chatboxSocket.registerCallback(chatboxSocket.socket, 'welcome new user', function (data) {
-                  var userCount = 0;
-                  for (var onlineUsername in data.onlineUsers){
-                      userCount++;
-                  }
-                  _this.userCount = userCount;
-                });
-                chatboxSocket.registerCallback(chatboxSocket.socket, 'welcome new connection', function (data) {
-                  var userCount = 0;
-                  for (var onlineUsername in data.onlineUsers){
-                      userCount++;
-                  }
-                  _this.userCount = userCount;
-                });
-            } else {
-                setTimeout(function () {
-                    _this.registerSocketEvents();
-                }, 500);
-            }
         }
 
     },
     created () {
-        this.registerSocketEvents();
     }
 }
 </script>

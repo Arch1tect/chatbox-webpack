@@ -56,6 +56,10 @@ export default {
     methods: {
         submit: function () {
             // TODO: disable button and show loading when waiting for ajax to finish
+            if (this.comment === '') {
+                this.$modal.hide('comment-modal');
+                return;
+            }
             var _this = this;
             var payload = {
                 'user_id': chatboxConfig.userId,

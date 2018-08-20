@@ -13,6 +13,7 @@ import inputBar from './component/input-bar.vue'
 import comment from './component/comment.vue'
 import profile from './component/profile.vue'
 import othersProfile from './component/others-profile.vue'
+import onlineUsers from './component/online-users.vue'
 
 Vue.component('top-bar', topBar);
 Vue.component('chat-body', chat);
@@ -21,6 +22,7 @@ Vue.component('comment-body', comment);
 Vue.component('profile-body', profile);
 Vue.component('others-profile', othersProfile);
 Vue.component('input-bar', inputBar);
+Vue.component('online-users', onlineUsers);
 
 // fontawesome start
 import { library } from '@fortawesome/fontawesome-svg-core'
