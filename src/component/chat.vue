@@ -1,10 +1,11 @@
 <template>
     <div v-show="state.view==2">
+        <div class="onlineUsersWrapper"><online-users></online-users></div>
+
         <div id="socketchatbox-chatroom-title" class="socketchatbox-page-title">
 <!--             <font-awesome-icon icon="sync-alt" title='Re-enter chatroom' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-refresh' /> -->
             <span id="socketchatbox-chatroom-url" data-toggle="tooltip" data-placement="bottom">{{chatboxConfig.location}}</span>
         </div>
-        <online-users></online-users>
         <div ref="chatArea" class="socketchatbox-chatArea">
             <div class="socketchatbox-messages">
 
@@ -360,7 +361,8 @@ export default {
                 chatboxSocket.socket.emit('login', {
                     username: chatboxConfig.username,
                     userId: chatboxConfig.userId,
-                    roomId: chatboxConfig.location
+                    roomId: chatboxConfig.location,
+                    version: chatboxConfig.version
                 });
             });
             chatboxSocket.registerCallback('name changed', function (data) {

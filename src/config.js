@@ -1,7 +1,7 @@
 "use strict";
 
-var localSocketServer = true;
-var localInboxServer = true;
+var localSocketServer = false;
+var localInboxServer = false;
 var socketUrl = 'https://quotime.me'
 var apiUrl = socketUrl;
 
@@ -14,6 +14,7 @@ if (localInboxServer) {
 
 export default {
 	// testing: true,
+	version: '1.1.2',
 	detectLocation: true,
 	location: 'https://www.youtube.com/',
 	userId: null,
