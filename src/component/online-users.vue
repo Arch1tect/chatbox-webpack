@@ -21,7 +21,7 @@
 
 /* Handle */
 .onlineUsersWrapper ::-webkit-scrollbar-thumb {
-    background: #0189fe ; 
+    /*background: #0189fe ; */
 }
 
 .socketchatbox-onlineusers .onlineUser {
