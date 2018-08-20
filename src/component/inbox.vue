@@ -347,7 +347,6 @@ export default {
                         var friend = _this.friends[i];
                         if (friend.userId in alreadyReadFriends) {
                             friend.unreadMsg = false;
-                            console.log('friend '+friend.userId+' aready read');
                         }
                     }
                 });

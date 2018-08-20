@@ -2,9 +2,9 @@
 
 var CHATBOX_ELEMENT_ID = 'chatbox-iframe';
 var CHATBOX_FRAME_SRC = 'chatbox-frame.html';
-var chatboxCreated = false;
 var chatboxIFrame;
 var chatboxLeft = 0;
+var locationHref = location.href;
 
 var runningExtension = false;
 if (typeof(chrome) !== 'undefined' && chrome.extension)
@@ -12,17 +12,24 @@ if (typeof(chrome) !== 'undefined' && chrome.extension)
 
 function createChatboxIframe() {
     console.log('creating chatbox iframe');
-    if (!chatboxCreated) {
-        chatboxIFrame  = document.createElement ("iframe");
-        if (runningExtension)
-            chatboxIFrame.src = chrome.extension.getURL('chatbox-only/'+CHATBOX_FRAME_SRC);
-        else
-            chatboxIFrame.src = CHATBOX_FRAME_SRC;
-        chatboxIFrame.src +=  "?"+location.href;
-        chatboxIFrame.id = CHATBOX_ELEMENT_ID;
-        document.body.insertBefore(chatboxIFrame, document.body.firstChild);
-        chatboxCreated = true;
+    chatboxIFrame  = document.createElement ("iframe");
+    window.chatboxIFrame = chatboxIFrame;
+    if (runningExtension)
+        chatboxIFrame.src = chrome.extension.getURL('chatbox-only/'+CHATBOX_FRAME_SRC);
+    else
+        chatboxIFrame.src = CHATBOX_FRAME_SRC;
+    chatboxIFrame.src +=  "?"+location.href;
+    chatboxIFrame.id = CHATBOX_ELEMENT_ID;
+    document.body.insertBefore(chatboxIFrame, document.body.firstChild);
+}
+
+function checkLocationChange() {
+    if (location.href !== locationHref) {
+        locationHref = location.href;
+        chatboxIFrame.parentNode.removeChild(chatboxIFrame);
+        createChatboxIframe();
     }
+    setTimeout(function(){checkLocationChange()}, 5*1000);
 }
 
 function resizeIFrameToFitContent(e) {
@@ -79,4 +86,5 @@ function fitChatboxIframe (msg) {
 window.addEventListener("message", resizeIFrameToFitContent, false);
 
 createChatboxIframe(); // always create the chatbox and make connections, if user don't want it, he can disable the extension
+checkLocationChange();
 })();

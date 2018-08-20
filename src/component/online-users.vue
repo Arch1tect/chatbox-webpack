@@ -1,13 +1,14 @@
 <template>
-    <div v-show="state.showOnlineUsers" class="socketchatbox-onlineusers">
+    <center v-show="state.showOnlineUsers" class="socketchatbox-onlineusers">
         <span class="onlineUser" v-for="user in onlineUsers" @click="viewUser(user)"><center><img v-bind:title="user.username" v-bind:src="user.profileImgSrc" /></center></span>
         <center v-if="onlineUsers.length==0">No user on this page</center>
-    </div>
+    </center>
 </template>
 <style>
 .socketchatbox-onlineusers {
-    background: rgb(74, 171, 255);
-    color: white;
+    background: white;
+    /*background: rgb(74, 171, 255);*/
+    /*color: white;*/
     width: 100%;
     min-height: 30px;
     max-height: 50%;
