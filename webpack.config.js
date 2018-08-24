@@ -52,7 +52,7 @@ module.exports = {
   },
   devServer: {
     historyApiFallback: true,
-    contentBase: path.join(__dirname, 'chrome-extension/chatbox-only'),
+    contentBase: path.join(__dirname, 'chrome-extension'),
     noInfo: true,
     overlay: true
   },

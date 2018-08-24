@@ -5,7 +5,6 @@
   "permissions": ["activeTab", "storage", "unlimitedStorage"],
   "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
-    "exclude_matches": ["http://localhost/*"],
     "js": ["chatbox-only/content.js","chatbox-only/danmu.js"],
     "css": ["chatbox-only/content.css"]
   }],

@@ -118,7 +118,7 @@ export default {
                     _this.lastCommentId = data.id;
                     data.content = chatboxUtils.addClassToEmoji(data.content);
                     _this.messages.push(data);
-                    chatboxUtils.queueDanmu(data);
+                    // chatboxUtils.queueDanmu(data);
                 }
                 Vue.nextTick(function(){
                     _this.scrollToBottom();
