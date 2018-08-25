@@ -52,9 +52,7 @@ module.exports = {
     extensions: ['*', '.js', '.vue', '.json']
   },
   devServer: {
-    historyApiFallback: {
-      index: path.join(__dirname,'chrome-extension/index.html')
-    },
+    historyApiFallback: true,
     contentBase: path.join(__dirname, 'chrome-extension'),
     watchContentBase: true,
     noInfo: true,
@@ -67,7 +65,7 @@ module.exports = {
 }
 
 if (process.env.NODE_ENV === 'production') {
-  // module.exports.devtool = '#source-map'
+  module.exports.devtool = '#source-map'
   // http://vue-loader.vuejs.org/en/workflow/production.html
   module.exports.plugins = (module.exports.plugins || []).concat([
     new webpack.DefinePlugin({
@@ -76,14 +74,14 @@ if (process.env.NODE_ENV === 'production') {
       }
     }),
     // TODO: maybe no sourceMap?
-    // new webpack.optimize.UglifyJsPlugin({
-    //   sourceMap: true,
-    //   compress: {
-    //     warnings: false
-    //   }
-    // }),
-    // new webpack.LoaderOptionsPlugin({
-    //   minimize: true
-    // })
+    new webpack.optimize.UglifyJsPlugin({
+      sourceMap: false,
+      compress: {
+        warnings: false
+      }
+    }),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true
+    })
   ])
 }

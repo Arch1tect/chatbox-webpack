@@ -318,12 +318,15 @@ export default {
             _this.resizing(e);
         })
 
-        // Safari doesn't display 
-        setTimeout(function(){
-            console.log('refresh chatbox for safari');
-            chatboxUIState.display = "hidden";
-            setTimeout(function(){chatboxUIState.display = "mini";}, 100);
-        }, 2000);
+        if (!chatboxUtils.runningExtension) {
+            // Safari doesn't display 
+            setTimeout(function(){
+
+                console.log('refresh chatbox for safari');
+                chatboxUIState.display = "hidden";
+                setTimeout(function(){chatboxUIState.display = "mini";}, 100);
+            }, 2000);
+        }
 
     }
 }
