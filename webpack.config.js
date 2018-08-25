@@ -7,6 +7,7 @@ module.exports = {
     path: path.resolve(__dirname, './chrome-extension/chatbox-only'),
     filename: 'build.js'
   },
+  watch: true,
   plugins: [
     new webpack.ProvidePlugin({
       $: "jquery",
@@ -51,8 +52,11 @@ module.exports = {
     extensions: ['*', '.js', '.vue', '.json']
   },
   devServer: {
-    historyApiFallback: true,
+    historyApiFallback: {
+      index: path.join(__dirname,'chrome-extension/index.html')
+    },
     contentBase: path.join(__dirname, 'chrome-extension'),
+    watchContentBase: true,
     noInfo: true,
     overlay: true
   },
@@ -63,7 +67,7 @@ module.exports = {
 }
 
 if (process.env.NODE_ENV === 'production') {
-  module.exports.devtool = '#source-map'
+  // module.exports.devtool = '#source-map'
   // http://vue-loader.vuejs.org/en/workflow/production.html
   module.exports.plugins = (module.exports.plugins || []).concat([
     new webpack.DefinePlugin({
@@ -72,14 +76,14 @@ if (process.env.NODE_ENV === 'production') {
       }
     }),
     // TODO: maybe no sourceMap?
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-      compress: {
-        warnings: false
-      }
-    }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
-    })
+    // new webpack.optimize.UglifyJsPlugin({
+    //   sourceMap: true,
+    //   compress: {
+    //     warnings: false
+    //   }
+    // }),
+    // new webpack.LoaderOptionsPlugin({
+    //   minimize: true
+    // })
   ])
 }

@@ -62,12 +62,12 @@ button:focus {
     border: 1px solid lightgray;
     position: fixed;
     bottom:0px;
-    box-shadow: 15px 15px 5px rgba(0, 0, 0, 0.3);
     font-family:Arial,Helvetica,sans-serif;
     font-size:12px;
     line-height: 1;
     z-index: 2147483646;
     text-align: left;
+    box-shadow: 15px 15px 5px rgba(0, 0, 0, 0.3);
 }
 .socketchatbox-page * {
     box-sizing: border-box;
@@ -317,6 +317,14 @@ export default {
         $(document).mousemove(function(e){
             _this.resizing(e);
         })
+
+        // Safari doesn't display 
+        setTimeout(function(){
+            console.log('refresh chatbox for safari');
+            chatboxUIState.display = "hidden";
+            setTimeout(function(){chatboxUIState.display = "mini";}, 100);
+        }, 2000);
+
     }
 }
 </script>
