@@ -68,10 +68,10 @@ export default {
         window.parent.postMessage(danmuMsg, "*");
     },
     storage: storage,
-    tryLoadingProfileImg: function (obj, user_id) {
+    tryLoadingProfileImg: function (obj, userId) {
         // TODO: implement cache and bust cache image
         obj.profileImgSrc = 'profile-empty.png';
-        var src = chatboxConfig.s3Url+user_id+'.jpg?v=';
+        var src = chatboxConfig.s3Url+userId+'.jpg?v=';
         $("<img/>").on('load', function() {
             obj.profileImgSrc = src;
          }).on('error', function() {
