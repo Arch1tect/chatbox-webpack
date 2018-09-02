@@ -4,7 +4,8 @@ var CHATBOX_FRAME_SRC = 'chatbox-only/chatbox-frame.html';
 var chatboxIFrame;
 var chatboxLeft = 0;
 var locationHref = location.href;
-var created = false
+var created = false;
+var localChatboxExists = false;
 
 var runningExtension = false;
 if (typeof(chrome) !== 'undefined' && chrome.extension)
@@ -17,6 +18,7 @@ function createChatboxIframe() {
     // check if there is already chatbox created
     if (document.getElementById(CHATBOX_ELEMENT_ID)) {
         if (runningExtension) {
+            localChatboxExists = true;
             console.log('chatbox local exists');
         } else {
             console.log('chatbox extension exists');
