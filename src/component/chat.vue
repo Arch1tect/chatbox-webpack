@@ -362,6 +362,7 @@ export default {
                     username: chatboxConfig.username,
                     userId: chatboxConfig.userId,
                     roomId: chatboxConfig.location,
+                    shareLocation: chatboxConfig.shareLocation,
                     version: chatboxConfig.version
                 });
             });

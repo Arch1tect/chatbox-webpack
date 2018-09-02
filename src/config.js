@@ -14,11 +14,11 @@ if (localInboxServer) {
 
 export default {
 	// testing: true,
-	version: '1.2.6',
+	version: '1.5.0',
 	detectLocation: true,
 	location: 'https://www.youtube.com/',
 	userId: null,
-	// userId: '2',
+	shareLocation: false,
 	username: null,
 	socketUrl: socketUrl,
 	apiUrl : apiUrl,

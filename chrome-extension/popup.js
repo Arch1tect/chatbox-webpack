@@ -96,12 +96,12 @@ document.addEventListener('DOMContentLoaded', function () {
         showHideDanmu(display);
         chrome.storage.local.set({ 'danmu': display });
     });
-    chrome.storage.local.get('share_location', function(data) {
-        var checkbox = "input[name=toggle_share_location][value="+data['share_location']+"]";
+    chrome.storage.local.get('share-location', function(data) {
+        var checkbox = "input[name=toggle_share_location][value="+data['share-location']+"]";
         $(checkbox).prop("checked", true);
     });
     $('input:radio[name="toggle_share_location"]').change(function() {
-        chrome.storage.local.set({ 'share_location': $(this).val() });
+        chrome.storage.local.set({ 'share-location': $(this).val() });
     });
 
     checkChatboxStatus();
