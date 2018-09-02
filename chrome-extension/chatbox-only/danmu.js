@@ -24,9 +24,14 @@ function createDanmu(msg) {
     danmu.className = 'danmu';
     if (msg.live)
         danmu.className += ' live';
-    danmu.innerHTML = msg.content;
-    if (!msg.content)
-        danmu.innerHTML = msg.message;
+    var content = msg.content;
+    if (!msg.content) content = msg.message;
+    var innerHtml = "<div class='danmu-text'>"+content+"</div>";
+    if(content.startsWith('stickers/')) {
+        // TODO: support non extension
+        innerHtml = "<img src='"+chrome.extension.getURL('chatbox-only/'+content)+"' />";
+    }
+    danmu.innerHTML = innerHtml;
     danmu.style.top = 30 + msg.row*40 + 'px';
     var startX = window.innerWidth + 'px';
     var time = 12;

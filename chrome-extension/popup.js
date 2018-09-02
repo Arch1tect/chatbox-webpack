@@ -66,7 +66,6 @@ function checkChatboxStatus() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-
     $('#open-chatbox').click(showHideChatbox);
 
     $('body').on('click', 'a', function(){
@@ -96,6 +95,13 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('show danmu ' + display);
         showHideDanmu(display);
         chrome.storage.local.set({ 'danmu': display });
+    });
+    chrome.storage.local.get('share_location', function(data) {
+        var checkbox = "input[name=toggle_share_location][value="+data['share_location']+"]";
+        $(checkbox).prop("checked", true);
+    });
+    $('input:radio[name="toggle_share_location"]').change(function() {
+        chrome.storage.local.set({ 'share_location': $(this).val() });
     });
 
     checkChatboxStatus();

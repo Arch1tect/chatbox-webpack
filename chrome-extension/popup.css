@@ -2,12 +2,7 @@
 	display:none;
 	float: right;
 }
-#qtime-add-entry {
-	display: none;
-}
-.qtime-login-info {
-	display: none;
-}
+
 #qtime-title {
 	font-size: 17px;
 	text-decoration: none;
@@ -20,6 +15,8 @@
 #online-user-msg {
 	float: right;
 	display: none;
+	color: gray;
+	margin: 10px;
 }
 .red {
 	color: red;
@@ -29,7 +26,16 @@
 }
 
 a {
-	/*text-decoration: none;*/
+	text-decoration: none;
+	color:#0ab3f4;
+
+}
+a:visited {
+	color:#0ab3f4;
+}
+a:hover {
+	/*color:black;*/
+	text-decoration: underline;
 }
 a:focus{
     outline: none;
@@ -49,8 +55,9 @@ body {
 }
 
 footer {
-	bottom: 10px;
-	width:330px;
+	margin: 10px;
+	/*width:330px;*/
+	float: right;
 }
 
 
