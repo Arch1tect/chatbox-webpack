@@ -237,7 +237,7 @@ export default {
             });
             chatboxUtils.storage.get('share-location', function (item) {
                 if (item && item['share-location']) {
-                    if (item['share-location'] === 'yes') chatboxConfig.shareLocation = true;
+                    if (item['share-location'] === 'no') chatboxConfig.shareLocation = false;
                 }
             });
             chatboxUtils.storage.get('width', function (item) {
