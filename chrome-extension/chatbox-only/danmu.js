@@ -28,8 +28,14 @@ function createDanmu(msg) {
     if (!msg.content) content = msg.message;
     var innerHtml = "<div class='danmu-text'>"+content+"</div>";
     if(content.startsWith('stickers/')) {
-        // TODO: support non extension
-        innerHtml = "<img src='"+chrome.extension.getURL('chatbox-only/'+content)+"' />";
+        var src = ""
+        if (chrome && chrome.extension)
+            src = chrome.extension.getURL('chatbox-only/'+content);
+        else
+            src = 'chatbox-only/'+content;
+
+        innerHtml = "<img src='"+src+"' />";
+
     }
     danmu.innerHTML = innerHtml;
     danmu.style.top = 30 + msg.row*40 + 'px';
@@ -113,6 +119,7 @@ function receiveMsgFromChatboxFrame (e) {
 
     if (!e || !e.data )
         return;
+    e.stopPropagation(); // multiple danmu.js maybe
     var danmuMsg = e.data;
     if (danmuMsg.msg) {
         waitlist.push(danmuMsg.msg);
