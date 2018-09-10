@@ -326,11 +326,10 @@ export default {
         if (!chatboxUtils.runningExtension) {
             // Safari doesn't display 
             setTimeout(function(){
-
                 console.log('refresh chatbox for safari');
-                chatboxUIState.display = "hidden";
-                setTimeout(function(){chatboxUIState.display = "mini";}, 100);
-            }, 2000);
+                chatboxUIState.display = "full";
+                _this.showChatboxFull();
+            }, 1000);
         }
 
     }

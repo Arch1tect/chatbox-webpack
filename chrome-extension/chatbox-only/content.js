@@ -26,7 +26,6 @@ function createChatboxIframe() {
         return
     }
 
-
     console.log('creating chatbox iframe');
     chatboxIFrame  = document.createElement ("iframe");
     window.chatboxIFrame = chatboxIFrame;
@@ -34,20 +33,25 @@ function createChatboxIframe() {
         chatboxIFrame.src = chrome.extension.getURL(CHATBOX_FRAME_SRC);
     else
         chatboxIFrame.src = CHATBOX_FRAME_SRC;
-    chatboxIFrame.src +=  "?"+location.href;
+    chatboxIFrame.src +=  "?"+locationHref;
     chatboxIFrame.id = CHATBOX_ELEMENT_ID;
     document.body.insertBefore(chatboxIFrame, document.body.firstChild);
     created = true
 }
-
+function keepCheckingLocationChange() {
+    checkLocationChange();
+    setTimeout(function(){checkLocationChange()}, 5*1000);
+}
 function checkLocationChange() {
-    if (location.href !== locationHref) {
-        locationHref = location.href;
+    var newLocation = location.href;
+    if (window.chatboxLocation) newLocation = window.chatboxLocation;
+    if (newLocation !== locationHref) {
+        locationHref = newLocation;
         chatboxIFrame.parentNode.removeChild(chatboxIFrame);
         createChatboxIframe();
     }
-    setTimeout(function(){checkLocationChange()}, 5*1000);
 }
+window.checkLocationChange = checkLocationChange;
 
 function resizeIFrameToFitContent(e) {
     if (!created) return;
