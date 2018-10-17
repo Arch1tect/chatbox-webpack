@@ -18,6 +18,7 @@ export default {
 	detectLocation: true,
 	location: 'https://www.youtube.com/',
 	userId: null,
+	tabVisible: true,
 	shareLocation: true,
 	username: null,
 	socketUrl: socketUrl,

@@ -134,6 +134,7 @@ export default {
     name: 'chatbox-main-vue',
     data () {
         return {
+            tabHidden: 'hidden',
             state: chatboxUIState,
             prevX:-1,
             prevY:-1,
@@ -141,6 +142,21 @@ export default {
         }
     },
     methods: {
+        handleTabVisibilityChange() {
+            // reconnect/disconnect base on tab visibility
+            // ensure socket has been initiated properly
+            if (document[this.tabHidden]) {
+                chatboxConfig.tabVisible = false;
+                if (chatboxSocket.socket) {
+                    chatboxSocket.socket.disconnect();
+                }
+            } else {
+                chatboxConfig.tabVisible = true;
+                if (chatboxSocket.socket) {
+                    chatboxSocket.socket.connect();
+                }
+            }
+        },
         resizeStart (e) {
             this.prevX = e.screenX;
             this.prevY = e.screenY;
@@ -332,6 +348,28 @@ export default {
             }, 1000);
         }
 
+        // Set the name of the hidden property and the change event for visibility
+        var visibilityChange; 
+        if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
+          this.tabHidden = "hidden";
+          visibilityChange = "visibilitychange";
+        } else if (typeof document.msHidden !== "undefined") {
+          this.tabHidden = "msHidden";
+          visibilityChange = "msvisibilitychange";
+        } else if (typeof document.webkitHidden !== "undefined") {
+          this.tabHidden = "webkitHidden";
+          visibilityChange = "webkitvisibilitychange";
+        }
+
+        // Warn if the browser doesn't support addEventListener or the Page Visibility API
+        if (typeof document.addEventListener === "undefined" || this.tabHidden === undefined) {
+          console.log("browser needs to support the Page Visibility API.");
+        } else {
+          // Handle page visibility change   
+          document.addEventListener(visibilityChange, this.handleTabVisibilityChange, false);
+        }
+
     }
+
 }
 </script>

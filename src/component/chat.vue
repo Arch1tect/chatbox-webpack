@@ -394,7 +394,8 @@ export default {
             });
         },
         initSocket: function () {
-            if (chatboxConfig.username && chatboxConfig.userId) {
+            if (!document.hidden && chatboxConfig.username && chatboxConfig.userId) {
+                // TODO: document.hidden is just for Chrome
                 console.log('create web socket');
                 chatboxSocket.init(chatboxSocket);
             } else {
