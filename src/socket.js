@@ -26,14 +26,14 @@ function _init() {
 export default {
 	// socket: null,
 	state: state,
-	userCount: 'off',
+	userCount: 0,
 	disconnect: function () {
 		if (!state.connected) {
 			console.log('not connected, no need to disconnect');
 			return;
 		}
 		socket.disconnect();
-		state.connected = false;
+		// state.connected = false;
 	},
 	getSocket: function () {
 		return socket;
@@ -47,7 +47,7 @@ export default {
 		} else {
 			_init();
 		}
-		state.connected = true;
+		// state.connected = true; not really, connection might be slow
 	},
 	registerCallback: function(event, cb) {
 		if (!socketEventCallbacks) {

@@ -1,6 +1,6 @@
 <template>
     <div v-on:click.self="toggleChatbox" v-bind:class="{ mini: state.display == 'mini' }" id='socketchatbox-top'>
-        <span v-on:click="toggleOnlineUsers" data-toggle="tooltip" data-placement="bottom" title='Users on this page' id='socketchatbox-online-usercount' class='badge' v-bind:class="{connected: socket.state.connected}"> {{socket.userCount}}
+        <span v-on:click="toggleOnlineUsers" data-toggle="tooltip" data-placement="bottom" title='Users on this page' id='socketchatbox-online-usercount' class='badge' v-bind:class="{connected: socket.state.connected}"> {{socket.state.connected? socket.userCount: 'off'}}
         </span>
         <div v-cloak v-show="state.display == 'full'" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-username'>{{config.username}}</div>
         <span v-show="state.display == 'full'" id='topbar-options' class='float-right'>

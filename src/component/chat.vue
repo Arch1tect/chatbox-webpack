@@ -366,6 +366,9 @@ export default {
                     version: chatboxConfig.version
                 });
             });
+            chatboxSocket.registerCallback('disconnect', function (data) {
+                chatboxSocket.state.connected = false;
+            });
             chatboxSocket.registerCallback('name changed', function (data) {
                 var log = {
                     isLog: true,

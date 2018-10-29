@@ -151,7 +151,12 @@ export default {
                 chatboxSocket.disconnect();
             } else {
                 chatboxConfig.tabVisible = true;
-                if(chatboxConfig.enabled) chatboxSocket.connect();
+                if(chatboxConfig.enabled) {chatboxSocket.connect();
+                    Vue.notify({
+                      title: 'Connecting...',
+                      type: 'warn'
+                    });
+                }
             }
         },
         resizeStart (e) {
@@ -299,6 +304,10 @@ export default {
                 if (url in whitelist) {
                     chatboxConfig.enabled = true;
                     chatboxSocket.connect();
+                    Vue.notify({
+                      title: 'Connecting...',
+                      type: 'warn'
+                    });
                 }
                 console.log('chatbox.enabled: '+chatboxConfig.enabled);
                 _this.decideChatboxDisplay();
@@ -324,6 +333,11 @@ export default {
                 if (msg == "connect_chatbox") {
                     chatboxConfig.enabled = true;
                     chatboxSocket.connect();
+                    Vue.notify({
+                      title: 'Connecting...',
+                      type: 'warn'
+                    });
+
                 }
                 if (msg == "disconnect_chatbox") {
                     chatboxConfig.enabled = false;

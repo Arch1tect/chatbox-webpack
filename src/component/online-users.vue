@@ -75,6 +75,7 @@ export default {
             var _this = this;
             chatboxSocket.registerCallback('user joined', function (data) {
               console.log('user joined');
+              chatboxSocket.state.connected = true;
               _this.setOnlineUsers(data.onlineUsers);
 
             });
