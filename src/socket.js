@@ -26,7 +26,7 @@ function _init() {
 export default {
 	// socket: null,
 	state: state,
-	userCount: 'offline',
+	userCount: 'off',
 	disconnect: function () {
 		if (!state.connected) {
 			console.log('not connected, no need to disconnect');

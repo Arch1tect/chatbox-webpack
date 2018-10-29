@@ -145,14 +145,13 @@ export default {
         handleTabVisibilityChange() {
             // reconnect/disconnect base on tab visibility
             // ensure socket has been initiated properly
-            // TODO: check whitelist
             if (document[this.tabHidden]) {
                 chatboxConfig.tabVisible = false;
                 // TODO: disconnect only after hidden for a while
                 chatboxSocket.disconnect();
             } else {
                 chatboxConfig.tabVisible = true;
-                chatboxSocket.connect();
+                if(chatboxConfig.enabled) chatboxSocket.connect();
             }
         },
         resizeStart (e) {
@@ -311,9 +310,11 @@ export default {
                     sendResponse({msg: "shown"});
                 }
                 if (msg == "connect_chatbox") {
+                    chatboxConfig.enabled = true;
                     chatboxSocket.connect();
                 }
                 if (msg == "disconnect_chatbox") {
+                    chatboxConfig.enabled = false;
                     chatboxSocket.disconnect();
                 }
                 if (msg == "close_chatbox") {

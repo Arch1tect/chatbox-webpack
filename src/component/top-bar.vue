@@ -126,6 +126,20 @@ export default {
             userCount: 1
         }
     },
+    watch: {
+        'socket.state.connected': function (newVal, oldVal) {
+            if (newVal) {
+                Vue.notify({
+                    title: 'Connected!',
+                });
+            } else {
+                Vue.notify({
+                    title: 'Disconnected!',
+                    type: 'warn'
+                });
+            }
+        }
+    },
     methods: {
         toggleOnlineUsers: function () {
             if (this.state.view != 2) {
