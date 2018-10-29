@@ -170,6 +170,22 @@ export default {
                 chatboxUtils.storage.set('height', this.state.height);
             }
         },
+        decideChatboxDisplay () {
+            if (!chatboxConfig.enabled) {
+                console.log('chatbox not enabled');
+                this.hideChatbox();
+                return;
+            }
+            if (this.state.display == 'full') {
+                this.showChatboxFull();
+            }
+            if (this.state.display == 'mini') {
+                this.showChatboxMini();
+            }
+            if (this.state.display == 'hidden') {
+                this.hideChatbox();
+            }
+        },
         showChatboxFull () {
             console.log('show chatbox full');
             this.state.display = 'full';
@@ -186,6 +202,7 @@ export default {
         },
         hideChatbox () {
             // This is hiding entire iframe, not minimize
+            console.log('hide chatbox');
             this.state.display = 'hidden';
             chatboxUtils.updateIframeSize('close');
         },
@@ -265,16 +282,8 @@ export default {
 
                 if (item && item['display']) 
                     _this.state.display = item['display'];
+                console.log('chatbox.display: '+_this.state.display);
 
-                if (_this.state.display == 'full') {
-                    _this.showChatboxFull();
-                }
-                if (_this.state.display == 'mini') {
-                    _this.showChatboxMini();
-                }
-                if (_this.state.display == 'hidden') {
-                    _this.hideChatbox();
-                }
             });
             chatboxUtils.storage.get('danmu', function (item) {
                 var display = item['danmu'];
@@ -291,6 +300,9 @@ export default {
                     chatboxConfig.enabled = true;
                     chatboxSocket.connect();
                 }
+                console.log('chatbox.enabled: '+chatboxConfig.enabled);
+                _this.decideChatboxDisplay();
+
             });
         },
         listenToExtension () {
