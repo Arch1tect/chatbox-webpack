@@ -13,7 +13,9 @@ function renderWhitelist() {
     // }
 
     $('.whitelist').empty();
+    var counter = 0;
     for (var url in whitelist) {
+        counter++;
         var $urlEntry = $('<div class="whitelist-url"></div>');
         var $removeBtn = $('<span class="remove-url">X</span>');
         if (url == pageURL) $urlEntry.addClass('current');
@@ -29,6 +31,9 @@ function renderWhitelist() {
 
         })
         $('.whitelist').append($urlEntry);
+    }
+    if (!counter) {
+        $('.whitelist').append($('<p>Not enabled on any website.</p>'));
     }
 }
 
