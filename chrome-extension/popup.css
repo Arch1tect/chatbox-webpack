@@ -22,7 +22,8 @@
 	color: red;
 }
 .option-title {
-	margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px dotted lightgray;
 	margin-bottom: 5px;
 }
 
