@@ -123,13 +123,14 @@ import chatboxSocket from './socket.js'
 
 var MIN_WIDTH = 300;
 var MIN_HEIGHT = 100;
+var DISCONNECT_DELAY_TIME = 10*60*1000; // 10 min
 
 // expose chatbox config to window so it's easier to debug
 window.Vue = Vue;
 window.chatbox = chatboxConfig;
 window.chatboxUIState = chatboxUIState;
 window.chatboxUtils = chatboxUtils;
-
+var disconnectTimer = null;
 export default {
     name: 'chatbox-main-vue',
     data () {
@@ -142,16 +143,23 @@ export default {
         }
     },
     methods: {
+        disconnectAfterHiddenSomeTime() {
+            disconnectTimer = setTimeout(function(){
+                chatboxSocket.disconnect();
+            }, DISCONNECT_DELAY_TIME)
+        },
         handleTabVisibilityChange() {
             // reconnect/disconnect base on tab visibility
             // ensure socket has been initiated properly
             if (document[this.tabHidden]) {
                 chatboxConfig.tabVisible = false;
-                // TODO: disconnect only after hidden for a while
-                chatboxSocket.disconnect();
+                this.disconnectAfterHiddenSomeTime();
             } else {
                 chatboxConfig.tabVisible = true;
-                if(chatboxConfig.enabled) {chatboxSocket.connect();
+                if (disconnectTimer) {
+                    clearTimeout(disconnectTimer);
+                }
+                if(chatboxConfig.enabled && !chatboxSocket.state.connected) {chatboxSocket.connect();
                     Vue.notify({
                       title: 'Connecting...',
                       type: 'warn'
@@ -302,6 +310,7 @@ export default {
                 var whitelist = item['whitelist'];
                 var url = chatboxUtils.extractRootDomain(chatboxConfig.location);
                 if (url in whitelist) {
+                    // This is the initial connection
                     chatboxConfig.enabled = true;
                     chatboxSocket.connect();
                     Vue.notify({
