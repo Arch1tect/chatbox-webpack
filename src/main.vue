@@ -145,16 +145,14 @@ export default {
         handleTabVisibilityChange() {
             // reconnect/disconnect base on tab visibility
             // ensure socket has been initiated properly
+            // TODO: check whitelist
             if (document[this.tabHidden]) {
                 chatboxConfig.tabVisible = false;
-                if (chatboxSocket.socket) {
-                    chatboxSocket.socket.disconnect();
-                }
+                // TODO: disconnect only after hidden for a while
+                chatboxSocket.disconnect();
             } else {
                 chatboxConfig.tabVisible = true;
-                if (chatboxSocket.socket) {
-                    chatboxSocket.socket.connect();
-                }
+                chatboxSocket.connect();
             }
         },
         resizeStart (e) {
@@ -283,10 +281,17 @@ export default {
                 var display = item['danmu'];
                 // Default danmu css is display: none
                 // But we want default behavior is to show danmu
-
                 if (!display)
                     display = 'block';
                 chatboxUtils.toggleDanmu(display);
+            });
+            chatboxUtils.storage.get('whitelist', function (item) {
+                var whitelist = item['whitelist'];
+                var url = chatboxUtils.extractRootDomain(chatboxConfig.location);
+                if (url in whitelist) {
+                    chatboxConfig.enabled = true;
+                    chatboxSocket.connect();
+                }
             });
         },
         listenToExtension () {
@@ -304,6 +309,12 @@ export default {
                 if (msg == "open_chatbox") {
                     _this.showChatboxFull();
                     sendResponse({msg: "shown"});
+                }
+                if (msg == "connect_chatbox") {
+                    chatboxSocket.connect();
+                }
+                if (msg == "disconnect_chatbox") {
+                    chatboxSocket.disconnect();
                 }
                 if (msg == "close_chatbox") {
                     _this.hideChatbox();

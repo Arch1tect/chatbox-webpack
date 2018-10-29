@@ -195,7 +195,7 @@ export default {
                 'uuid': chatboxConfig.userId,
                 'name': this.username
             }
-            chatboxSocket.socket.emit('change name', {username: this.username});
+            chatboxSocket.getSocket().emit('change name', {username: this.username});
             var _this = this;
             $.post(chatboxConfig.apiUrl + "/db/user/change_name", payload, function(resp) {
                 Vue.notify({

@@ -254,15 +254,15 @@ export default {
             var data = {};
             data.username = chatboxConfig.username;
             data.msg = msg; //need to clean input!
-            chatboxSocket.socket.emit('new message', data);
+            chatboxSocket.getSocket().emit('new message', data);
         },
         typing: function (e) {
             if (this.state.view !== 2) return;
 
             if (e.key == "Enter") {
-            chatboxSocket.socket.emit('stop typing', {username: chatboxConfig.username});
+            chatboxSocket.getSocket().emit('stop typing', {username: chatboxConfig.username});
             } else {
-                chatboxSocket.socket.emit('typing', {username: chatboxConfig.username});
+                chatboxSocket.getSocket().emit('typing', {username: chatboxConfig.username});
             }
         },
         sendInput: function () {
@@ -294,7 +294,7 @@ export default {
                 msg.username = chatboxConfig.username;
                 msg.file = evt.target.result;
                 msg.fileName = data.name;
-                chatboxSocket.socket.emit('base64 file', msg);
+                chatboxSocket.getSocket().emit('base64 file', msg);
             };
             reader.readAsDataURL(data);
         }

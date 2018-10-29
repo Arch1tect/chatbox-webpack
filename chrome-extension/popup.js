@@ -1,16 +1,16 @@
-var openBoxStr= 'Open chat box';
-var closeBoxStr = 'Close chat box';
+var openBoxStr= 'Open';
+var closeBoxStr = 'Close';
 var whitelist = {};
 var pageURL = null;
 
 
 function renderWhitelist() {
 
-    if (pageURL in whitelist) {
-        $('#open-chatbox').show();
-    } else {
-        $('#open-chatbox').hide();
-    }
+    // if (pageURL in whitelist) {
+    //     $('#open-chatbox').show();
+    // } else {
+    //     $('#open-chatbox').hide();
+    // }
 
     $('.whitelist').empty();
     for (var url in whitelist) {
@@ -157,9 +157,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if ($(this).val() == 'yes') {
             console.log('adding to whitelist');
             whitelist[pageURL]=1;
+            msgChatboxFrame('connect_chatbox');
         } else {
             console.log('removing from whitelist');
             delete whitelist[pageURL];
+            msgChatboxFrame('disconnect_chatbox');
         }
         chrome.storage.local.set({ 'whitelist': whitelist });
         renderWhitelist();

@@ -22,6 +22,7 @@
 	color: red;
 }
 .option-title {
+	margin-top: 15px;
 	margin-bottom: 5px;
 }
 
@@ -63,7 +64,7 @@ body {
 	padding-bottom: 0px;
 	min-height: 275px;
 	font-size: 14px;
-	/*background: #eceff1;*/
+	background: #f8f6f2;
 	/*font-weight: 300;*/
 	/*font-family: "Helvetica Neue",Helvetica,Arial,Verdana,sans-serif;*/
 }
@@ -77,19 +78,27 @@ footer {
 .whitelist-url {
 	margin-top: 5px;
 	color: #7c7c7c;
+	margin-left: 5px;
 }
 .whitelist-url.current {
 	color: black;
+	font-weight: bold;
 }
 .remove-url {
 	color: red;
 	margin-left: 10px;
 	cursor: pointer;
 }
-
+img {
+	display: block;
+    width: 72px;
+    margin-bottom: 10px;
+}
 button {
     border: 1px solid;
-    padding: 7px;
+    padding: 8px;
+    padding-top:3px;
+    padding-bottom: 3px;
     font-family: inherit;
     color: inherit;
     border-radius: 3px;
@@ -103,8 +112,17 @@ button {
     -moz-transition: all 0.3s;
     transition: all 0.3s;
 }
-button#open-chatbox {
-	display: none;
+#open-chatbox {
+	/*display: none;*/
+	/*margin-left: 10px;*/
+	/*margin-top:-3px;*/
+	/*float: right;*/
+	/*font-weight: bold;*/
+	/*text-decoration: underline;*/
+	cursor: pointer;
+}
+#open-chatbox:hover {
+	color:#286090;
 }
 button#open-chatbox:hover, button#open-chatbox:active {
     color: #fff;

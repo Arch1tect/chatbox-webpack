@@ -358,7 +358,7 @@ export default {
             var _this = this;
             // Once connected, user will receive the invitation to login using uuid
             chatboxSocket.registerCallback('login', function (data) {
-                chatboxSocket.socket.emit('login', {
+                chatboxSocket.getSocket().emit('login', {
                     username: chatboxConfig.username,
                     userId: chatboxConfig.userId,
                     roomId: chatboxConfig.location,
@@ -393,18 +393,20 @@ export default {
                 _this.processMsg(data);
             });
         },
-        initSocket: function () {
-            if (!document.hidden && chatboxConfig.username && chatboxConfig.userId) {
-                // TODO: document.hidden is just for Chrome
-                console.log('create web socket');
-                chatboxSocket.init(chatboxSocket);
-            } else {
-                var _this = this;
-                setTimeout(function () {
-                    _this.initSocket();
-                }, 500);
-            }
-        }
+        // initSocket: function () {
+        //     if (chatboxConfig.username && chatboxConfig.userId) {
+        //         if (document.hidden) return;
+        //         // TODO: document.hidden is just for Chrome
+        //         console.log('create web socket');
+        //         chatboxSocket.connect(chatboxSocket);
+        //     } else {
+        //         console.log('config is still loading, wait 0.5 sec before connecting to socket');
+        //         var _this = this;
+        //         setTimeout(function () {
+        //             _this.initSocket();
+        //         }, 500);
+        //     }
+        // }
 
     },
     mounted () {
@@ -424,7 +426,7 @@ export default {
         });
 
         this.registerSocketEvents();
-        this.initSocket();
+        // this.initSocket();
 
     }
 }

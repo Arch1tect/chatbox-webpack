@@ -1,6 +1,6 @@
 <template>
     <div v-on:click.self="toggleChatbox" v-bind:class="{ mini: state.display == 'mini' }" id='socketchatbox-top'>
-        <span v-on:click="toggleOnlineUsers" data-toggle="tooltip" data-placement="bottom" title='Users on this page' id='socketchatbox-online-usercount' class='badge'>{{socket.userCount}}
+        <span v-on:click="toggleOnlineUsers" data-toggle="tooltip" data-placement="bottom" title='Users on this page' id='socketchatbox-online-usercount' class='badge' v-bind:class="{connected: socket.state.connected}"> {{socket.userCount}}
         </span>
         <div v-cloak v-show="state.display == 'full'" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-username'>{{config.username}}</div>
         <span v-show="state.display == 'full'" id='topbar-options' class='float-right'>
@@ -72,7 +72,7 @@
 #socketchatbox-online-usercount {
     line-height: 15px;
     color: white;
-    background: #0089FF;
+    background: gray;
     display: inline-block;
     min-width: 10px;
     padding: 3px 7px;
@@ -85,6 +85,10 @@
     margin-bottom: 2px;
     /* background-color: #777; */
     border-radius: 10px;
+}
+
+#socketchatbox-online-usercount.connected {
+    background: #0089FF;
 }
 
 #socketchatbox-top {

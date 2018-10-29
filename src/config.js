@@ -19,6 +19,7 @@ export default {
 	location: 'https://www.youtube.com/',
 	userId: null,
 	tabVisible: true,
+	enabled: false,
 	shareLocation: true,
 	username: null,
 	socketUrl: socketUrl,
