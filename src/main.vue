@@ -309,7 +309,7 @@ export default {
             chatboxUtils.storage.get('whitelist', function (item) {
                 var whitelist = item['whitelist'];
                 var url = chatboxUtils.extractRootDomain(chatboxConfig.location);
-                if (url in whitelist) {
+                if (whitelist && url in whitelist) {
                     // This is the initial connection
                     chatboxConfig.enabled = true;
                     chatboxSocket.connect();

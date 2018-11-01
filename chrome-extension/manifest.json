@@ -1,8 +1,8 @@
 {
-  "name": "Find peole on the same web page as you",
+  "name": "Find people on the same web page as you",
   "short_name": "Chat Anywhere",
   "description": "Live chat with people who are browsing the same web page as you!",
-  "version": "1.6.2",
+  "version": "1.7.2",
   "permissions": ["activeTab", "storage", "unlimitedStorage"],
   "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
