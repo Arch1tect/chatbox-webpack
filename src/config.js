@@ -14,7 +14,7 @@ if (localInboxServer) {
 
 export default {
 	// testing: true,
-	version: '1.7.2',
+	version: '1.7.5',
 	detectLocation: true,
 	location: 'https://www.youtube.com/',
 	userId: null,

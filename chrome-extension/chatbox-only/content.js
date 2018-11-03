@@ -11,10 +11,7 @@ var runningExtension = false;
 if (typeof(chrome) !== 'undefined' && chrome.extension)
     runningExtension = true;
 
-
-
 function createChatboxIframe() {
-
     // check if there is already chatbox created
     if (document.getElementById(CHATBOX_ELEMENT_ID)) {
         if (runningExtension) {
@@ -25,7 +22,6 @@ function createChatboxIframe() {
         }
         return
     }
-
     console.log('creating chatbox iframe');
     chatboxIFrame  = document.createElement ("iframe");
     window.chatboxIFrame = chatboxIFrame;
@@ -40,7 +36,7 @@ function createChatboxIframe() {
 }
 function keepCheckingLocationChange() {
     checkLocationChange();
-    setTimeout(function(){checkLocationChange()}, 5*1000);
+    setTimeout(function(){keepCheckingLocationChange()}, 5*1000);
 }
 function checkLocationChange() {
     var newLocation = location.href;
@@ -108,5 +104,5 @@ function fitChatboxIframe (msg) {
 window.addEventListener("message", resizeIFrameToFitContent, false);
  // always create the chatbox and make connections, if user don't want it, he can disable the extension
 createChatboxIframe();
-checkLocationChange();
+keepCheckingLocationChange();
 })();
