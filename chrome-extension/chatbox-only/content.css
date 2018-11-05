@@ -9,6 +9,8 @@
     width: 100px;*/
     height: 0px;
     width: 0px;
+    min-height: 0px;
+    min-width: 0px;
     border:none;
     box-shadow: 15px 15px 5px rgba(0, 0, 0, 0.31);
     display: block;
