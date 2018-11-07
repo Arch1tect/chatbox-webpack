@@ -11,9 +11,11 @@
                   <span class="commenter-name">{{msg.name}}</span><small class="comment-time">{{msg.time}}</small>
                   <div class="comment-content" v-html="msg.content"></div>
                   <br />
-                  <font-awesome-icon :icon="['fas', 'thumbs-up']" class="fa fa-thumbs-up" />           
-                  <font-awesome-icon :icon="['fas', 'reply']" class="fa fa-reply" />
-                  <span class="flag" title="flag as inappropriate"><font-awesome-icon :icon="['fas', 'flag']" class="fa fa-flag" /></span>
+                  <div class="comment-body-footer">
+                    <span><font-awesome-icon :icon="['fas', 'thumbs-up']" class="fa fa-thumbs-up" /></span>           
+                    <span class='reply'>Reply</span>
+                    <span class="flag" title="flag as inappropriate"><font-awesome-icon :icon="['fas', 'flag']" class="fa fa-flag" /></span>
+                  </div>
                 </div>
             </div>
         </div>
@@ -23,19 +25,19 @@
     </div>
 </template>
 <style>
-.comment-body .fa {
+.comment-body-footer span {
   margin-right: 10px;
-  font-size: larger;
+  /*font-size: larger;*/
   color: #aaaaaa;
   cursor: pointer;
 }
-.comment-body .flag {
+.comment-body-footer .flag {
   float: right;
 }
-.comment-body .fa:hover {
+.comment-body-footer span:hover {
   color: gray;
 }
-.comment-body .flag .fa:hover {
+.comment-body-footer span.flag:hover {
   color: red;
 }
 .commenter-name {
