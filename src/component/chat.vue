@@ -12,10 +12,14 @@
                 <div v-bind:class="{ 'socketchatbox-message': true, 'socketchatbox-message-me': msg.me, 'merge-above': msg.fromSameUser && !msg.loggingTime }" v-for="msg in messages">
                     <div class="socketchatbox-log" v-if="msg.isLog">{{msg.message}}</div>
                     <div v-else>
-                        <div v-if="!msg.fromSameUser || msg.loggingTime" class="socketchatbox-msg-username">
-                            <span @click="viewUser(msg)"><img v-bind:src="msg.profileImgSrc" /><span class="others-name" v-if="!msg.me">{{msg.username}}</span></span>
-                        </div>
-                        <br v-if="msg.me||msg.fromSameUser"/>
+                        <span v-if="!msg.fromSameUser || msg.loggingTime">
+                            <img class="user-avatar" @click="viewUser(msg)" v-bind:src="msg.profileImgSrc" />
+                            <span class="message-name">{{msg.username}}</span>
+                            <br />
+                        </span>
+                        <span v-else class="user-avatar-placeholder"></span>
+
+
                         <div v-if="msg.renderType=='media'" class="socketchatbox-messageBody image-or-video"><img class="chatbox-image" v-bind:src="msg.message" /></div>
                         <div v-if="msg.renderType=='file'" class="socketchatbox-messageBody"><a target='_blank' v-bind:download="msg.fileName" v-bind:href="msg.file">{{msg.fileName}}</a></div>
                         <!-- use v-html because message contain html due to adding class to emoji -->
@@ -48,10 +52,15 @@
   padding-left: 10px;
   padding-top: 30px;
 }
-.others-name {
-  cursor: pointer;
-
-    margin-left: 5px;
+.message-name {
+    color: gray;
+    margin-left: 10px;
+    float: left;
+}
+.socketchatbox-message-me .message-name {
+    margin-left: 0px;
+    margin-right: 10px;
+    float: right;
 }
 .socketchatbox-messagetime {
   color: gray;
@@ -64,30 +73,31 @@
 .socketchatbox-messages {
   padding: 0;
 }
-.socketchatbox-msg-username {
+/*.socketchatbox-msg-username {
   display: table-cell;
-}
-.socketchatbox-msg-username img {
+}*/
+.user-avatar {
     cursor: pointer;
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     object-fit: cover;
     border-radius: 100%;
     /*border-radius: 5px;*/
     /*border: 1px solid gray;*/
     box-shadow: 0 0 6px black;
 }
-.socketchatbox-message-me .socketchatbox-msg-username {
+.socketchatbox-message-me .user-avatar {
   float: right;
-  width: 100%;
 }
-.socketchatbox-message-others .socketchatbox-msg-username {
-  cursor: pointer;
-  padding-left: 5px;
+.user-avatar-placeholder {
+    width: 40px;
+    height: 5px;
+    float: left;
 }
-.socketchatbox-message-others .socketchatbox-msg-username:hover {
-  color: #0089ff;
+.socketchatbox-message-me .user-avatar-placeholder {
+    float: right;
 }
+
 .socketchatbox-message {
   width: 100%;
   display: inline-block;
@@ -109,31 +119,31 @@
   text-align: center;
 }
 .socketchatbox-messageBody {
-  max-width: 90%;
+  max-width: calc(100% - 100px);
   /*min-width: 48px;*/
-  margin-top: 7px;
+  float: left;
+  margin-top: 5px;
+  margin-left: 10px;
   background-color: #FFFFFF;
   border-radius: 5px;
   box-shadow: 0 0 6px #B2B2B2;
   display: inline-block;
   padding: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   position: relative;
   vertical-align: top;
   line-height: 18px;
   font-size: 12px;
   word-wrap: break-word;
 }
-.merge-above .socketchatbox-messageBody{
-  margin-top:-20px;
+.merge-above {
+  margin-top: -15px;
 }
 .socketchatbox-message-me .socketchatbox-messageBody {
-  background: #BBFF00;
-}
-.socketchatbox-message-me .socketchatbox-messageBody {
-  float: right;
-}
-.socketchatbox-message-me img {
-  float: right;
+    float: right;
+    background: #BBFF00;
+    margin-right: 10px;
 }
 .socketchatbox-messageBody.emoji-only {
   font-size:xx-large;

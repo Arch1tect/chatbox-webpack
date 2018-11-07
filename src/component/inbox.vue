@@ -43,6 +43,9 @@
   display: inline-block;
   margin-bottom: 0px;
 }
+.socketchatbox-inbox-message .socketchatbox-messageBody {
+  max-width: 90%;
+}
 .inbox-conversation-no-message {
   position: relative;
   top: 45%;

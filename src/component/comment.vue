@@ -6,10 +6,11 @@
         </div>
         <div ref="commentArea" class="socketchatbox-commentsArea">
             <div v-for="msg in messages">
-                <div class="comment-header socketchatbox-msg-username">
-                    <span @click="viewUser(msg)"><img v-bind:src="msg.profileImgSrc" /><span class="commenter-name">{{msg.name}}</span></span><small>{{msg.time}}</small>
+                <img class="user-avatar" @click="viewUser(msg)" v-bind:src="msg.profileImgSrc" />
+                <div class="comment-body">
+                  <span class="commenter-name">{{msg.name}}</span><small class="comment-time">{{msg.time}}</small>
+                  <div class="comment-content" v-html="msg.content"></div>
                 </div>
-                <div v-html="msg.content" class="comment-body"></div>
             </div>
         </div>
         <button v-show="state.view == 1" @click="chatboxUtils.openCommentModal" class="socketchatbox-bottom-btn-wrapper">
@@ -19,8 +20,17 @@
 </template>
 <style>
 .commenter-name {
-  margin-left: 5px;
-  cursor: pointer;
+  font-weight: bold;
+}
+.user-avatar {
+  float: left;
+}
+.comment-content {
+  margin-top: 5px;
+}
+.comment-time {
+  color: gray;
+  margin-left: 10px;
 }
 .socketchatbox-commentsArea {
   /*background: #fffdf0;*/
@@ -34,25 +44,21 @@
 }
 
 .socketchatbox-commentsArea .comment-body {
-  margin-top: 5px;
   width: auto;
+  margin-left: 10px;
   white-space: pre-line;
   display: inline-block;
   margin-bottom: 15px;
-  max-width: 85%;
-  background-color: #FFFFFF;
+  max-width: calc(100% - 50px);
   border-radius: 5px;
   box-shadow: 0 0 6px #B2B2B2;
-  padding: 10px 18px;
+  padding: 12px;
+  padding-top: 7px;
   vertical-align: top;
   line-height: 1.25em;
   font-size: 12px;
   word-wrap: break-word;
   background: white;
-}
-.socketchatbox-commentsArea .comment-header small {
-  color: gray;
-  margin-left: 10px;
 }
 
 </style>

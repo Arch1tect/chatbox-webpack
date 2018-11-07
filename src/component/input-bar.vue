@@ -268,6 +268,7 @@ export default {
         sendInput: function () {
             // Fired when enter key pressed, handle differently depending on
             // whether it's live chat or private messaging
+            if (!this.content) return;
             if (this.state.view == 2)
                 this.sendLiveChatMsg(this.content);
             else 
