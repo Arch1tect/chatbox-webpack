@@ -10,6 +10,10 @@
                 <div class="comment-body">
                   <span class="commenter-name">{{msg.name}}</span><small class="comment-time">{{msg.time}}</small>
                   <div class="comment-content" v-html="msg.content"></div>
+                  <br />
+                  <font-awesome-icon :icon="['fas', 'thumbs-up']" class="fa fa-thumbs-up" />           
+                  <font-awesome-icon :icon="['fas', 'reply']" class="fa fa-reply" />
+                  <span class="flag" title="flag as inappropriate"><font-awesome-icon :icon="['fas', 'flag']" class="fa fa-flag" /></span>
                 </div>
             </div>
         </div>
@@ -19,8 +23,23 @@
     </div>
 </template>
 <style>
+.comment-body .fa {
+  margin-right: 10px;
+  font-size: larger;
+  color: #aaaaaa;
+  cursor: pointer;
+}
+.comment-body .flag {
+  float: right;
+}
+.comment-body .fa:hover {
+  color: gray;
+}
+.comment-body .flag .fa:hover {
+  color: red;
+}
 .commenter-name {
-  font-weight: bold;
+  /*font-weight: bold;*/
 }
 .user-avatar {
   float: left;

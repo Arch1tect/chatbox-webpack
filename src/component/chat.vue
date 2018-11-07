@@ -140,6 +140,9 @@
 .merge-above {
   margin-top: -15px;
 }
+.socketchatbox-message-me img {
+    float: right;
+}
 .socketchatbox-message-me .socketchatbox-messageBody {
     float: right;
     background: #BBFF00;
