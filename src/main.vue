@@ -268,6 +268,7 @@ export default {
                     chatboxUtils.storage.set('user-id', chatboxConfig.userId);
                     _this.registerUser();
                 }
+                chatboxUtils.loadComments();
             });
             chatboxUtils.storage.get('username', function (item) {
                 if (item['username']) {

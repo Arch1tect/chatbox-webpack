@@ -1,7 +1,7 @@
 "use strict";
 
 var localSocketServer = false;
-var localInboxServer = false;
+var localInboxServer = true;
 var socketUrl = 'https://quotime.me'
 var apiUrl = socketUrl;
 

@@ -5,14 +5,16 @@
             <span>{{title}}</span>
         </div>
         <div ref="commentArea" class="socketchatbox-commentsArea">
-            <div v-for="msg in messages">
+            <div v-for="msg in messages" v-bind:class="{'from-self': msg.fromSelf}">
                 <img class="user-avatar" @click="viewUser(msg)" v-bind:src="msg.profileImgSrc" />
                 <div class="comment-body">
-                  <span class="commenter-name">{{msg.name}}</span><small class="comment-time">{{msg.time}}</small>
+                  <small class="commenter-name">{{msg.name}}</small><small class="comment-time">{{msg.time}}</small>
                   <div class="comment-content" v-html="msg.content"></div>
                   <br />
-                  <div class="comment-body-footer">
-                    <span><font-awesome-icon :icon="['fas', 'thumbs-up']" class="fa fa-thumbs-up" /></span>           
+                  <div v-if="!msg.fromSelf" class="comment-body-footer">
+                    <span class="comment-score">{{msg.score}}</span>
+                    <span @click="vote(msg, 1)" v-bind:class="{voted: msg.voted == 1 }"><font-awesome-icon :icon="['fas', 'thumbs-up']" class="fa fa-thumbs-up" /></span>
+                    <span @click="vote(msg, -1)" v-bind:class="{voted: msg.voted == -1 }"><font-awesome-icon :icon="['fas', 'thumbs-down']" class="fa fa-thumbs-down" /></span>
                     <span class='reply'>Reply</span>
                     <span class="flag" title="flag as inappropriate"><font-awesome-icon :icon="['fas', 'flag']" class="fa fa-flag" /></span>
                   </div>
@@ -26,13 +28,19 @@
 </template>
 <style>
 .comment-body-footer span {
-  margin-right: 10px;
+  margin-right: 5px;
   /*font-size: larger;*/
   color: #aaaaaa;
   cursor: pointer;
 }
 .comment-body-footer .flag {
   float: right;
+}
+.comment-body-footer span.comment-score {
+  color: #03a9f4;
+}
+.comment-body-footer span.voted {
+  color: #03a9f4 !important;
 }
 .comment-body-footer span:hover {
   color: gray;
@@ -41,7 +49,7 @@
   color: red;
 }
 .commenter-name {
-  /*font-weight: bold;*/
+  font-weight: bold;
 }
 .user-avatar {
   float: left;
@@ -75,11 +83,16 @@
   box-shadow: 0 0 6px #B2B2B2;
   padding: 12px;
   padding-top: 7px;
+  padding-bottom: 7px;
   vertical-align: top;
   line-height: 1.25em;
   font-size: 12px;
   word-wrap: break-word;
   background: white;
+}
+
+.from-self .comment-body {
+  background: #BBFF00;
 }
 
 </style>
@@ -110,8 +123,37 @@ export default {
         }
     },
     methods: {
+        vote: function (msg, vote) {
+
+            if (msg.voted) {
+              if (msg.voted == vote) {
+                // if voted then cancel the vote
+                // TODO: implement cancel vote in backend
+                msg.voted = null;
+                msg.score -= vote;
+                return;
+              } else {
+                // if voting opposite now, need to count vote twice
+                msg.score += vote;
+              }
+            }
+
+            msg.voted = vote;
+            msg.score += vote;
+            var payload = {
+                'user_id': chatboxConfig.userId,
+                'vote': vote
+            }
+            $.post(chatboxConfig.apiUrl + "/db/comment/"+ msg.id+"/vote", payload, function(resp) {
+            }).fail(function(){
+                Vue.notify({
+                  title: 'Vote failed',
+                  type: 'error'
+                });
+            });
+        },
         viewUser: function (msg) {
-            chatboxUtils.viewOthersProfile(1, msg.user_id, msg.name);
+          chatboxUtils.viewOthersProfile(1, msg.user_id, msg.name);
         },
         scrollToBottom: function () {
             this.$refs.commentArea.scrollTop = this.$refs.commentArea.scrollHeight;
@@ -134,7 +176,7 @@ export default {
             this.loading = true;
             var _this = this;
 
-            $.get(chatbox.apiUrl + "/db/comments/offset/" + this.lastCommentId + "/url/" + chatbox.location).done(function(resp) {
+            $.get(chatbox.apiUrl + "/db/comments_with_votes/offset/" + this.lastCommentId + "/user_id/" + chatboxConfig.userId + "/url/" + chatbox.location).done(function(resp) {
                 var index = 0;
                 for (; index<resp.length; index++) {
                     var data = resp[index];
@@ -145,6 +187,7 @@ export default {
                     _this.lastCommentId = data.id;
                     data.content = chatboxUtils.addClassToEmoji(data.content);
                     _this.messages.push(data);
+                    data.fromSelf = data.user_id == chatboxConfig.userId
                     // chatboxUtils.queueDanmu(data);
                 }
                 Vue.nextTick(function(){
@@ -163,7 +206,6 @@ export default {
         }
     },
     created () {
-        this.loadComments();
         // Make the method accessible from comment modal
         chatboxUtils.loadComments = this.loadComments;
     }
