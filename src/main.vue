@@ -159,7 +159,7 @@ export default {
                 if (disconnectTimer) {
                     clearTimeout(disconnectTimer);
                 }
-                if(chatboxConfig.enabled && !chatboxSocket.state.connected) {chatboxSocket.connect();
+                if(chatboxConfig.liveChatEnabled && !chatboxSocket.state.connected) {chatboxSocket.connect();
                     Vue.notify({
                       title: 'Connecting...',
                       type: 'warn'
@@ -184,11 +184,6 @@ export default {
             }
         },
         decideChatboxDisplay () {
-            if (!chatboxConfig.enabled) {
-                console.log('chatbox not enabled');
-                this.hideChatbox();
-                return;
-            }
             if (this.state.display == 'full') {
                 this.showChatboxFull();
             }
@@ -297,6 +292,7 @@ export default {
                 if (item && item['display']) 
                     _this.state.display = item['display'];
                 console.log('chatbox.display: '+_this.state.display);
+                _this.decideChatboxDisplay();
 
             });
             chatboxUtils.storage.get('danmu', function (item) {
@@ -312,16 +308,13 @@ export default {
                 var url = chatboxUtils.extractRootDomain(chatboxConfig.location);
                 if (whitelist && url in whitelist) {
                     // This is the initial connection
-                    chatboxConfig.enabled = true;
+                    chatboxConfig.liveChatEnabled = true;
                     chatboxSocket.connect();
                     Vue.notify({
                       title: 'Connecting...',
                       type: 'warn'
                     });
                 }
-                console.log('chatbox.enabled: '+chatboxConfig.enabled);
-                _this.decideChatboxDisplay();
-
             });
         },
         listenToExtension () {
@@ -341,7 +334,7 @@ export default {
                     sendResponse({msg: "shown"});
                 }
                 if (msg == "connect_chatbox") {
-                    chatboxConfig.enabled = true;
+                    chatboxConfig.liveChatEnabled = true;
                     chatboxSocket.connect();
                     Vue.notify({
                       title: 'Connecting...',
@@ -350,7 +343,7 @@ export default {
 
                 }
                 if (msg == "disconnect_chatbox") {
-                    chatboxConfig.enabled = false;
+                    chatboxConfig.liveChatEnabled = false;
                     chatboxSocket.disconnect();
                 }
                 if (msg == "close_chatbox") {

@@ -12,11 +12,11 @@
                   <div class="comment-content" v-html="msg.content"></div>
                   <br />
                   <div v-if="!msg.fromSelf" class="comment-body-footer">
-                    <span class="comment-score">{{msg.score}}</span>
                     <span @click="vote(msg, 1)" v-bind:class="{voted: msg.voted == 1 }"><font-awesome-icon :icon="['fas', 'thumbs-up']" class="fa fa-thumbs-up" /></span>
+                    <span v-if="msg.score!=0" class="comment-score">{{msg.score}}</span>
                     <span @click="vote(msg, -1)" v-bind:class="{voted: msg.voted == -1 }"><font-awesome-icon :icon="['fas', 'thumbs-down']" class="fa fa-thumbs-down" /></span>
                     <span class='reply'>Reply</span>
-                    <span class="flag" title="flag as inappropriate"><font-awesome-icon :icon="['fas', 'flag']" class="fa fa-flag" /></span>
+                    <!-- <span class="flag" title="flag as inappropriate"><font-awesome-icon :icon="['fas', 'flag']" class="fa fa-flag" /></span> -->
                   </div>
                 </div>
             </div>
@@ -174,8 +174,6 @@ export default {
         },
         sortComemnts: function (comments) {
           comments.sort(function(a, b){
-            console.log(a.score);
-            console.log(b.socre);
             if (!a.score) a.score = 0;
             if (!b.score) b.score = 0;
             if (a.score!=b.score) {

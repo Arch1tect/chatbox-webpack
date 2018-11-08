@@ -19,7 +19,7 @@ export default {
 	location: 'https://www.youtube.com/',
 	userId: null,
 	tabVisible: true,
-	enabled: false,
+	liveChatEnabled: false, // this is per page
 	shareLocation: true,
 	username: null,
 	socketUrl: socketUrl,
