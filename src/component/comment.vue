@@ -172,11 +172,28 @@ export default {
                 }
             });
         },
+        sortComemnts: function (comments) {
+          comments.sort(function(a, b){
+            console.log(a.score);
+            console.log(b.socre);
+            if (!a.score) a.score = 0;
+            if (!b.score) b.score = 0;
+            if (a.score!=b.score) {
+              if (a.score > b.score) return -1;
+              else return 1;
+            }
+            if (a.created_time > b.created_time)
+              return -1;
+            else
+              return 1;
+          });
+        },
         loadComments: function (callback) {
             this.loading = true;
             var _this = this;
 
             $.get(chatbox.apiUrl + "/db/comments_with_votes/offset/" + this.lastCommentId + "/user_id/" + chatboxConfig.userId + "/url/" + chatbox.location).done(function(resp) {
+                _this.sortComemnts(resp);
                 var index = 0;
                 for (; index<resp.length; index++) {
                     var data = resp[index];
@@ -184,7 +201,7 @@ export default {
                         data.name = 'no name';
                     chatboxUtils.tryLoadingProfileImg(data, data.user_id);
                     data.time = moment.utc(data.created_time).fromNow();
-                    _this.lastCommentId = data.id;
+                    _this.lastCommentId = Math.max(_this.lastCommentId, data.id);
                     data.content = chatboxUtils.addClassToEmoji(data.content);
                     _this.messages.push(data);
                     data.fromSelf = data.user_id == chatboxConfig.userId
