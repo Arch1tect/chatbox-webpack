@@ -3,8 +3,10 @@
         <div class="onlineUsersWrapper"><online-users></online-users></div>
 
         <div id="socketchatbox-chatroom-title" class="socketchatbox-page-title">
-<!--             <font-awesome-icon icon="sync-alt" title='Re-enter chatroom' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-refresh' /> -->
-            <span id="socketchatbox-chatroom-url" data-toggle="tooltip" data-placement="bottom">{{chatboxConfig.location}}</span>
+        <span v-bind:title="socket.state.connected ? 'Disconnect' : 'Disconnect'"  @click="toggleConnection"><font-awesome-icon icon="power-off" class="fa fa-power-off" data-toggle="tooltip" data-placement="bottom"/></span>
+        <span data-toggle="tooltip" data-placement="bottom" title='Connection status' id='socketchatbox-online-usercount' class='badge' v-bind:class="{connected: socket.state.connected}"> {{socket.state.connected? 'Live': 'Offline'}}
+        </span>
+            <span data-toggle="tooltip" data-placement="bottom">{{socket.userCount}} people are on this page.</span>
         </div>
         <div ref="chatArea" class="socketchatbox-chatArea">
             <div class="socketchatbox-messages">
@@ -19,7 +21,6 @@
                         </span>
                         <span v-else class="user-avatar-placeholder"></span>
 
-
                         <div v-if="msg.renderType=='media'" class="socketchatbox-messageBody image-or-video"><img class="chatbox-image" v-bind:src="msg.message" /></div>
                         <div v-if="msg.renderType=='file'" class="socketchatbox-messageBody"><a target='_blank' v-bind:download="msg.fileName" v-bind:href="msg.file">{{msg.fileName}}</a></div>
                         <!-- use v-html because message contain html due to adding class to emoji -->
@@ -33,6 +34,20 @@
     </div>
 </template>
 <style>
+#socketchatbox-online-usercount {
+    line-height: 15px;
+    background: gray;
+    margin-right: 5px;
+    padding: 3px 7px;
+    /* font-size: 12px; */
+    /* font-weight: 700; */
+    color: #fff;
+    /* text-align: center; */
+    /* white-space: nowrap; */
+    /* vertical-align: middle; */
+    /* margin-bottom: 2px; */
+    border-radius: 5px;
+}
 .chat-typing {
     width: 100%;
     z-index: 1;
@@ -163,13 +178,6 @@
 </style>
 <style>
 
-#socketchatbox-chatroom-url {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    display: block;
-    overflow: hidden;
-}
-
 button {
     background: #00a1ff;
     color: white;
@@ -196,6 +204,7 @@ export default {
     data () {
         return {
             state: chatboxUIState,
+            socket: chatboxSocket,
             chatboxConfig: chatboxConfig,
             messages: [],
             lastMsg: {},
@@ -415,9 +424,16 @@ export default {
         addIntro: function () {
             var log = {
                 isLog: true,
-                message: 'Live chat with others on this page!'
+                message: 'Live chat with other people on this page!'
             };
             this.messages.push(log);
+        },
+        toggleConnection: function () {
+            if (this.socket.state.connected) {
+                this.socket.disconnect();
+            } else {
+                this.socket.connect();
+            }
         }
 
     },

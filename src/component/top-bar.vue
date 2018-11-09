@@ -8,7 +8,7 @@
                 <font-awesome-icon icon="comment-alt" class="fa fa-comment-alt" v-on:click='topOptionClicked(1, $event)' v-bind:class="{ selected: state.view==1 }" />
                 <span v-show="state.display == 'mini'" class="total-num">{{config.commentsTotal}}</span>
             </span>
-            <span class="top-option" v-if="config.liveChatEnabled" title='Live chat' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live'>
+            <span class="top-option" title='Live chat' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live'>
                 <font-awesome-icon icon="comments" class="fa fa-comments" v-on:click='topOptionClicked(2, $event)' v-bind:class="{ selected: state.view==2 }" />
                 <span v-show="config.unreadLiveMsgTotal>0" class="unread-notification-dot"></span>
             </span>
@@ -100,24 +100,6 @@
   max-width: 80px;  
   min-width: 30px;
   text-align: center;
-}
-
-#socketchatbox-online-usercount {
-    line-height: 15px;
-    color: white;
-    background: gray;
-    display: inline-block;
-    min-width: 10px;
-    padding: 3px 7px;
-    font-size: 12px;
-    font-weight: 700;
-    color: #fff;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    margin-bottom: 2px;
-    /* background-color: #777; */
-    border-radius: 10px;
 }
 
 #socketchatbox-online-usercount.connected {
