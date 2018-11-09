@@ -1,3 +1,5 @@
+// This is being used not only as config file
+// but also for passing variables between components
 "use strict";
 
 var localSocketServer = false;
@@ -18,8 +20,6 @@ export default {
 	detectLocation: true,
 	location: 'https://www.youtube.com/',
 	userId: null,
-	tabVisible: true,
-	liveChatEnabled: false, // this is per page
 	shareLocation: true,
 	username: null,
 	socketUrl: socketUrl,
@@ -28,5 +28,9 @@ export default {
 	chatbot : {
 		name: 'Chat Bot',
 		userId: 'chat-bot-id'
-	}
+	},
+	// data for passing around
+	commentsTotal: 0,
+	tabVisible: true,
+	liveChatEnabled: false, // this is per page
 }

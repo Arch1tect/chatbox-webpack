@@ -1,19 +1,29 @@
 <template>
-    <div v-on:click.self="toggleChatbox" v-bind:class="{ mini: state.display == 'mini' }" id='socketchatbox-top'>
-        <span v-on:click="toggleOnlineUsers" data-toggle="tooltip" data-placement="bottom" title='Users on this page' id='socketchatbox-online-usercount' class='badge' v-bind:class="{connected: socket.state.connected}"> {{socket.state.connected? socket.userCount: 'off'}}
-        </span>
+    <div v-on:click="toggleChatbox" v-bind:class="{ mini: state.display == 'mini' }" id='socketchatbox-top'>
+<!--         <span v-on:click="toggleOnlineUsers" data-toggle="tooltip" data-placement="bottom" title='Users on this page' id='socketchatbox-online-usercount' class='badge' v-bind:class="{connected: socket.state.connected}"> {{socket.state.connected? socket.userCount: 'off'}}
+        </span> -->
         <div v-cloak v-show="state.display == 'full'" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-username'>{{config.username}}</div>
-        <span v-show="state.display == 'full'" id='topbar-options' class='float-right'>
-            <span title='Comments' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-comments'><font-awesome-icon icon="edit" class="fa fa-pencil" v-on:click='state.view=1' v-bind:class="{ selected: state.view==1 }" /></span>
-            <span v-if="config.liveChatEnabled" title='Live chat' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live'><font-awesome-icon icon="comments" class="fa fa-comments" v-on:click='state.view=2' v-bind:class="{ selected: state.view==2 }" /></span>
-            <span title='Inbox' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-inbox'><font-awesome-icon icon="inbox" class="fa fa-inbox" v-on:click='state.view=3' v-bind:class="{ selected: state.view==3 }" /></span>
-            <span title='Profile' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-profile'><font-awesome-icon icon="user-circle" class="fa fa-user" v-on:click='state.view=0' v-bind:class="{ selected: state.view==0 }" /></span>
+        <span id='topbar-options' class='float-right'>
+            <span class="top-option" title='Comments' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-comments'>
+                <font-awesome-icon icon="comment-alt" class="fa fa-comment-alt" v-on:click='topOptionClicked(1, $event)' v-bind:class="{ selected: state.view==1 }" />
+                <span v-show="state.display == 'mini'" class="comments-total">{{config.commentsTotal}}</span>
+            </span>
+            <span class="top-option" v-if="config.liveChatEnabled" title='Live chat' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live'><font-awesome-icon icon="comments" class="fa fa-comments" v-on:click='topOptionClicked(2, $event)' v-bind:class="{ selected: state.view==2 }" /></span>
+            <span class="top-option" title='Inbox' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-inbox'><font-awesome-icon icon="inbox" class="fa fa-inbox" v-on:click='topOptionClicked(3, $event)' v-bind:class="{ selected: state.view==3 }" /></span>
+            <span class="top-option" v-show="state.display == 'full'" title='Profile' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-profile'><font-awesome-icon icon="user-circle" class="fa fa-user" v-on:click='topOptionClicked(0, $event)' v-bind:class="{ selected: state.view==0 }" /></span>
 
-            <font-awesome-icon v-on:click='hideChatbox' icon="times" class="fa fa-close" title='Close' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-closeChatbox' />
+            <span class="top-option"><font-awesome-icon v-on:click='hideChatbox($event)' icon="times" class="fa fa-close" title='Close' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-closeChatbox' /></span>
         </span>
     </div>
 </template>
 <style>
+.comments-total {
+    float: right;
+    color: gray;
+}
+.top-option {
+    display: inline-block;
+}
 .socketchatbox-resize {
   top:0px;
   height:20px;
@@ -55,6 +65,14 @@
  background: white;;
   color:black;
 }
+.mini #topbar-options .fa {
+    color:#b2b2b2 !important;
+    background:none !important;
+}
+.mini #topbar-options .fa:hover {
+    color:#b2b2b2 !important;
+    background:none !important;
+}
 #socketchatbox-username {
   float:left;
   /*padding-left: 10px;*/
@@ -92,9 +110,10 @@
 }
 
 #socketchatbox-top {
-  min-width: 100px;
+  min-width: 180px;
   cursor: pointer;
   height: 30px;
+  overflow: hidden;
   background: rgba(0, 0, 0, 0.75);
   padding-left: 10px;
   line-height: 30px;
@@ -105,7 +124,7 @@
 }
 
 #socketchatbox-top.mini {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.85);
 }
 </style>
 <script>
@@ -123,7 +142,6 @@ export default {
             config: chatboxConfig,
             state: chatboxUIState,
             socket: chatboxSocket,
-            userCount: 1
         }
     },
     watch: {
@@ -149,6 +167,13 @@ export default {
                 this.state.showOnlineUsers = !this.state.showOnlineUsers;
             }
         },
+        topOptionClicked: function (view, event) {
+            if (this.state.display == 'mini') {
+                return;
+            }
+            this.state.view = view;
+            event.stopPropagation();
+        },
         toggleChatbox: function () {
             if (this.state.display == 'mini') {
                 this.state.display = 'full';
@@ -160,13 +185,14 @@ export default {
             });
             // No need to change config setting here
         },
-        hideChatbox: function () {
+        hideChatbox: function (event) {
             // This is hiding entire iframe, not minimize
             // duplicate function in main.vue, should be the same
             this.state.display = 'hidden';
             chatboxUtils.updateIframeSize('close');
-        }
+            event.stopPropagation();
 
+        }
     },
     created () {
     }

@@ -2,7 +2,7 @@
     <div v-show="state.view==1">
         <div class="socketchatbox-page-title">
             <font-awesome-icon icon="sync-alt" v-bind:class="{fa: true, 'fa-refresh': true, 'fa-spin': loading }" v-on:click="userClickedRefresh" title='Refresh comments' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-refresh-comments' />
-            <span>{{title}}</span>
+            <span>{{chatbox.commentsTotal}} comments on this page.</span>
         </div>
         <div ref="commentArea" class="socketchatbox-commentsArea">
             <div v-for="msg in messages" v-bind:class="{'from-self': msg.fromSelf}">
@@ -11,7 +11,7 @@
                   <small class="commenter-name">{{msg.name}}</small><small class="comment-time">{{msg.time}}</small>
                   <div class="comment-content" v-html="msg.content"></div>
                   <br />
-                  <div v-if="!msg.fromSelf" class="comment-body-footer">
+                  <div class="comment-body-footer">
                     <span @click="vote(msg, 1)" v-bind:class="{voted: msg.voted == 1 }"><font-awesome-icon :icon="['fas', 'thumbs-up']" class="fa fa-thumbs-up" /></span>
                     <span v-if="msg.score!=0" class="comment-score">{{msg.score}}</span>
                     <span @click="vote(msg, -1)" v-bind:class="{voted: msg.voted == -1 }"><font-awesome-icon :icon="['fas', 'thumbs-down']" class="fa fa-thumbs-down" /></span>
@@ -92,7 +92,8 @@
 }
 
 .from-self .comment-body {
-  background: #BBFF00;
+  /*background: #BBFF00;*/
+  /*TODO: better way to highlight own comment;*/
 }
 
 </style>
@@ -107,8 +108,6 @@ import chatboxUtils from '../utils.js'
 
 "use strict";
 
-var titleStr = 'Comments on this page';
-
 export default {
     name: 'comment-body',
     data () {
@@ -118,8 +117,7 @@ export default {
             chatbox: chatboxConfig,
             lastCommentId: -1,
             loading: true,
-            messages: [],
-            title: titleStr,
+            messages: []
         }
     },
     methods: {
@@ -191,6 +189,7 @@ export default {
             var _this = this;
 
             $.get(chatbox.apiUrl + "/db/comments_with_votes/offset/" + this.lastCommentId + "/user_id/" + chatboxConfig.userId + "/url/" + chatbox.location).done(function(resp) {
+                chatboxConfig.commentsTotal = resp.length;
                 _this.sortComemnts(resp);
                 var index = 0;
                 for (; index<resp.length; index++) {

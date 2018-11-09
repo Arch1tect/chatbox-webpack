@@ -26,7 +26,7 @@ Vue.component('online-users', onlineUsers);
 
 // fontawesome start
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faReply, faThumbsUp, faThumbsDown, faFlag, faArrowAltCircleLeft, faLongArrowAltLeft, faUser, faUserCircle, faSyncAlt, faSmile, faLaughWink, faComments, faPaperclip, faInbox, faEdit, faTimes, faWindowClose } from '@fortawesome/free-solid-svg-icons'
+import { faCommentAlt, faReply, faThumbsUp, faThumbsDown, faFlag, faArrowAltCircleLeft, faLongArrowAltLeft, faUser, faUserCircle, faSyncAlt, faSmile, faLaughWink, faComments, faPaperclip, faInbox, faEdit, faTimes, faWindowClose } from '@fortawesome/free-solid-svg-icons'
 // import { faHandshake } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 library.add(faArrowAltCircleLeft)
@@ -46,6 +46,7 @@ library.add(faReply)
 library.add(faFlag)
 library.add(faThumbsUp)
 library.add(faThumbsDown)
+library.add(faCommentAlt)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 // fontawesome end
 
