@@ -24,8 +24,12 @@
 .option-title {
     padding-top: 10px;
     border-top: 1px dotted lightgray;
-	margin-bottom: 5px;
+	margin-bottom: 10px;
 }
+.option-title.first {
+	border-top: none;
+}
+
 
 /*.enable-chatbox {
 	text-decoration: underline;
@@ -60,12 +64,21 @@ label {
 	cursor: pointer;
 }
 body {
-	min-width: 250px;
+	margin:0px;
+}
+.top-part {
+	padding-top: 15px;
+	padding-bottom: 15px;
+	border-bottom: 1px solid lightgray;
+	background: #f7f7f7;
+
+}
+#content {
+	min-width: 270px;
 	padding: 15px;
-	padding-bottom: 0px;
+	padding-top: 0px;
 	min-height: 275px;
 	font-size: 14px;
-	background: #f8f6f2;
 	/*font-weight: 300;*/
 	/*font-family: "Helvetica Neue",Helvetica,Arial,Verdana,sans-serif;*/
 }
@@ -135,3 +148,7 @@ button#open-chatbox:hover, button#open-chatbox:active {
     background-color: darkred;
     border-color: darkred;
 }*/
+
+
+/*fancy radio button style*/
+
