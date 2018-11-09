@@ -20,9 +20,25 @@
 			</span> -->
 		</center>
 		<!-- <center id='qtime-title'><b>Settings</b></center> -->
-						<br/>
+			<br/>
+			<div class="option-title"><b>Display mode</b></div>
+			<form>
+				<label>
+					<input type="radio" name="open_chatbox_when" value="full_size"> Full
+				</label>
+				<label>
+					<input type="radio" name="open_chatbox_when" checked="checked" value="minimized"> Mini
+				</label>
+<!-- 				<label>
+					<input type="radio" checked="checked" name="open_chatbox_when" value="when_msg"> When there is message <br>
+				</label> -->
+				<label>
+			  		<input type="radio" name="open_chatbox_when" value="never"> Hidden 
+				</label>
+			</form>
+			<br/>
 
-			<div class="option-title"><b>Enable on this website?</b></div>
+			<div class="option-title"><b>Enable live chat on this website?</b></div>
 			<form>
 				<label>
 					<input type="radio" checked="checked" name="toggle_whitelist" value="yes"> Yes
@@ -32,23 +48,7 @@
 				</label>
 			</form>
 			<br/>
-			<div class="option-title"><b>Automatically display chatbox?</b></div>
-			<form>
-				<label>
-					<input type="radio" name="open_chatbox_when" value="full_size"> Yes<br>
-				</label>
-				<label>
-					<input type="radio" name="open_chatbox_when" checked="checked" value="minimized"> Yes, but minimized<br>
-				</label>
-<!-- 				<label>
-					<input type="radio" checked="checked" name="open_chatbox_when" value="when_msg"> When there is message <br>
-				</label> -->
-				<label>
-			  		<input type="radio" name="open_chatbox_when" value="never"> No 
-				</label>
-			</form>
-			<br/>
-			<div class="option-title"><b>Show bullet screen?</b></div>
+			<div class="option-title"><b>Show scrolling text for live message?</b></div>
 			<form>
 				<label>
 					<input type="radio" checked="checked" name="toggle_danmu" value="block"> Yes
@@ -57,8 +57,8 @@
 					<input type="radio" name="toggle_danmu" value="none"> No
 				</label>
 			</form>
-			<br/>
-			<div class="option-title"><b>Share your location on the <a href='https://quotime.me/online.html'>hub</a>?</b></div>
+<!-- 			<br/>
+			<div class="option-title"><b>Share your location on the <a href='https://urlchatbox.com/online.html'>hub</a>?</b></div>
 			<form>
 				<label>
 					<input type="radio" checked="checked" name="toggle_share_location" value="yes"> Yes
@@ -66,10 +66,10 @@
 				<label>
 					<input type="radio" name="toggle_share_location" value="no"> No
 				</label>
-			</form>
+			</form> -->
 
 			<br/>
-			<div class="option-title"><b>Enabled on following websites</b></div>
+			<div class="option-title"><b>Live chat is enabled on the following websites</b></div>
 			<div class="whitelist"></div>
 
 
