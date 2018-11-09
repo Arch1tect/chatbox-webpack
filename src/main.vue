@@ -2,7 +2,7 @@
     <div id="chatbox-main-vue">
 
         <div v-cloak v-show="state.display!='hidden'" id="socketchatbox-all" class="socketchatbox-page">
-            <div id="socketchatbox-ne" class="socketchatbox-resize" @mousedown="resizeStart"></div>
+            <div v-if="state.display=='full'" id="socketchatbox-ne" class="socketchatbox-resize" @mousedown="resizeStart"></div>
             <top-bar v-cloak></top-bar>
             <div :style="{ height: state.height + 'px', width: state.width + 'px'}" id='socketchatbox-body' v-show="state.display=='full'">
                 <comment-body class="socketchatbox-body"></comment-body>

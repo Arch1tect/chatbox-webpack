@@ -189,7 +189,7 @@ export default {
             var _this = this;
 
             $.get(chatbox.apiUrl + "/db/comments_with_votes/offset/" + this.lastCommentId + "/user_id/" + chatboxConfig.userId + "/url/" + chatbox.location).done(function(resp) {
-                chatboxConfig.commentsTotal = resp.length;
+                chatboxConfig.commentsTotal += resp.length;
                 _this.sortComemnts(resp);
                 var index = 0;
                 for (; index<resp.length; index++) {

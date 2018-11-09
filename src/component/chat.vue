@@ -399,6 +399,9 @@ export default {
             });
             // Whenever the server emits 'new message', update the chat body
             chatboxSocket.registerCallback('new message', function (data) {
+                if (_this.state.view != 2 || _this.state.display != 'full') {
+                    chatboxConfig.unreadLiveMsgTotal ++;
+                }
                 _this.processMsg(data);
                 chatboxUtils.queueDanmu(data, true);
                 _this.saveMsgToStorage(data);
@@ -412,11 +415,18 @@ export default {
         addIntro: function () {
             var log = {
                 isLog: true,
-                message: 'Live chat with people on this page!'
+                message: 'Live chat with others on this page!'
             };
             this.messages.push(log);
         }
 
+    },
+    watch: {
+        'state.view': function (newView, prevView) {
+            if (newView == 2) {
+                chatboxConfig.unreadLiveMsgTotal = 0;
+            }
+        }
     },
     mounted () {
 

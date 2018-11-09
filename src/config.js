@@ -31,6 +31,8 @@ export default {
 	},
 	// data for passing around
 	commentsTotal: 0,
+	unreadLiveMsgTotal: 0,
+	unreadDirectMsg: 0,
 	tabVisible: true,
 	liveChatEnabled: false, // this is per page
 }
