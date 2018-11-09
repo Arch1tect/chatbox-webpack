@@ -409,20 +409,13 @@ export default {
                 _this.processMsg(data);
             });
         },
-        // initSocket: function () {
-        //     if (chatboxConfig.username && chatboxConfig.userId) {
-        //         if (document.hidden) return;
-        //         // TODO: document.hidden is just for Chrome
-        //         console.log('create web socket');
-        //         chatboxSocket.connect(chatboxSocket);
-        //     } else {
-        //         console.log('config is still loading, wait 0.5 sec before connecting to socket');
-        //         var _this = this;
-        //         setTimeout(function () {
-        //             _this.initSocket();
-        //         }, 500);
-        //     }
-        // }
+        addIntro: function () {
+            var log = {
+                isLog: true,
+                message: 'Live chat with people on this page!'
+            };
+            this.messages.push(log);
+        }
 
     },
     mounted () {
@@ -440,10 +433,9 @@ export default {
                     _this.processMsg(messages[i]);
             }
         });
+        this.addIntro();
 
         this.registerSocketEvents();
-        // this.initSocket();
-
     }
 }
 
