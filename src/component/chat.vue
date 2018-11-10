@@ -463,6 +463,14 @@ export default {
             if (newView == 2) {
                 chatboxConfig.unreadLiveMsgTotal = 0;
             }
+        },
+        'state.display': function (newView, prevView) {
+            if (newView == 'full') {
+                if ( this.state.view == 2)
+                    chatboxConfig.unreadLiveMsgTotal = 0;
+                if ( this.state.view == 3)
+                    chatboxConfig.unreadDirectMsg = 0;
+            }
         }
     },
     mounted () {
