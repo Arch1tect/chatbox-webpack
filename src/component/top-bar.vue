@@ -102,10 +102,6 @@
   text-align: center;
 }
 
-#socketchatbox-online-usercount.connected {
-    background: #0089FF;
-}
-
 #socketchatbox-top {
   min-width: 180px;
   cursor: pointer;

@@ -3,8 +3,9 @@
         <div class="onlineUsersWrapper"><online-users></online-users></div>
 
         <div id="socketchatbox-chatroom-title" class="socketchatbox-page-title">
-        <span v-bind:title="socket.state.connected ? 'Disconnect' : 'Disconnect'"  @click="toggleConnection"><font-awesome-icon icon="power-off" class="fa fa-power-off" data-toggle="tooltip" data-placement="bottom"/></span>
-        <span data-toggle="tooltip" data-placement="bottom" title='Connection status' id='socketchatbox-online-usercount' class='badge' v-bind:class="{connected: socket.state.connected}"> {{socket.state.connected? 'Live': 'Offline'}}
+
+        <span v-bind:title="socket.state.connected ? 'Disconnect' : 'Connect'"  @click="toggleConnection" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live-status' class='badge' v-bind:class="{connected: socket.state.connected}">{{socket.state.connected? 'Live': 'Offline'}}
+            <font-awesome-icon icon="power-off" class="fa fa-power-off" data-toggle="tooltip" data-placement="bottom"/>
         </span>
             <span data-toggle="tooltip" data-placement="bottom">{{socket.userCount}} people are on this page.</span>
         </div>
@@ -34,19 +35,17 @@
     </div>
 </template>
 <style>
-#socketchatbox-online-usercount {
+#socketchatbox-live-status {
+    cursor: pointer;
     line-height: 15px;
     background: gray;
     margin-right: 5px;
     padding: 3px 7px;
-    /* font-size: 12px; */
-    /* font-weight: 700; */
     color: #fff;
-    /* text-align: center; */
-    /* white-space: nowrap; */
-    /* vertical-align: middle; */
-    /* margin-bottom: 2px; */
     border-radius: 5px;
+}
+#socketchatbox-live-status.connected {
+    background: #0089FF;
 }
 .chat-typing {
     width: 100%;
@@ -430,9 +429,14 @@ export default {
         },
         toggleConnection: function () {
             if (this.socket.state.connected) {
+                chatboxConfig.liveChatEnabled = false;
                 this.socket.disconnect();
             } else {
                 this.socket.connect();
+                Vue.notify({
+                  title: 'Connecting...',
+                  type: 'warn'
+                });
             }
         }
 
@@ -462,6 +466,20 @@ export default {
         this.addIntro();
 
         this.registerSocketEvents();
+
+        chatboxUtils.storage.get('whitelist', function (item) {
+            var whitelist = item['whitelist'];
+            var url = chatboxUtils.extractRootDomain(chatboxConfig.location);
+            if (whitelist && url in whitelist) {
+                // This is the initial connection
+                chatboxConfig.liveChatEnabled = true;
+                chatboxSocket.connect();
+                Vue.notify({
+                  title: 'Connecting...',
+                  type: 'warn'
+                });
+            }
+        });
     }
 }
 

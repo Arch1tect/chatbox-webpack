@@ -1,4 +1,5 @@
 #chatbox-iframe {
+    /* don't remove anything, this is fighting other sites' styling*/
     position: fixed;
     left: 0;
     bottom: 0;
@@ -14,6 +15,7 @@
     border:none;
     box-shadow: 15px 15px 5px rgba(0, 0, 0, 0.31);
     display: block;
+    margin-bottom: 0px;
 }
 .danmuWrapper {
     display: none;

@@ -21,6 +21,15 @@
 .socketchatbox-page-title .fa {
     color: gray;
 }
+.socketchatbox-page-title .fa.fa-power-off {
+    color:lightgray;
+    margin-left: 5px;
+    margin-right: 0px;
+}
+#socketchatbox-live-status:hover .fa.fa-power-off {
+    color:white;
+}
+
 .socketchatbox-page-title .fa:hover {
     color: black;
 }
@@ -314,19 +323,6 @@ export default {
                 if (!display)
                     display = 'block';
                 chatboxUtils.toggleDanmu(display);
-            });
-            chatboxUtils.storage.get('whitelist', function (item) {
-                var whitelist = item['whitelist'];
-                var url = chatboxUtils.extractRootDomain(chatboxConfig.location);
-                if (whitelist && url in whitelist) {
-                    // This is the initial connection
-                    chatboxConfig.liveChatEnabled = true;
-                    chatboxSocket.connect();
-                    Vue.notify({
-                      title: 'Connecting...',
-                      type: 'warn'
-                    });
-                }
             });
         },
         listenToExtension () {
