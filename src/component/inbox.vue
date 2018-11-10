@@ -178,7 +178,8 @@ export default {
             friends: [],
             shouldAutoSelect: true,
             // track latest msg user received regardless of which friend it's from
-            lastMsgId: -1
+            lastMsgId: -1,
+            lastNotificationId: -1
         }
     },
     methods: {
@@ -304,7 +305,7 @@ export default {
         userClickRefresh: function () {
             this.pollMsgFromDB(true);
         },
-        keepPolling: function () {
+        keepPollingMsg: function () {
             var _this = this;
             if (chatboxConfig.tabVisible) {
                 _this.pollMsgFromDB();
@@ -312,17 +313,29 @@ export default {
             // Note that the code below doesn't care if the ajax
             // call finish or success or fail
             setTimeout(function(){
-                _this.keepPolling();
+                _this.keepPollingMsg();
             }, POLL_INTERVAL*1000);
         },
-        saveMsgToLocal: function (data) {
+        keepPollingNotification: function () {
+            var _this = this;
+            if (chatboxConfig.tabVisible) {
+                _this.pollNotificationFromDB();
+            }
+            // Note that the code below doesn't care if the ajax
+            // call finish or success or fail
+            setTimeout(function(){
+                _this.keepPollingNotification();
+            }, POLL_INTERVAL*1000);
+        },
+        saveMsgToLocal: function (key, data) {
+            // Also used for saving notifications
             if (!data.length) return;
             // Todo: deep copy or create new simple data
             // since data may be modified when processing
-            chatboxUtils.storage.get('chatbox-inbox', function (item) {
+            chatboxUtils.storage.get(key, function (item) {
                 var messages = [];
-                if (item && item['chatbox-inbox']) {
-                    messages = JSON.parse(item['chatbox-inbox']);
+                if (item && item[key]) {
+                    messages = JSON.parse(item[key]);
                 }
                 var lastMsgIdInStorage = -1;
                 if (messages.length) {
@@ -334,7 +347,7 @@ export default {
                         messages.push(data[i]);
                     }
                 }
-                chatboxUtils.storage.set('chatbox-inbox', JSON.stringify(messages));
+                chatboxUtils.storage.set(key, JSON.stringify(messages));
             });
         },
         checkLocalMsgThenLongPollFromDB: function () {
@@ -355,7 +368,20 @@ export default {
                         }
                     }
                 });
-                _this.keepPolling();
+                _this.keepPollingMsg();
+            });
+        },
+        checkLocalNotificationThenLongPollFromDB: function () {
+            // Must read from local then poll DB to avoid duplicate
+            // This is done by updating last notification id
+            var _this = this;
+            chatboxUtils.storage.get('chatbox-notification',function(item) {
+                if (item && item['chatbox-notification']) {
+                    var messages = JSON.parse(item['chatbox-notification']);
+                    _this.processMsgInBatch(messages);
+                }
+
+                _this.keepPollingNotification();
             });
         },
         processMsgInBatch: function (data, setAsUnread) {
@@ -366,7 +392,11 @@ export default {
             var friend = null;
             var friendsWhoSentMail = [];
             for (; i< data.length; i++) {
-                this.lastMsgId = data[i].id;
+                if (data[i].isNotification) {
+                    this.lastNotificationId = data[i].id;
+                } else {
+                    this.lastMsgId = data[i].id;
+                }
                 friend = this.processMsg(data[i]);
                 if (data[i].sender !== chatboxConfig.userId) {
                     friendsWhoSentMail.push(friend);
@@ -403,7 +433,6 @@ export default {
             if (document.hidden) {
                 return;
             }
-
             this.getReadFlags(function(alreadyReadFriends){
                 var i = 0; 
                 for (; i< friends.length; i++) {
@@ -419,12 +448,47 @@ export default {
                 }
             });
         },
+        showUnreadDot: function () {
+            if (this.state.display=='full' && this.state.view==3)
+                return;
+            chatboxConfig.unreadDirectMsg = 1;
+        },
+        pollNotificationFromDB: function () {
+            var _this = this;
+            $.get(chatboxConfig.apiUrl + "/db/notification/offset/" + this.lastNotificationId+"/user/" + chatboxConfig.userId, function(data) {
+                if (data.length) {
+
+                    // make the notification data in the same format
+                    // as direct message format so we can reuse some functions
+                    var i = 0;
+                    for (; i < data.length; i++) {
+                        var notification = data[i];
+                        notification.isNotification = true;
+                        notification.sender = chatboxConfig.chatbot.userId;
+                        notification.sendername = chatboxConfig.chatbot.name;
+                        notification.receiver = chatboxConfig.userId;
+                        notification.receivername = chatboxConfig.username;
+                        notification.message = notification.content;
+                    }
+                    _this.saveMsgToLocal('chatbox-notification', data);
+                    var lastConversationFriend = _this.processMsgInBatch(data, true);
+
+                    Vue.notify({
+                        title: 'Received '+data.length+' notifications',
+                    });
+                    _this.showUnreadDot();
+                }
+            }).always(function(){
+                // what's this???
+                _this.shouldAutoSelect = false;
+            });
+        },
         pollMsgFromDB: function (reportStatus) {
             // console.log('start polling from db');
             this.loading = true;
             var _this = this;
             $.get(chatboxConfig.apiUrl + "/db/message/offset/" + this.lastMsgId+"/user/" + chatboxConfig.userId, function(data) {
-                _this.saveMsgToLocal(data);
+                _this.saveMsgToLocal('chatbox-inbox', data);
                 var lastConversationFriend = _this.processMsgInBatch(data, true);
                 var newMsgFromOthersCount = 0;
                 var i = 0;
@@ -436,6 +500,8 @@ export default {
                 var noty = "No new message";
                 if (newMsgFromOthersCount) {
                     noty = 'Received '+ newMsgFromOthersCount + ' new message';
+                    _this.showUnreadDot();
+
                 }
                 if (newMsgFromOthersCount||reportStatus) {
                     Vue.notify({
@@ -483,6 +549,11 @@ export default {
             Vue.nextTick(function(){
                 _this.scrollToBottom();
             });
+        },
+        'state.view': function (newView, prevView) {
+            if (newView == 3) {
+                chatboxConfig.unreadDirectMsg = 0;
+            }
         }
     },
     computed: {
@@ -497,6 +568,7 @@ export default {
         if (chatboxConfig.testing)
             this.loadTestData();
         this.checkLocalMsgThenLongPollFromDB();
+        this.checkLocalNotificationThenLongPollFromDB();
     }
 }
 function sortByMsgId(a, b) {

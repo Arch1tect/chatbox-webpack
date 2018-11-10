@@ -67,8 +67,9 @@ export default {
             var payload = {
                 'user_id': chatboxConfig.userId,
                 'user_name': chatboxConfig.username,
-                'message': '@' + this.replyToName +'\n'+ this.comment,
-                'reply': this.replyToId
+                'message': this.comment,
+                'reply_to_user_id': this.replyToId,
+                'reply_to_user_name': this.replyToName
             }
             $.post(chatboxConfig.apiUrl + "/db/comments/v2/url/"+ chatboxConfig.location, payload, function(resp) {
                 _this.$modal.hide('comment-modal');
