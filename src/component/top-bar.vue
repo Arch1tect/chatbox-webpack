@@ -1,24 +1,23 @@
 <template>
     <div v-on:click="toggleChatbox" v-bind:class="{ mini: state.display == 'mini' }" id='socketchatbox-top'>
-<!--         <span v-on:click="toggleOnlineUsers" data-toggle="tooltip" data-placement="bottom" title='Users on this page' id='socketchatbox-online-usercount' class='badge' v-bind:class="{connected: socket.state.connected}"> {{socket.state.connected? socket.userCount: 'off'}}
-        </span> -->
+
         <div v-cloak v-show="state.display == 'full'" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-username'>{{config.username}}</div>
-        <span id='topbar-options' class='float-right'>
-            <span class="top-option" title='Comments' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-comments'>
-                <font-awesome-icon icon="comment-alt" class="fa fa-comment-alt" v-on:click='topOptionClicked(1, $event)' v-bind:class="{ selected: state.view==1 }" />
+        <span v-on:click='handleMissClick($event)' id='topbar-options' class='float-right'>
+            <span v-on:click='topOptionClicked(1, $event)' class="top-option" title='Comments' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-comments'>
+                <font-awesome-icon icon="comment-alt" class="fa fa-comment-alt"  v-bind:class="{ selected: state.view==1 }" />
                 <span v-show="state.display == 'mini'" class="total-num">{{config.commentsTotal}}</span>
             </span>
-            <span class="top-option" title='Live chat' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live'>
-                <font-awesome-icon icon="comments" class="fa fa-comments" v-on:click='topOptionClicked(2, $event)' v-bind:class="{ selected: state.view==2 }" />
+            <span v-on:click='topOptionClicked(2, $event)' class="top-option" title='Live chat' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live'>
+                <font-awesome-icon icon="comments" class="fa fa-comments"  v-bind:class="{ selected: state.view==2 }" />
                 <span v-show="config.unreadLiveMsgTotal>0" class="unread-notification-dot"></span>
             </span>
-            <span class="top-option" title='Inbox' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-inbox'>
-                <font-awesome-icon icon="inbox" class="fa fa-inbox" v-on:click='topOptionClicked(3, $event)' v-bind:class="{ selected: state.view==3 }" />
+            <span v-on:click='topOptionClicked(3, $event)' class="top-option" title='Inbox' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-inbox'>
+                <font-awesome-icon icon="inbox" class="fa fa-inbox"  v-bind:class="{ selected: state.view==3 }" />
                 <span v-show="config.unreadDirectMsg>0" class="unread-notification-dot"></span>
             </span>
-            <span class="top-option" v-show="state.display == 'full'" title='Profile' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-profile'><font-awesome-icon icon="user-circle" class="fa fa-user" v-on:click='topOptionClicked(0, $event)' v-bind:class="{ selected: state.view==0 }" /></span>
+            <span v-on:click='topOptionClicked(0, $event)' class="top-option" v-show="state.display == 'full'" title='Profile' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-profile'><font-awesome-icon icon="user-circle" class="fa fa-user" v-bind:class="{ selected: state.view==0 }" /></span>
 
-            <span class="top-option" title="Close"><font-awesome-icon v-on:click='hideChatbox($event)' icon="times" class="fa fa-close" title='Close' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-closeChatbox' /></span>
+            <span v-on:click='hideChatbox($event)' class="top-option" title="Close"><font-awesome-icon  icon="times" class="fa fa-close" title='Close' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-closeChatbox' /></span>
         </span>
     </div>
 </template>
@@ -161,6 +160,13 @@ export default {
             }
             this.state.view = view;
             event.stopPropagation();
+        },
+        handleMissClick: function (event) {
+            // hacky solution for user clicking on the gap 
+            // between top bar options
+            if (this.state.display == 'full') {
+                event.stopPropagation();
+            }
         },
         toggleChatbox: function () {
             if (this.state.display == 'mini') {
