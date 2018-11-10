@@ -22,6 +22,7 @@ export default {
 	userId: null,
 	shareLocation: true,
 	username: null,
+	aboutMe: null,
 	socketUrl: socketUrl,
 	apiUrl : apiUrl,
 	s3Url: 'https://s3.amazonaws.com/chat.anywhere.user.img/',

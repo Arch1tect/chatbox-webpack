@@ -149,16 +149,16 @@ export default {
         },
         saveStr: function () {
             if (this.savingName || this.savingImg)
-                return 'Saving...';
+                return 'Updating...';
             else
-                return 'Save';
+                return 'Update';
         },
         canSave: function () {
             var saving = this.savingName || this.savingImg;
             if (saving) return false;
             var profileImgUpdated = this.imgFile;
             var nameUpdated = this.username !== this.chatbox.username;
-            var aboutUpdated = this.aboutMe !== chatboxConfig.aboutMe;
+            var aboutUpdated = this.aboutMe !== this.chatbox.aboutMe;
 
             return profileImgUpdated || nameUpdated || aboutUpdated;
         }
@@ -195,7 +195,9 @@ export default {
                 'uuid': chatboxConfig.userId,
                 'name': this.username
             }
-            chatboxSocket.getSocket().emit('change name', {username: this.username});
+            if (chatboxSocket.state.connected) {
+                chatboxSocket.getSocket().emit('change name', {username: this.username});
+            }
             var _this = this;
             $.post(chatboxConfig.apiUrl + "/db/user/change_name", payload, function(resp) {
                 Vue.notify({
