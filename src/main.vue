@@ -39,24 +39,6 @@
   -ms-user-select: none;      /* IE 10+ */
   user-select: none;          /* Likely future */      
 }
-.socketchatbox-bottom-btn-wrapper {
-  width: 100%;
-  height: 35px;
-  border: none;
-  border-top: 1px solid lightgray;
-  float: left;
-  border-radius: 0;
-  background: white;
-  color: black;
-  font-weight: 400;
-}
-.socketchatbox-bottom-btn-wrapper:hover {
-  /*background:white;*/
-  cursor: pointer;
-}
-.socketchatbox-bottom-btn-wrapper span.fa {
-  margin-right: 5px; 
-}
 .notifications {
     bottom: 35px !important;
     width: 100% !important;

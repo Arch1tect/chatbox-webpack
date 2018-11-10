@@ -60,8 +60,8 @@
     opacity: 0;
 }
 button:disabled, button[disabled]{
-  background-color: #cccccc;
-  color: black;
+  background-color: lightgray !important;
+  color: black !important;
   cursor: not-allowed !important;
 }
 .socketchatbox-profileArea {

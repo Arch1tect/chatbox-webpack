@@ -197,13 +197,7 @@
   border-radius: 5px;
 }
 </style>
-<style>
 
-button {
-    background: #00a1ff;
-    color: white;
-}
-</style>
 <script>
 import * as moment from 'moment';
 import Vue from 'vue'

@@ -15,18 +15,37 @@
                     <span @click="vote(msg, 1)" v-bind:class="{voted: msg.voted == 1 }"><font-awesome-icon :icon="['fas', 'thumbs-up']" class="fa fa-thumbs-up" /></span>
                     <span v-if="msg.score!=0" class="comment-score">{{msg.score}}</span>
                     <span @click="vote(msg, -1)" v-bind:class="{voted: msg.voted == -1 }"><font-awesome-icon :icon="['fas', 'thumbs-down']" class="fa fa-thumbs-down" /></span>
-                    <span class='reply'>Reply</span>
+                    <span @click="chatboxUtils.openCommentModal(msg.user_id, msg.name)" class='reply'>Reply</span>
                     <!-- <span class="flag" title="flag as inappropriate"><font-awesome-icon :icon="['fas', 'flag']" class="fa fa-flag" /></span> -->
                   </div>
                 </div>
             </div>
         </div>
-        <button v-show="state.view == 1" @click="chatboxUtils.openCommentModal" class="socketchatbox-bottom-btn-wrapper">
+        <button v-show="state.view == 1" @click="chatboxUtils.openCommentModal(false)" class="socketchatbox-bottom-btn-wrapper">
             <font-awesome-icon icon="pen" class="fa fa-pen" data-toggle="tooltip" data-placement="bottom"/><span>Leave a comment</span>
         </button>
     </div>
 </template>
 <style>
+.socketchatbox-bottom-btn-wrapper {
+  width: 100%;
+  height: 35px;
+  border: none;
+  border-top: 1px solid lightgray;
+  float: left;
+  border-radius: 0;
+  /*background: white;*/
+  /*color: white;*/
+  font-weight: 400;
+}
+.socketchatbox-bottom-btn-wrapper:hover {
+  background: #2196F3;
+  cursor: pointer;
+  color: white;
+}
+.socketchatbox-bottom-btn-wrapper span.fa {
+  margin-right: 5px; 
+}
 .fa-pen {
   margin-right: 10px;
 }

@@ -1,7 +1,7 @@
 <template>
     <vue-modal @closed="modalClosed" @opened="autoFocus" height="auto" name="comment-modal">
         <div>
-            <textarea ref="commentInput" v-model="comment" placeholder="Add your comment here..." id="socketchatbox-comment-content"></textarea>
+            <textarea ref="commentInput" v-model="comment" :placeholder="placeholder" id="socketchatbox-comment-content"></textarea>
         </div>
         <div class="comment-modal-footer">
             <span @click="$modal.hide('comment-modal')" >Cancel</span>
@@ -51,6 +51,9 @@ export default {
     data () {
         return {
             comment: '',
+            replyToId: null,
+            replyToName: null,
+            placeholder: 'Add your comment here...'
         }
     },
     methods: {
@@ -63,9 +66,11 @@ export default {
             var _this = this;
             var payload = {
                 'user_id': chatboxConfig.userId,
-                'message': this.comment
+                'user_name': chatboxConfig.username,
+                'message': '@' + this.replyToName +'\n'+ this.comment,
+                'reply': this.replyToId
             }
-            $.post(chatboxConfig.apiUrl + "/db/comments/url/"+ chatboxConfig.location, payload, function(resp) {
+            $.post(chatboxConfig.apiUrl + "/db/comments/v2/url/"+ chatboxConfig.location, payload, function(resp) {
                 _this.$modal.hide('comment-modal');
                 _this.comment = '';
                 chatboxUtils.loadComments();
@@ -88,8 +93,16 @@ export default {
     },
     created () {
         var _this = this;
-        chatboxUtils.openCommentModal = function () {
+        chatboxUtils.openCommentModal = function (userId, name) {
             _this.$modal.show('comment-modal');
+            _this.replyToId = null;
+            _this.replyToName = null;
+            _this.placeholder = 'Add your comment here...';
+            if (userId) {
+                _this.replyToId = userId;
+                _this.replyToName = name;
+                _this.placeholder = "Reply to " + name;
+            }
             chatboxUtils.updateIframeSize('full size');
         }
     }
