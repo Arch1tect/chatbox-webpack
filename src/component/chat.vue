@@ -43,6 +43,9 @@
     cursor: pointer;
     color: gray;
 }
+#socketchatbox-live-status .fa {
+    color: white;
+}
 .online-users-btn:hover {
     color: black;
 }
@@ -57,8 +60,14 @@
     color: #fff;
     border-radius: 5px;
 }
+#socketchatbox-live-status:hover .fa.fa-power-off{
+    color: #00ff32;
+}
 #socketchatbox-live-status.connected {
     background: #0089FF;
+}
+#socketchatbox-live-status.connected:hover .fa.fa-power-off{
+    color: red;
 }
 .chat-typing {
     width: 100%;

@@ -33,7 +33,7 @@
 .upload-profile-image-btn-wrapper {
     visibility: hidden;
     position: relative;
-    margin-top: -50px;
+    margin-top: -52px;
     cursor: pointer !important;
     font-size: large;
 }
