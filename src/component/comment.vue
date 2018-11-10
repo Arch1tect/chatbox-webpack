@@ -22,11 +22,14 @@
             </div>
         </div>
         <button v-show="state.view == 1" @click="chatboxUtils.openCommentModal" class="socketchatbox-bottom-btn-wrapper">
-            <span>Leave a comment</span>
+            <font-awesome-icon icon="pen" class="fa fa-pen" data-toggle="tooltip" data-placement="bottom"/><span>Leave a comment</span>
         </button>
     </div>
 </template>
 <style>
+.fa-pen {
+  margin-right: 10px;
+}
 .comment-body-footer span {
   margin-right: 5px;
   /*font-size: larger;*/

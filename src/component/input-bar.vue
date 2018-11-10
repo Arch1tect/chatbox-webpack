@@ -22,7 +22,7 @@
           </div>
         </emoji-picker>
 
-        <input autoFocus ref="chatInput" v-model="content"  v-on:keyup.enter="sendInput" @keyup="typing" class="socketchatbox-inputMessage" v-bind:placeholder="InputPlaceHolder"/>
+        <input :disabled="state.view == 2 && !config.liveChatEnabled" autoFocus ref="chatInput" v-model="content"  v-on:keyup.enter="sendInput" @keyup="typing" class="socketchatbox-inputMessage" v-bind:placeholder="InputPlaceHolder"/>
         <label v-show="state.view==2" data-toggle="tooltip" title='Send image or file' data-placement="left" id='socketchatbox-sendFileBtn' for = "socketchatbox-sendMedia">
             <font-awesome-icon icon="paperclip" style="width: 100%;height: 100%;"/>
             <input @change="sendFile" id="socketchatbox-sendMedia" type="file" style="display:none;">
@@ -57,6 +57,7 @@
 }
 input.socketchatbox-inputMessage:disabled {
     background: lightgray;
+    cursor: not-allowed;
 }
 #socketchatbox-sendFileBtn {
     float: right;
@@ -197,6 +198,7 @@ export default {
     data () {
         return {
             state: chatboxUIState,
+            config: chatboxConfig,
             InputPlaceHolder: 'Type here...',
             content: '',
             emojiSearch: '',

@@ -432,6 +432,7 @@ export default {
                 chatboxConfig.liveChatEnabled = false;
                 this.socket.disconnect();
             } else {
+                chatboxConfig.liveChatEnabled = true;
                 this.socket.connect();
                 Vue.notify({
                   title: 'Connecting...',
