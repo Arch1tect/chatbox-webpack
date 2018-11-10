@@ -1,22 +1,20 @@
 <template>
-    <center v-show="state.showOnlineUsers" class="socketchatbox-onlineusers">
+    <center v-show="state.showOnlineUsers && socket.state.connected" class="socketchatbox-onlineusers">
         <span class="onlineUser" v-for="user in onlineUsers" @click="viewUser(user)"><center><img v-bind:title="user.username" v-bind:src="user.profileImgSrc" /></center></span>
         <center v-if="onlineUsers.length==0">No user on this page</center>
     </center>
 </template>
 <style>
 .socketchatbox-onlineusers {
-    background: white;
-    /*background: rgb(74, 171, 255);*/
-    /*color: white;*/
+    background: #fff;
     width: 100%;
-    min-height: 30px;
-    max-height: 50%;
     overflow-y: auto;
+    max-height: 50%;
     position: absolute;
-    padding: 5px;
     z-index: 1;
-    border-bottom: 1px solid lightgray;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    border-bottom: 1px solid #d3d3d3;
 }
 
 /* Handle */
@@ -25,19 +23,19 @@
 }
 
 .socketchatbox-onlineusers .onlineUser {
-    margin: 7px;
-    margin-bottom: 0px;
-    display: inline-block;
+    margin: 5px;
+/*    margin-bottom: 0px;
+*/    display: inline-block;
     cursor: pointer;
 }
 
 .onlineUser img {
-    width: 32px;
-    height: 32px;
+    width: 25px;
+    height: 25px;
     object-fit: cover;
     border-radius: 100%;
     box-shadow: 0 0 6px black;
-    margin-bottom: 5px;
+    /*margin-bottom: 5px;*/
 }
 
 </style>

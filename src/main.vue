@@ -105,8 +105,8 @@ button:focus {
     background: white;
     padding: 8px;
 }
-.socketchatbox-page-title .svg-inline--fa {
-    margin-right: 10px;
+.socketchatbox-page-title .fa {
+    margin-right: 5px;
     cursor: pointer;
 }
 .socketchatbox-body {

@@ -155,14 +155,6 @@ export default {
         }
     },
     methods: {
-        toggleOnlineUsers: function () {
-            if (this.state.view != 2) {
-                this.state.view = 2;
-                this.state.showOnlineUsers = true;
-            } else {
-                this.state.showOnlineUsers = !this.state.showOnlineUsers;
-            }
-        },
         topOptionClicked: function (view, event) {
             if (this.state.display == 'mini') {
                 return;

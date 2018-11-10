@@ -1,14 +1,14 @@
 <template>
     <div v-show="state.view==2">
-        <div class="onlineUsersWrapper"><online-users></online-users></div>
-
         <div id="socketchatbox-chatroom-title" class="socketchatbox-page-title">
-
-        <span v-bind:title="socket.state.connected ? 'Disconnect' : 'Connect'"  @click="toggleConnection" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live-status' class='badge' v-bind:class="{connected: socket.state.connected}">{{socket.state.connected? 'Live': 'Offline'}}
-            <font-awesome-icon icon="power-off" class="fa fa-power-off" data-toggle="tooltip" data-placement="bottom"/>
-        </span>
-            <span data-toggle="tooltip" data-placement="bottom">{{socket.userCount}} people are on this page.</span>
+            <span v-bind:title="socket.state.connected ? 'Disconnect' : 'Connect'"  @click="toggleConnection" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live-status' class='badge' v-bind:class="{connected: socket.state.connected}">{{socket.state.connected? 'Live': 'Offline'}}
+                <font-awesome-icon icon="power-off" class="fa fa-power-off" data-toggle="tooltip" data-placement="bottom"/>
+            </span>
+            <span class="online-users-btn" v-if="socket.state.connected" @click="state.showOnlineUsers = !state.showOnlineUsers">
+                <font-awesome-icon icon="users" class="fa fa-users" data-toggle="tooltip" data-placement="bottom"/><span>{{socket.userCount}}</span>
+            </span>
         </div>
+        <div class="onlineUsersWrapper"><online-users></online-users></div>
         <div ref="chatArea" class="socketchatbox-chatArea">
             <div class="socketchatbox-messages">
 
@@ -35,11 +35,24 @@
     </div>
 </template>
 <style>
+.fa-users {
+    margin-left: 10px;
+    margin-right: 5px;
+}
+.online-users-btn {
+    cursor: pointer;
+    color: gray;
+}
+.online-users-btn:hover {
+    color: black;
+}
+.online-users-btn:hover .fa{
+    color: black;
+}
 #socketchatbox-live-status {
     cursor: pointer;
     line-height: 15px;
     background: gray;
-    margin-right: 5px;
     padding: 3px 7px;
     color: #fff;
     border-radius: 5px;
