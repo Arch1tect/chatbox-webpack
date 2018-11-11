@@ -1,6 +1,6 @@
 {
-  "name": "Chat Anywhere",
-  "short_name": "Chat Anywhere",
+  "name": "Same Page",
+  "short_name": "Same Page",
   "description": "Live chat with people who are browsing the same web page as you!",
   "version": "2.0.0",
   "permissions": ["activeTab", "storage", "unlimitedStorage"],
