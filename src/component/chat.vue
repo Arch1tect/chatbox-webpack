@@ -1,7 +1,7 @@
 <template>
     <div v-show="state.view==2">
         <div id="socketchatbox-chatroom-title" class="socketchatbox-page-title">
-            <span v-bind:title="socket.state.connected ? 'Disconnect' : 'Connect'"  @click="toggleConnection" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live-status' class='badge' v-bind:class="{connected: socket.state.connected}">{{socket.state.connected? 'Live': 'Offline'}}
+            <span v-bind:title="socket.state.connected ? 'Disconnect' : 'Connect'"  @click="toggleConnection" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live-status' class='badge' v-bind:class="{connected: socket.state.connected}">{{socket.state.connected? 'Online': 'Offline '}}
                 <font-awesome-icon icon="power-off" class="fa fa-power-off" data-toggle="tooltip" data-placement="bottom"/>
             </span>
             <span class="online-users-btn" v-if="socket.state.connected" @click="state.showOnlineUsers = !state.showOnlineUsers">
@@ -32,6 +32,7 @@
             </div>
         </div>
         <div v-show="typing" class="chat-typing">{{typing}}</div>
+        <div @click="toggleConnection" v-show="state.view == 2 && !config.liveChatEnabled" class="input-bar-mask">Join live chat!</div>
     </div>
 </template>
 <style>
@@ -196,6 +197,20 @@
   padding: 0px;
   border-radius: 5px;
 }
+.input-bar-mask {
+    height: 35px;
+    width: 100%;
+    background: #ffffff;
+    text-align: center;
+    line-height: 35px;
+    position: absolute;
+    border-top: 1px solid lightgray;
+}
+.input-bar-mask:hover {
+  background: #2196F3;
+  cursor: pointer;
+  color: white;
+}
 </style>
 
 <script>
@@ -220,7 +235,7 @@ export default {
         return {
             state: chatboxUIState,
             socket: chatboxSocket,
-            chatboxConfig: chatboxConfig,
+            config: chatboxConfig,
             messages: [],
             lastMsg: {},
             typing: null

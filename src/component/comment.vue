@@ -22,7 +22,7 @@
             </div>
         </div>
         <button v-show="state.view == 1" @click="chatboxUtils.openCommentModal(false)" class="socketchatbox-bottom-btn-wrapper">
-            <font-awesome-icon icon="pen" class="fa fa-pen" data-toggle="tooltip" data-placement="bottom"/><span>Leave a comment</span>
+            <font-awesome-icon icon="pen" class="fa fa-pen" data-toggle="tooltip" data-placement="bottom"/><span>Leave a comment!</span>
         </button>
     </div>
 </template>

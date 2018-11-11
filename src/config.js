@@ -35,5 +35,6 @@ export default {
 	unreadLiveMsgTotal: 0,
 	unreadDirectMsg: 0,
 	tabVisible: true,
+	directMsgEnabled: true,
 	liveChatEnabled: false, // this is per page
 }

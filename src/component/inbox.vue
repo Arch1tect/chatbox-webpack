@@ -9,7 +9,7 @@
             <div class="socketchatbox-friend-list">
                 <center v-bind:class="{friendnameWrapper: true, selected: friend.selected}" @click="selectFriend(friend, true)" v-for="friend in friends"><span class='message-unread' v-show='friend.unreadMsg'></span><img v-bind:src="friend.profileImgSrc" /><div class="name-text">{{friend.name}}</div></center>
             </div>
-            <div ref="msgArea" class="socketchatbox-friend-messages">
+            <div ref="msgArea" @click="msgClick" class="socketchatbox-friend-messages">
                 <div class="inbox-conversation-no-message" v-if="!selectedConversation.length">Start the conversation now!</div>
                 <div v-bind:class="{ 'socketchatbox-message socketchatbox-inbox-message': true, 'socketchatbox-message-me': msg.me, 'merge-above': false }" v-for="msg in selectedConversation">
                     <div v-if="msg.isLog" class="socketchatbox-log">{{msg.message}}</div>
@@ -21,6 +21,8 @@
                 </div>
             </div>
         </div>
+        <div v-show="state.view == 3 && selectedFriend ==chatbotFriend" @click="goToForum" class="input-bar-mask">Go to the forum!</div>
+
     </div>
 </template>
 <style>
@@ -183,6 +185,9 @@ export default {
         }
     },
     methods: {
+        goToForum: function () {
+            window.open('https://forum.urlchatbox.com', '_blank');
+        },
         viewProfile: function () {
             chatboxUtils.viewOthersProfile(3, this.selectedFriend.userId, this.selectedFriend.name);
         },
@@ -200,7 +205,13 @@ export default {
             chatboxUtils.tryLoadingProfileImg(friend, id);
             return friend;
         },
+        msgClick: function () {
+            this.setReadFlag([this.selectedFriend], true);
+        },
         selectFriend: function (friend, click) {
+            if (click) {
+                this.setReadFlag([friend], true);
+            }
             if (friend.selected && click) {
                 this.viewProfile();
                 return;
@@ -212,9 +223,6 @@ export default {
             }
             friend.selected = true;
             this.selectedFriend = friend;
-            if (click) {
-                this.setReadFlag([friend], true);
-            }
         },
         loadChatbotMsg: function () {
             // chatbot welcoming message load without ajax call
@@ -380,40 +388,6 @@ export default {
                 chatboxUtils.storage.set(key, JSON.stringify(messages));
             });
         },
-        // checkLocalMsgThenLongPollFromDB: function () {
-        //     // Must read from local then poll DB to avoid duplicate
-        //     // This is done by updating last msg id
-        //     var _this = this;
-        //     chatboxUtils.storage.get('chatbox-inbox', function(item) {
-        //         if (item && item['chatbox-inbox']) {
-        //             var messages = JSON.parse(item['chatbox-inbox']);
-        //             _this.processMsgInBatch(messages);
-        //         }
-        //         _this.getReadFlags(function(alreadyReadFriends) {
-        //             var i = 0;
-        //             for (; i < _this.friends.length; i++) {
-        //                 var friend = _this.friends[i];
-        //                 if (friend.userId in alreadyReadFriends) {
-        //                     friend.unreadMsg = false;
-        //                 }
-        //             }
-        //         });
-        //         _this.keepPollingMsg();
-        //     });
-        // },
-        // checkLocalNotificationThenLongPollFromDB: function () {
-        //     // Must read from local then poll DB to avoid duplicate
-        //     // This is done by updating last notification id
-        //     var _this = this;
-        //     chatboxUtils.storage.get('chatbox-notification',function(item) {
-        //         if (item && item['chatbox-notification']) {
-        //             var messages = JSON.parse(item['chatbox-notification']);
-        //             _this.processMsgInBatch(messages);
-        //         }
-
-        //         _this.keepPollingNotification();
-        //     });
-        // },
         processMsgInBatch: function (data, setAsUnread) {
             // Generic logic, used by real time poll from DB
             // and reading from local storage
@@ -591,6 +565,7 @@ export default {
     watch: {
         selectedFriend: function (newSelected, prevSelected) {
             this.selectedConversation = this.messageDict[newSelected.userId];
+            chatboxConfig.directMsgEnabled = newSelected != this.chatbotFriend
         },
         selectedConversation: function (newVal, oldVal) {
             var _this = this;
@@ -612,8 +587,8 @@ export default {
         this.loadChatbotMsg();
         if (chatboxConfig.testing)
             this.loadTestData();
-        this.keepPollingNotification();
         this.keepPollingMsg();
+        this.keepPollingNotification();
     }
 }
 function sortByMsgId(a, b) {
