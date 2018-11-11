@@ -259,6 +259,7 @@ export default {
             if (data.sender == chatboxConfig.userId) {
                 data.me = true;
                 friend = this.buildFriendObj(data.receiver, data.receivername);
+                friend.unreadMsg = false;
             } else {
                 friend = this.buildFriendObj(data.sender, data.sendername);
             }
@@ -284,7 +285,7 @@ export default {
                 conversation.push(data);
 
             } else {
-                // first message of conversation that's sent FROM OTHER USER!
+                // first message of conversation
                 data.firstMsg = true;
                 this.addFriend(friend);
                 this.messageDict[friend.userId] = [log, data];
@@ -555,10 +556,6 @@ export default {
                 chatboxConfig.unreadDirectMsg = 0;
             }
         }
-    },
-    computed: {
-        // below code deprecated, using notification box instead
-        titleDeprecated: function () {}
     },
     created () {
         // expose sendPM method so input component can access it
