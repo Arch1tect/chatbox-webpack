@@ -212,7 +212,9 @@ export default {
             }
             friend.selected = true;
             this.selectedFriend = friend;
-            this.setReadFlag([friend], true);
+            if (click) {
+                this.setReadFlag([friend], true);
+            }
         },
         loadChatbotMsg: function () {
             // chatbot welcoming message load without ajax call
@@ -306,10 +308,30 @@ export default {
         userClickRefresh: function () {
             this.pollMsgFromDB(true);
         },
+        markAlreadyReadMsgBaseOnStorage: function () {
+            var _this = this;
+            this.getReadFlags(function(alreadyReadFriends) {
+                var i = 0;
+                for (; i < _this.friends.length; i++) {
+                    var friend = _this.friends[i];
+                    if (friend.userId in alreadyReadFriends) {
+                        friend.unreadMsg = false;
+                    }
+                }
+                _this.setUnreadMsgDot();
+            });
+        },
         keepPollingMsg: function () {
             var _this = this;
             if (chatboxConfig.tabVisible) {
-                _this.pollMsgFromDB();
+                chatboxUtils.storage.get('chatbox-inbox', function(item) {
+                    if (item && item['chatbox-inbox']) {
+                        var messages = JSON.parse(item['chatbox-inbox']);
+                        _this.processMsgInBatch(messages);
+                    }
+                    _this.markAlreadyReadMsgBaseOnStorage();
+                    _this.pollMsgFromDB();
+                });
             }
             // Note that the code below doesn't care if the ajax
             // call finish or success or fail
@@ -320,7 +342,14 @@ export default {
         keepPollingNotification: function () {
             var _this = this;
             if (chatboxConfig.tabVisible) {
-                _this.pollNotificationFromDB();
+                chatboxUtils.storage.get('chatbox-notification',function(item) {
+                    if (item && item['chatbox-notification']) {
+                        var messages = JSON.parse(item['chatbox-notification']);
+                        _this.processMsgInBatch(messages);
+                    }
+                    _this.markAlreadyReadMsgBaseOnStorage();
+                    _this.pollNotificationFromDB();
+                });
             }
             // Note that the code below doesn't care if the ajax
             // call finish or success or fail
@@ -351,59 +380,64 @@ export default {
                 chatboxUtils.storage.set(key, JSON.stringify(messages));
             });
         },
-        checkLocalMsgThenLongPollFromDB: function () {
-            // Must read from local then poll DB to avoid duplicate
-            // This is done by updating last msg id
-            var _this = this;
-            chatboxUtils.storage.get('chatbox-inbox',function(item) {
-                if (item && item['chatbox-inbox']) {
-                    var messages = JSON.parse(item['chatbox-inbox']);
-                    _this.processMsgInBatch(messages);
-                }
-                _this.getReadFlags(function(alreadyReadFriends) {
-                    var i = 0;
-                    for (; i < _this.friends.length; i++) {
-                        var friend = _this.friends[i];
-                        if (friend.userId in alreadyReadFriends) {
-                            friend.unreadMsg = false;
-                        }
-                    }
-                });
-                _this.keepPollingMsg();
-            });
-        },
-        checkLocalNotificationThenLongPollFromDB: function () {
-            // Must read from local then poll DB to avoid duplicate
-            // This is done by updating last notification id
-            var _this = this;
-            chatboxUtils.storage.get('chatbox-notification',function(item) {
-                if (item && item['chatbox-notification']) {
-                    var messages = JSON.parse(item['chatbox-notification']);
-                    _this.processMsgInBatch(messages);
-                }
+        // checkLocalMsgThenLongPollFromDB: function () {
+        //     // Must read from local then poll DB to avoid duplicate
+        //     // This is done by updating last msg id
+        //     var _this = this;
+        //     chatboxUtils.storage.get('chatbox-inbox', function(item) {
+        //         if (item && item['chatbox-inbox']) {
+        //             var messages = JSON.parse(item['chatbox-inbox']);
+        //             _this.processMsgInBatch(messages);
+        //         }
+        //         _this.getReadFlags(function(alreadyReadFriends) {
+        //             var i = 0;
+        //             for (; i < _this.friends.length; i++) {
+        //                 var friend = _this.friends[i];
+        //                 if (friend.userId in alreadyReadFriends) {
+        //                     friend.unreadMsg = false;
+        //                 }
+        //             }
+        //         });
+        //         _this.keepPollingMsg();
+        //     });
+        // },
+        // checkLocalNotificationThenLongPollFromDB: function () {
+        //     // Must read from local then poll DB to avoid duplicate
+        //     // This is done by updating last notification id
+        //     var _this = this;
+        //     chatboxUtils.storage.get('chatbox-notification',function(item) {
+        //         if (item && item['chatbox-notification']) {
+        //             var messages = JSON.parse(item['chatbox-notification']);
+        //             _this.processMsgInBatch(messages);
+        //         }
 
-                _this.keepPollingNotification();
-            });
-        },
+        //         _this.keepPollingNotification();
+        //     });
+        // },
         processMsgInBatch: function (data, setAsUnread) {
-            // Generic logic, used by real poll from DB
+            // Generic logic, used by real time poll from DB
             // and reading from local storage
-            // friend marked as unread.
+            // If it's real time poll from DB, mark unread
             var i = 0;
             var friend = null;
             var friendsWhoSentMail = [];
             for (; i< data.length; i++) {
-                if (data[i].isNotification) {
-                    this.lastNotificationId = data[i].id;
+                var msg = data[i];
+                if (msg.isNotification) {
+                    if (msg.id <= this.lastNotificationId)
+                        continue;
+                    this.lastNotificationId = msg.id;
                 } else {
-                    this.lastMsgId = data[i].id;
+                    if (msg.id <= this.lastMsgId)
+                        continue;
+                    this.lastMsgId = msg.id;
                 }
-                friend = this.processMsg(data[i]);
-                if (data[i].sender !== chatboxConfig.userId) {
+                friend = this.processMsg(msg);
+                if (msg.sender !== chatboxConfig.userId) {
                     friendsWhoSentMail.push(friend);
                 }
             }
-            if (setAsUnread) {
+            if (setAsUnread && friendsWhoSentMail.length) {
                 this.setReadFlag(friendsWhoSentMail, false);
             }
             // If first time polling msg, select the latest conversation, also move it to top 
@@ -431,9 +465,10 @@ export default {
             });
         },
         setReadFlag: function (friends, alreadyRead) {
-            if (document.hidden) {
+            if (document.hidden || friends.length == 0) {
                 return;
             }
+            var _this = this;
             this.getReadFlags(function(alreadyReadFriends){
                 var i = 0; 
                 for (; i< friends.length; i++) {
@@ -447,13 +482,14 @@ export default {
                     }
                     chatboxUtils.storage.set('already-read-friends', JSON.stringify(alreadyReadFriends));
                 }
+                _this.setUnreadMsgDot();
             });
         },
-        showUnreadDot: function () {
-            if (this.state.display=='full' && this.state.view==3)
-                return;
-            chatboxConfig.unreadDirectMsg = 1;
-        },
+        // showUnreadDot: function () {
+        //     if (this.state.display=='full' && this.state.view==3)
+        //         return;
+        //     chatboxConfig.unreadDirectMsg = 1;
+        // },
         pollNotificationFromDB: function () {
             var _this = this;
             $.get(chatboxConfig.apiUrl + "/db/notification/offset/" + this.lastNotificationId+"/user/" + chatboxConfig.userId, function(data) {
@@ -477,7 +513,6 @@ export default {
                     Vue.notify({
                         title: 'Received '+data.length+' notifications',
                     });
-                    _this.showUnreadDot();
                 }
             }).always(function(){
                 // what's this???
@@ -501,8 +536,6 @@ export default {
                 var noty = "No new message";
                 if (newMsgFromOthersCount) {
                     noty = 'Received '+ newMsgFromOthersCount + ' new message';
-                    _this.showUnreadDot();
-
                 }
                 if (newMsgFromOthersCount||reportStatus) {
                     Vue.notify({
@@ -539,6 +572,20 @@ export default {
             if (!friend.selected) {
                 this.selectFriend(friend);
             }
+        },
+        setUnreadMsgDot: function () {
+            // check if any unread message left
+            var i = 0;
+            for (; i < this.friends.length; i++) {
+                if (this.friends[i].unreadMsg)
+                    break;
+            }
+            if (i == this.friends.length) {
+                chatboxConfig.unreadDirectMsg = 0;
+            } else {
+                chatboxConfig.unreadDirectMsg = 1;
+
+            }
         }
     },
     watch: {
@@ -551,11 +598,12 @@ export default {
                 _this.scrollToBottom();
             });
         },
-        'state.view': function (newView, prevView) {
-            if (newView == 3) {
-                chatboxConfig.unreadDirectMsg = 0;
-            }
-        }
+        // // comment out, still show the dot until all msg read
+        // 'state.view': function (newView, prevView) {
+        //     if (newView == 3) {
+        //         chatboxConfig.unreadDirectMsg = 0;
+        //     }
+        // }
     },
     created () {
         // expose sendPM method so input component can access it
@@ -564,8 +612,8 @@ export default {
         this.loadChatbotMsg();
         if (chatboxConfig.testing)
             this.loadTestData();
-        this.checkLocalMsgThenLongPollFromDB();
-        this.checkLocalNotificationThenLongPollFromDB();
+        this.keepPollingNotification();
+        this.keepPollingMsg();
     }
 }
 function sortByMsgId(a, b) {

@@ -25,7 +25,7 @@
 .unread-notification-dot {
     position: absolute;
     top: 2px;
-    background: red;
+    background: orange;
     margin-left: 18px;
     border-radius: 100%;
     width: 12px;

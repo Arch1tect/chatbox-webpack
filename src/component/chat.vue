@@ -468,8 +468,6 @@ export default {
             if (newView == 'full') {
                 if ( this.state.view == 2)
                     chatboxConfig.unreadLiveMsgTotal = 0;
-                if ( this.state.view == 3)
-                    chatboxConfig.unreadDirectMsg = 0;
             }
         }
     },
