@@ -1,7 +1,7 @@
 {
   "name": "Same Page",
   "short_name": "Same Page",
-  "description": "Live chat with people who are browsing the same web page as you!",
+  "description": "Leave comments or live chat on any web page!",
   "version": "2.0.0",
   "permissions": ["activeTab", "storage", "unlimitedStorage"],
   "content_scripts": [{
