@@ -170,6 +170,8 @@ export default {
     name: 'inbox-body',
     data () {
         return {
+            firstTimeLoadNotification: true,
+            firstTimeLoadMsg: true,
             state: chatboxUIState,
             loading: false,
             messageDict: {},
@@ -331,7 +333,8 @@ export default {
         },
         keepPollingMsg: function () {
             var _this = this;
-            if (chatboxConfig.tabVisible && this.state.display !== "hidden") {
+            if (this.firstTimeLoadMsg || (chatboxConfig.tabVisible && this.state.display !== "hidden")) {
+                this.firstTimeLoadMsg = false;
                 chatboxUtils.storage.get('chatbox-inbox', function(item) {
                     if (item && item['chatbox-inbox']) {
                         var messages = JSON.parse(item['chatbox-inbox']);
@@ -349,7 +352,8 @@ export default {
         },
         keepPollingNotification: function () {
             var _this = this;
-            if (chatboxConfig.tabVisible && this.state.display !== "hidden") {
+            if (this.firstTimeLoadNotification || (chatboxConfig.tabVisible && this.state.display !== "hidden")) {
+                this.firstTimeLoadNotification = false;
                 chatboxUtils.storage.get('chatbox-notification',function(item) {
                     if (item && item['chatbox-notification']) {
                         var messages = JSON.parse(item['chatbox-notification']);
