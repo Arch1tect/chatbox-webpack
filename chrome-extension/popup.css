@@ -67,14 +67,14 @@ body {
 	margin:0px;
 }
 .top-part {
-	padding-top: 15px;
+	padding-top: 5px;
 	padding-bottom: 15px;
 	border-bottom: 1px solid lightgray;
 	background: #f7f7f7;
 
 }
 #content {
-	min-width: 270px;
+	min-width: 320px;
 	padding: 15px;
 	padding-top: 0px;
 	min-height: 275px;
@@ -110,14 +110,15 @@ img {
 }
 button {
     border: 1px solid;
-    padding: 8px;
+    padding: 10px;
     padding-top:3px;
     padding-bottom: 3px;
     font-family: inherit;
+    font-size: larger;
     color: inherit;
     border-radius: 3px;
     color: #fff;
-    background-color: #337ab7;
+    background-color: #0089ff;
     border-color: #2e6da4;
     cursor: pointer;
     display: inline-block;

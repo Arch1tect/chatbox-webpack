@@ -13,31 +13,31 @@
 			<!-- <a href='https://quotime.me/online.html'>Find others</a> -->
 		<!-- </div> -->
 		<center class='top-part'>
-			<img id='open-chatbox' title='Click to open or close' src='icon.png'/>
-			<!-- <button id='open-chatbox'>Open</button> -->
+			<img title='Click to open or close' src='icon.png'/>
+			<button id='open-chatbox'>Open</button>
 <!-- 			<span id='online-user-msg'>
 				<span id='user-count'></span>&nbsp; user on this page
 			</span> -->
 		</center>
 		<div id="content">
-			<div class="option-title first"><b>Display mode</b></div>
+			<div class="option-title first"><b>Default display mode</b></div>
 			<form>
 				<label>
 					<input class="form-radio" type="radio" name="open_chatbox_when" value="full_size"> Full
 				</label>
 				<label>
-					<input class="form-radio" type="radio" name="open_chatbox_when" checked="checked" value="minimized"> Mini
+					<input class="form-radio" type="radio" name="open_chatbox_when" value="minimized"> Mini
 				</label>
 <!-- 				<label>
 					<input type="radio" checked="checked" name="open_chatbox_when" value="when_msg"> When there is message <br>
 				</label> -->
 				<label>
-			  		<input class="form-radio" type="radio" name="open_chatbox_when" value="never"> Hidden 
+			  		<input class="form-radio" type="radio" checked="checked" name="open_chatbox_when" value="never"> Hidden 
 				</label>
 			</form>
 			<br/>
 
-			<div class="option-title"><b>Enable live chat on this website?</b></div>
+			<div class="option-title"><b>Join live chat on this website automatically?</b></div>
 			<form>
 				<label>
 					<input class="form-radio" type="radio" checked="checked" name="toggle_whitelist" value="yes"> Yes
@@ -50,10 +50,10 @@
 			<div class="option-title"><b>Show scrolling text for live message?</b></div>
 			<form>
 				<label>
-					<input class="form-radio" type="radio" checked="checked" name="toggle_danmu" value="block"> Yes
+					<input class="form-radio" type="radio" name="toggle_danmu" value="block"> Yes
 				</label>
 				<label>
-					<input class="form-radio" type="radio" name="toggle_danmu" value="none"> No
+					<input class="form-radio" type="radio" checked="checked" name="toggle_danmu" value="none"> No
 				</label>
 			</form>
 <!-- 			<br/>
@@ -68,7 +68,7 @@
 			</form> -->
 
 			<br/>
-			<div class="option-title"><b>Live chat is enabled on sites below</b></div>
+			<div class="option-title"><b>Join live chat on following sites automatically</b></div>
 			<div class="whitelist"></div>
 
 		</div>

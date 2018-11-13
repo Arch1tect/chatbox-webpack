@@ -301,9 +301,9 @@ export default {
             chatboxUtils.storage.get('danmu', function (item) {
                 var display = item['danmu'];
                 // Default danmu css is display: none
-                // But we want default behavior is to show danmu
+                // and we don't want to show danmu by default
                 if (!display)
-                    display = 'block';
+                    display = 'none';
                 chatboxUtils.toggleDanmu(display);
             });
         },
