@@ -544,6 +544,7 @@ export default {
                 friend = this.friendDict[userId];
             } else {
                 friend = this.buildFriendObj(userId, username);
+                friend.unreadMsg = false;
                 this.addFriend(friend);
                 this.messageDict[userId] = [];
             }
@@ -562,8 +563,8 @@ export default {
                 chatboxConfig.unreadDirectMsg = 0;
             } else {
                 chatboxConfig.unreadDirectMsg = 1;
-
             }
+            chatboxUtils.updateExtensionBadge();
         }
     },
     watch: {

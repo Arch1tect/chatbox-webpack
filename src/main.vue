@@ -168,6 +168,7 @@ export default {
                       type: 'warn'
                     });
                 }
+                chatboxUtils.updateExtensionBadge();
             }
         },
         resizeStart (e) {
@@ -344,7 +345,10 @@ export default {
                     sendResponse(
                         {
                             is_chatbox_open: _this.state.display == 'full',
-                            userCount: chatboxSocket.userCount
+                            userCount: chatboxSocket.userCount,
+                            unreadDirectMsg: chatboxConfig.unreadDirectMsg,
+                            unreadLiveMsg: chatboxConfig.unreadLiveMsgTotal,
+                            comments: chatboxConfig.commentsTotal
                         }
                     );
                 }

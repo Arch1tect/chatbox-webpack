@@ -67,14 +67,14 @@ body {
 	margin:0px;
 }
 .top-part {
-	padding-top: 5px;
+	padding-top: 10px;
 	padding-bottom: 15px;
 	border-bottom: 1px solid lightgray;
 	background: #f7f7f7;
 
 }
 #content {
-	min-width: 320px;
+	min-width: 275px;
 	padding: 15px;
 	padding-top: 0px;
 	min-height: 275px;
@@ -105,7 +105,8 @@ footer {
 }
 img {
 	display: block;
-    width: 72px;
+	cursor: pointer;
+    width: 60px;
     margin-bottom: 10px;
 }
 button {

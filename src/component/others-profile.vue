@@ -26,6 +26,7 @@
     line-height: 1.5;
 }
 .leave-others-profile {
+    cursor: pointer;
     display: block;
     margin-top: -3px;
     font-size: 18px;
