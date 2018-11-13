@@ -331,7 +331,7 @@ export default {
         },
         keepPollingMsg: function () {
             var _this = this;
-            if (chatboxConfig.tabVisible) {
+            if (chatboxConfig.tabVisible && this.state.display !== "hidden") {
                 chatboxUtils.storage.get('chatbox-inbox', function(item) {
                     if (item && item['chatbox-inbox']) {
                         var messages = JSON.parse(item['chatbox-inbox']);
@@ -349,7 +349,7 @@ export default {
         },
         keepPollingNotification: function () {
             var _this = this;
-            if (chatboxConfig.tabVisible) {
+            if (chatboxConfig.tabVisible && this.state.display !== "hidden") {
                 chatboxUtils.storage.get('chatbox-notification',function(item) {
                     if (item && item['chatbox-notification']) {
                         var messages = JSON.parse(item['chatbox-notification']);
