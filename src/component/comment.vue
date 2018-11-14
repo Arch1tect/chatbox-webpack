@@ -214,6 +214,7 @@ export default {
               } else {
               var val = chatboxConfig.commentsTotal;
               if (val > 9999) val = '10k+';
+              if (val == 0) val = '';
               val += '';
               chrome.browserAction.setBadgeText({text: val});
               chrome.browserAction.setBadgeBackgroundColor({color: "#0099ff"});
