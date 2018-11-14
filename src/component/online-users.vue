@@ -1,5 +1,5 @@
 <template>
-    <center v-show="state.showOnlineUsers && socket.state.connected" class="socketchatbox-onlineusers">
+    <center v-show="state.chatTopPanel == 1 && socket.state.connected" class="socketchatbox-onlineusers">
         <span class="onlineUser" v-for="user in onlineUsers" @click="viewUser(user)"><center><img v-bind:title="user.username" v-bind:src="user.profileImgSrc" /></center></span>
         <center v-if="onlineUsers.length==0">No user on this page</center>
     </center>
@@ -15,11 +15,6 @@
     /*padding-bottom: 5px;*/
     /*padding-top: 5px;*/
     border-bottom: 1px solid #d3d3d3;
-}
-
-/* Handle */
-.onlineUsersWrapper ::-webkit-scrollbar-thumb {
-    /*background: #0189fe ; */
 }
 
 .socketchatbox-onlineusers .onlineUser {

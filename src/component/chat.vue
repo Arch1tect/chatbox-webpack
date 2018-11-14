@@ -1,14 +1,18 @@
 <template>
     <div v-show="state.view==2">
         <div id="socketchatbox-chatroom-title" class="socketchatbox-page-title">
+            <span title="Public invitations" @click="toggleOnlineUsers(2)">
+                <font-awesome-icon icon="bullhorn" class="fa fa-bullhorn" data-toggle="tooltip" data-placement="bottom"/>
+            </span>
             <span v-bind:title="socket.state.connected ? 'Disconnect' : 'Connect'"  @click="toggleConnection" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live-status' class='badge' v-bind:class="{connected: socket.state.connected}">{{socket.state.connected? 'Online': 'Offline '}}
                 <font-awesome-icon icon="power-off" class="fa fa-power-off" data-toggle="tooltip" data-placement="bottom"/>
             </span>
-            <span class="online-users-btn" v-if="socket.state.connected" @click="state.showOnlineUsers = !state.showOnlineUsers">
+            <span class="online-users-btn" title="Users on this page" v-if="socket.state.connected" @click="toggleOnlineUsers(1)">
                 <font-awesome-icon icon="users" class="fa fa-users" data-toggle="tooltip" data-placement="bottom"/><span>{{socket.userCount}}</span>
             </span>
         </div>
-        <div class="onlineUsersWrapper"><online-users></online-users></div>
+        <online-users></online-users>
+        <lobby></lobby>
         <div ref="chatArea" class="socketchatbox-chatArea">
             <div class="socketchatbox-messages">
 
@@ -37,8 +41,8 @@
 </template>
 <style>
 .fa-users {
-    margin-left: 10px;
-    margin-right: 5px;
+    /*margin-left: 10px;*/
+    /*margin-right: 5px;*/
 }
 .online-users-btn {
     cursor: pointer;
@@ -242,6 +246,13 @@ export default {
         }
     },
     methods: {
+        toggleOnlineUsers: function (val) {
+            if (this.state.chatTopPanel != val) {
+                this.state.chatTopPanel = val;
+            } else {
+                this.state.chatTopPanel = 0;
+            }
+        },
         viewUser: function (msg) {
             chatboxUtils.viewOthersProfile(2, msg.sender, msg.username);
         },

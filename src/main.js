@@ -14,6 +14,7 @@ import comment from './component/comment.vue'
 import profile from './component/profile.vue'
 import othersProfile from './component/others-profile.vue'
 import onlineUsers from './component/online-users.vue'
+import lobby from './component/lobby.vue'
 
 Vue.component('top-bar', topBar);
 Vue.component('chat-body', chat);
@@ -23,14 +24,16 @@ Vue.component('profile-body', profile);
 Vue.component('others-profile', othersProfile);
 Vue.component('input-bar', inputBar);
 Vue.component('online-users', onlineUsers);
+Vue.component('lobby', lobby);
 
 // fontawesome start
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faUsers, faPowerOff, faCommentAlt, faReply, faThumbsUp, faThumbsDown, faFlag, faArrowAltCircleLeft, faLongArrowAltLeft, faUser, faUserCircle, faSyncAlt, faSmile, faLaughWink, faComments, faPaperclip, faInbox, faPen, faTimes, faWindowClose } from '@fortawesome/free-solid-svg-icons'
+import { faBullhorn, faUsers, faPowerOff, faCommentAlt, faReply, faThumbsUp, faThumbsDown, faFlag, faArrowAltCircleLeft, faLongArrowAltLeft, faUser, faUserCircle, faSyncAlt, faSmile, faLaughWink, faComments, faPaperclip, faInbox, faPen, faTimes, faWindowClose } from '@fortawesome/free-solid-svg-icons'
 // import { faHandshake } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 library.add(faArrowAltCircleLeft)
 library.add(faLongArrowAltLeft)
+library.add(faBullhorn)
 library.add(faUser)
 library.add(faUsers)
 library.add(faUserCircle)
