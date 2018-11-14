@@ -5,6 +5,7 @@
             <span>There are {{chatbox.commentsTotal}} comments on this page.</span>
         </div>
         <div ref="commentArea" class="socketchatbox-commentsArea">
+            <div class="no-comment-yet" v-if="messages.length==0">Be the first to comment on this page!</div>
             <div v-for="msg in messages" v-bind:class="{'from-self': msg.fromSelf}">
                 <img class="user-avatar" @click="viewUser(msg)" v-bind:src="msg.profileImgSrc" />
                 <div class="comment-body">
@@ -91,7 +92,7 @@
   overflow-y: auto; /*only show scroll bar when needs to*/
   padding-right: 10px;
   padding-left: 10px;
-  padding-top: 30px;
+  padding-top: 15px;
 }
 
 .socketchatbox-commentsArea .comment-body {
@@ -112,7 +113,14 @@
   word-wrap: break-word;
   background: white;
 }
-
+.no-comment-yet {
+  position: relative;
+  top: 40%;
+  text-align: center;
+  color: gray;
+    font-size: 15px;
+    font-weight: bold;
+}
 .from-self .comment-body {
   /*background: #BBFF00;*/
   /*TODO: better way to highlight own comment;*/
