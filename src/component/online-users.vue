@@ -12,8 +12,8 @@
     max-height: 50%;
     position: absolute;
     z-index: 1;
-    padding-bottom: 5px;
-    padding-top: 5px;
+    /*padding-bottom: 5px;*/
+    /*padding-top: 5px;*/
     border-bottom: 1px solid #d3d3d3;
 }
 
@@ -30,8 +30,8 @@
 }
 
 .onlineUser img {
-    width: 25px;
-    height: 25px;
+    width: 30px;
+    height: 30px;
     object-fit: cover;
     border-radius: 100%;
     box-shadow: 0 0 6px black;
