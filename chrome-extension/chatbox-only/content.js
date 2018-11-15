@@ -36,6 +36,7 @@ function createChatboxIframe() {
 }
 function keepCheckingLocationChange() {
     checkLocationChange();
+    window.chatboxIFrame.contentWindow.postMessage({'title': document.title}, "*")
     setTimeout(function(){keepCheckingLocationChange()}, 5*1000);
 }
 function checkLocationChange() {

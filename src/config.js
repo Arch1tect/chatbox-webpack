@@ -2,7 +2,7 @@
 // but also for passing variables between components
 "use strict";
 
-var localSocketServer = false;
+var localSocketServer = true;
 var localInboxServer = false;
 var socketUrl = 'https://quotime.me'
 var apiUrl = socketUrl;
@@ -32,6 +32,7 @@ export default {
 	},
 	// data for passing around
 	commentsTotal: 0,
+	pageTitle: 'Unknown',
 	unreadLiveMsgTotal: 0,
 	unreadDirectMsg: 0,
 	tabVisible: true,

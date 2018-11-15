@@ -94,7 +94,9 @@
   padding-left: 10px;
   padding-top: 15px;
 }
-
+.fa-refresh {
+  margin-right: 10px;
+}
 .socketchatbox-commentsArea .comment-body {
   width: auto;
   margin-left: 10px;

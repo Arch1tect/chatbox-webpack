@@ -18,9 +18,6 @@
 </template>
 
 <style>
-.socketchatbox-page-title .fa {
-    color: gray;
-}
 .socketchatbox-page-title .fa.fa-power-off {
     color:lightgray;
     margin-left: 5px;
@@ -86,10 +83,10 @@ button:focus {
     text-align: center;
     background: white;
     padding: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 .socketchatbox-page-title .fa {
-    margin-left: 5px;
-    margin-right: 5px;
     cursor: pointer;
 }
 .socketchatbox-body {
@@ -404,6 +401,11 @@ export default {
           // Handle page visibility change   
           document.addEventListener(visibilityChange, this.handleTabVisibilityChange, false);
         }
+
+        window.addEventListener("message", function(e){
+            if(e && e.data && e.data.title) 
+                chatboxConfig.pageTitle=e.data.title;
+        }, false);
 
     }
 

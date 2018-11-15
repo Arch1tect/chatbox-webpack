@@ -1,18 +1,21 @@
 <template>
     <div v-show="state.view==2">
         <div id="socketchatbox-chatroom-title" class="socketchatbox-page-title">
-            <span title="Public invitations" @click="toggleOnlineUsers(2)">
-                <font-awesome-icon icon="bullhorn" class="fa fa-bullhorn" data-toggle="tooltip" data-placement="bottom"/>
+            <span title="Public invitations" class="invitations" v-bind:class="{active: state.chatTopPanel==2}" @click="toggleOnlineUsers(2)">
+                <font-awesome-icon icon="globe-asia" class="fa fa-globe-asia" data-toggle="tooltip" data-placement="bottom"/>
             </span>
             <span v-bind:title="socket.state.connected ? 'Disconnect' : 'Connect'"  @click="toggleConnection" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live-status' class='badge' v-bind:class="{connected: socket.state.connected}">{{socket.state.connected? 'Online': 'Offline '}}
                 <font-awesome-icon icon="power-off" class="fa fa-power-off" data-toggle="tooltip" data-placement="bottom"/>
             </span>
-            <span class="online-users-btn" title="Users on this page" v-if="socket.state.connected" @click="toggleOnlineUsers(1)">
-                <font-awesome-icon icon="users" class="fa fa-users" data-toggle="tooltip" data-placement="bottom"/><span>{{socket.userCount}}</span>
+            <span class="send-invitation-btn" title="Invite people to this page" v-bind:class="{active: state.chatTopPanel==100}" v-if="socket.state.connected" @click="sendInvitation()">
+                <font-awesome-icon icon="bullhorn" class="fa fa-bullhorn" data-toggle="tooltip" data-placement="bottom"/>
+            </span>
+            <span class="online-users-btn" title="Users on this page" v-bind:class="{active: state.chatTopPanel==1}" v-if="socket.state.connected" @click="toggleOnlineUsers(1)">
+                <font-awesome-icon icon="users" class="fa fa-users" data-toggle="tooltip" data-placement="bottom"/><span> {{socket.userCount}}</span>
             </span>
         </div>
         <online-users></online-users>
-        <lobby></lobby>
+        <invitations></invitations>
         <div ref="chatArea" class="socketchatbox-chatArea">
             <div class="socketchatbox-messages">
 
@@ -47,6 +50,8 @@
 .online-users-btn {
     cursor: pointer;
     color: gray;
+    position: absolute;
+    right: 10px;
 }
 #socketchatbox-live-status .fa {
     color: white;
@@ -215,6 +220,30 @@
   cursor: pointer;
   color: white;
 }
+.invitations {
+    position: absolute;
+    left: 10px;
+}
+.invitations {
+    color: gray;
+}
+.invitations.active {
+    color: black;
+}
+.send-invitation-btn {
+    position: absolute;
+    right: 50px;
+    color: gray;
+}
+.send-invitation-btn.active {
+    color: orange;
+}
+.online-users-btn {
+    color: gray;
+}
+.online-users-btn.active{
+    color: black;
+}
 </style>
 
 <script>
@@ -246,6 +275,13 @@ export default {
         }
     },
     methods: {
+        sendInvitation: function () {
+            chatboxSocket.getSocket().emit('invite', {
+                version: chatboxConfig.version,
+                pageTitle: chatboxConfig.pageTitle
+            });
+            this.state.chatTopPanel = 2;
+        },
         toggleOnlineUsers: function (val) {
             if (this.state.chatTopPanel != val) {
                 this.state.chatTopPanel = val;
@@ -426,8 +462,10 @@ export default {
                     userId: chatboxConfig.userId,
                     roomId: chatboxConfig.location,
                     shareLocation: chatboxConfig.shareLocation,
-                    version: chatboxConfig.version
+                    version: chatboxConfig.version,
+                    pageTitle: chatboxConfig.pageTitle
                 });
+                console.log(chatboxConfig.pageTitle);
             });
             chatboxSocket.registerCallback('disconnect', function (data) {
                 chatboxSocket.state.connected = false;
@@ -494,6 +532,12 @@ export default {
             if (newView == 'full') {
                 if ( this.state.view == 2)
                     chatboxConfig.unreadLiveMsgTotal = 0;
+            }
+        },
+        'socket.state.connected': function (newState, prevState) {
+            // once connected, show users in the same room
+            if (newState) {
+                this.state.chatTopPanel = 1;
             }
         }
     },
