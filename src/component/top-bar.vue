@@ -103,11 +103,13 @@
 
 #socketchatbox-top {
   min-width: 180px;
+    border-top: 1px solid;
   cursor: pointer;
   height: 30px;
   overflow: hidden;
   background: rgba(0, 0, 0, 0.75);
   padding-left: 10px;
+  box-shadow: -1px 0px 0, 1px 0px 0;
   line-height: 30px;
     -moz-user-select: none;
     -webkit-user-select: none;
@@ -116,7 +118,10 @@
 }
 
 #socketchatbox-top.mini {
-  background: rgba(255, 255, 255, 0.9);
+    box-shadow: none;
+    border-top: 1px solid lightgray;
+
+    background: rgba(255, 255, 255, 0.9);
 }
 #socketchatbox-top.mini:hover {
   background: rgba(255, 255, 255, 1);

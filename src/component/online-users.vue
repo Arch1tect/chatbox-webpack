@@ -1,10 +1,22 @@
 <template>
-    <center v-show="state.chatTopPanel == 1 && socket.state.connected" class="socketchatbox-onlineusers">
-        <span class="onlineUser" v-for="user in onlineUsers" @click="viewUser(user)"><center><img v-bind:title="user.username" v-bind:src="user.profileImgSrc" /></center></span>
-        <center v-if="onlineUsers.length==0">No user on this page</center>
-    </center>
+    <transition name="online-users-slide">
+        <center v-if="state.chatTopPanel == 1 && socket.state.connected" class="socketchatbox-onlineusers">
+            <span class="onlineUser" v-for="user in onlineUsers" @click="viewUser(user)"><center><img v-bind:title="user.username" v-bind:src="user.profileImgSrc" /></center></span>
+            <center v-if="onlineUsers.length==0">No user on this page</center>
+        </center>
+    <transition name="slide">
 </template>
 <style>
+.online-users-slide-leave-active,
+.online-users-slide-enter-active {
+  transition: 1s;
+}
+.online-users-slide-enter {
+  transform: translate(100%, 0);
+}
+.online-users-slide-leave-to {
+  transform: translate(100%, 0);
+}
 .socketchatbox-onlineusers {
     background: #fff;
     width: 100%;
@@ -14,7 +26,7 @@
     z-index: 1;
     /*padding-bottom: 5px;*/
     /*padding-top: 5px;*/
-    border-bottom: 1px solid #d3d3d3;
+    outline: 1px solid #d3d3d3;
 }
 
 .socketchatbox-onlineusers .onlineUser {

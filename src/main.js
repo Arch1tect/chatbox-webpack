@@ -28,13 +28,13 @@ Vue.component('invitations', invitations);
 
 // fontawesome start
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faBullhorn, faGlobeAsia, faUsers, faPowerOff, faCommentAlt, faReply, faThumbsUp, faThumbsDown, faFlag, faArrowAltCircleLeft, faLongArrowAltLeft, faUser, faUserCircle, faSyncAlt, faSmile, faLaughWink, faComments, faPaperclip, faInbox, faPen, faTimes, faWindowClose } from '@fortawesome/free-solid-svg-icons'
+import { faBullhorn, faBroadcastTower, faUsers, faPowerOff, faCommentAlt, faReply, faThumbsUp, faThumbsDown, faFlag, faArrowAltCircleLeft, faLongArrowAltLeft, faUser, faUserCircle, faSyncAlt, faSmile, faLaughWink, faComments, faPaperclip, faInbox, faPen, faTimes, faWindowClose } from '@fortawesome/free-solid-svg-icons'
 // import { faHandshake } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 library.add(faArrowAltCircleLeft)
 library.add(faLongArrowAltLeft)
 library.add(faBullhorn)
-library.add(faGlobeAsia)
+library.add(faBroadcastTower)
 library.add(faUser)
 library.add(faUsers)
 library.add(faUserCircle)

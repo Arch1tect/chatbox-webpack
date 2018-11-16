@@ -60,6 +60,7 @@ button:focus {
 .socketchatbox-page {
     box-sizing: border-box;
     border: 1px solid lightgray;
+    border-top: none;
     position: fixed;
     bottom:0px;
     font-family:Arial,Helvetica,sans-serif;

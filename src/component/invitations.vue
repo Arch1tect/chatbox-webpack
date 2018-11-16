@@ -1,14 +1,27 @@
 <template>
-    <div v-show="state.chatTopPanel == 2" class="socketchatbox-invites">
-        <center v-if="firstLoad">Loading...</center>
-        <div class="invite-row" :class="{'self-invitation': msg.userId == config.userId}" v-for="msg in messages">
-            <img @click="viewUser(msg.userId)" v-bind:title="msg.username" v-bind:src="msg.profileImgSrc" />
-            <span class="lobby-msg-content">Join me at  <a target="_blank" v-bind:href="msg.url" v-bind:title="msg.pageTitle"> {{msg.pageTitle}}</a>
-            </span>
+    <transition name="slide">
+        <div v-if="state.chatTopPanel == 2" class="socketchatbox-invites">
+            <center v-if="firstLoad">Loading...</center>
+            <center v-if="messages.length==0">No invitations.</center>
+            <div class="invite-row" :class="{'self-invitation': msg.userId == config.userId}" v-for="msg in messages">
+                <img @click="viewUser(msg.userId, msg.username)" v-bind:title="msg.username" v-bind:src="msg.profileImgSrc" />
+                <span class="lobby-msg-content">Join me at &nbsp; <a target="_blank" v-bind:href="msg.url" v-bind:title="msg.pageTitle"> {{msg.pageTitle}}</a>
+                </span>
+            </div>
         </div>
-    </div>
+    </transition>
 </template>
 <style>
+.slide-leave-active,
+.slide-enter-active {
+  transition: 1s;
+}
+.slide-enter {
+  transform: translate(-100%, 0);
+}
+.slide-leave-to {
+  transform: translate(-100%, 0);
+}
 .self-invitation {
     background: yellow;
 }
@@ -20,7 +33,7 @@
     max-height: 50%;
     position: absolute;
     z-index: 1;
-    border-bottom: 1px solid #d3d3d3;
+    outline: 1px solid #d3d3d3;
 }
 .invite-row {
     padding: 3px;
@@ -47,7 +60,7 @@
 }*/
 
 .invite-row a, .invite-row a:visited{
-    text-decoration: none;
+    /*text-decoration: none;*/
     color: #03A9F4;
 }
 
@@ -71,8 +84,8 @@ export default {
         }
     },
     methods: {
-        viewUser: function (user) {
-            chatboxUtils.viewOthersProfile(this.state.view, user.userId, user.username);
+        viewUser: function (userId, username) {
+            chatboxUtils.viewOthersProfile(this.state.view, userId, username);
         },
         pollInvitation: function () {
             var _this = this;

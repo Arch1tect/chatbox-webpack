@@ -1,8 +1,8 @@
 <template>
     <div v-show="state.view==2">
         <div id="socketchatbox-chatroom-title" class="socketchatbox-page-title">
-            <span title="Public invitations" class="invitations" v-bind:class="{active: state.chatTopPanel==2}" @click="toggleOnlineUsers(2)">Invitations
-                <!-- <font-awesome-icon icon="globe-asia" class="fa fa-globe-asia" data-toggle="tooltip" data-placement="bottom"/> -->
+            <span title="Public invitations" class="invitations" v-bind:class="{active: state.chatTopPanel==2}" @click="toggleOnlineUsers(2)">
+                <font-awesome-icon icon="broadcast-tower" class="fa fa-broadcast-tower" data-toggle="tooltip" data-placement="bottom"/>
             </span>
             <span v-bind:title="socket.state.connected ? 'Disconnect' : 'Connect'"  @click="toggleConnection" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live-status' class='badge' v-bind:class="{connected: socket.state.connected}">{{socket.state.connected? 'Online': 'Offline '}}
                 <font-awesome-icon icon="power-off" class="fa fa-power-off" data-toggle="tooltip" data-placement="bottom"/>
@@ -47,12 +47,7 @@
     /*margin-left: 10px;*/
     /*margin-right: 5px;*/
 }
-.online-users-btn {
-    cursor: pointer;
-    color: gray;
-    position: absolute;
-    right: 10px;
-}
+
 #socketchatbox-live-status .fa {
     color: white;
 }
@@ -65,7 +60,7 @@
 #socketchatbox-live-status {
     cursor: pointer;
     line-height: 15px;
-    background: gray;
+    background: lightgray;
     padding: 3px 7px;
     color: #fff;
     border-radius: 5px;
@@ -226,8 +221,11 @@
     text-decoration: underline;
 }
 .invitations {
-    color: gray;
+    color: lightgray;
     cursor: pointer;
+}
+.invitations:hover {
+    color: black;
 }
 .invitations.active {
     color: black;
@@ -235,13 +233,16 @@
 .send-invitation-btn {
     position: absolute;
     left: 70px;
-    color: gray;
+    color: lightgray;
 }
 .send-invitation-btn.active {
     color: orange;
 }
 .online-users-btn {
-    color: gray;
+    cursor: pointer;
+    color: lightgray;
+    position: absolute;
+    right: 10px;
 }
 .online-users-btn.active{
     color: black;
@@ -281,6 +282,9 @@ export default {
             chatboxSocket.getSocket().emit('invite', {
                 version: chatboxConfig.version,
                 pageTitle: chatboxConfig.pageTitle
+            });
+            Vue.notify({
+                title: 'Invitation sent!',
             });
             this.state.chatTopPanel = 2;
             chatboxUtils.pollInvitation();
