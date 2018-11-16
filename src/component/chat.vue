@@ -1,8 +1,8 @@
 <template>
     <div v-show="state.view==2">
         <div id="socketchatbox-chatroom-title" class="socketchatbox-page-title">
-            <span title="Public invitations" class="invitations" v-bind:class="{active: state.chatTopPanel==2}" @click="toggleOnlineUsers(2)">
-                <font-awesome-icon icon="globe-asia" class="fa fa-globe-asia" data-toggle="tooltip" data-placement="bottom"/>
+            <span title="Public invitations" class="invitations" v-bind:class="{active: state.chatTopPanel==2}" @click="toggleOnlineUsers(2)">Invitations
+                <!-- <font-awesome-icon icon="globe-asia" class="fa fa-globe-asia" data-toggle="tooltip" data-placement="bottom"/> -->
             </span>
             <span v-bind:title="socket.state.connected ? 'Disconnect' : 'Connect'"  @click="toggleConnection" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live-status' class='badge' v-bind:class="{connected: socket.state.connected}">{{socket.state.connected? 'Online': 'Offline '}}
                 <font-awesome-icon icon="power-off" class="fa fa-power-off" data-toggle="tooltip" data-placement="bottom"/>
@@ -223,16 +223,18 @@
 .invitations {
     position: absolute;
     left: 10px;
+    text-decoration: underline;
 }
 .invitations {
     color: gray;
+    cursor: pointer;
 }
 .invitations.active {
     color: black;
 }
 .send-invitation-btn {
     position: absolute;
-    left: 35px;
+    left: 70px;
     color: gray;
 }
 .send-invitation-btn.active {
@@ -281,6 +283,7 @@ export default {
                 pageTitle: chatboxConfig.pageTitle
             });
             this.state.chatTopPanel = 2;
+            chatboxUtils.pollInvitation();
         },
         toggleOnlineUsers: function (val) {
             if (this.state.chatTopPanel != val) {

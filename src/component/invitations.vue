@@ -1,13 +1,17 @@
 <template>
     <div v-show="state.chatTopPanel == 2" class="socketchatbox-invites">
-        <center v-if="first">Loading invitations...</center>
-        <div class="invite-row" v-for="msg in messages"><img @click="viewUser(msg.userId)" v-bind:title="msg.username" v-bind:src="msg.profileImgSrc" />
+        <center v-if="firstLoad">Loading...</center>
+        <div class="invite-row" :class="{'self-invitation': msg.userId == config.userId}" v-for="msg in messages">
+            <img @click="viewUser(msg.userId)" v-bind:title="msg.username" v-bind:src="msg.profileImgSrc" />
             <span class="lobby-msg-content">Join me at  <a target="_blank" v-bind:href="msg.url" v-bind:title="msg.pageTitle"> {{msg.pageTitle}}</a>
             </span>
         </div>
     </div>
 </template>
 <style>
+.self-invitation {
+    background: yellow;
+}
 .socketchatbox-invites {
     background: #fff;
     width: 100%;
@@ -55,7 +59,7 @@ import Vue from 'vue'
 import chatboxConfig from '../config.js'
 import chatboxUtils from '../utils.js'
 import chatboxSocket from '../socket.js'
-var POLL_INTERVAL = 5;
+var POLL_INTERVAL = 15;
 export default {
     name: 'lobby',
     data () {
@@ -94,14 +98,7 @@ export default {
 
     },
     created () {
-        var user = {
-            username: 'David'
-        };
-        chatboxUtils.tryLoadingProfileImg(user, '38cd89e3-0fde-724a-6149-1b5d74c42cfc');
-        var msg = {
-            user: user,
-            content: 'Join me at Lord of Ring | Youtube'
-        }
+        chatboxUtils.pollInvitation = this.pollInvitation;
         // this.messages.push(msg);
         this.keepPollingInvitations();
     }

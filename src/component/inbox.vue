@@ -165,7 +165,7 @@ import chatboxUtils from '../utils.js'
 
 "use strict";
 var LOG_MESSAGE_TIME_AFTER = 5*60*1000 // 5 mins
-const POLL_INTERVAL = 10; // seconds
+const POLL_INTERVAL = 60; // seconds
 export default {
     name: 'inbox-body',
     data () {
@@ -332,6 +332,7 @@ export default {
             });
         },
         keepPollingMsg: function () {
+            var pollInterval = POLL_INTERVAL;
             var _this = this;
             if (this.firstTimeLoadMsg || (chatboxConfig.tabVisible && this.state.display !== "hidden")) {
                 this.firstTimeLoadMsg = false;
@@ -343,12 +344,15 @@ export default {
                     _this.markAlreadyReadMsgBaseOnStorage();
                     _this.pollMsgFromDB();
                 });
+                if (this.state.view == 3) {
+                    // poll more often if user is staring at inbox
+                    pollInterval = POLL_INTERVAL/10;
+                }
             }
-            // Note that the code below doesn't care if the ajax
-            // call finish or success or fail
+
             setTimeout(function(){
                 _this.keepPollingMsg();
-            }, POLL_INTERVAL*1000);
+            }, pollInterval*1000);
         },
         keepPollingNotification: function () {
             var _this = this;
