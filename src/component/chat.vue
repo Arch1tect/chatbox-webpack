@@ -232,7 +232,7 @@
 }
 .send-invitation-btn {
     position: absolute;
-    right: 50px;
+    left: 35px;
     color: gray;
 }
 .send-invitation-btn.active {
