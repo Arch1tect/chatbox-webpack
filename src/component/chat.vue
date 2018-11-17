@@ -2,14 +2,16 @@
     <div v-show="state.view==2">
         <div id="socketchatbox-chatroom-title" class="socketchatbox-page-title">
             <span title="Public invitations" class="invitations" v-bind:class="{active: state.chatTopPanel==2}" @click="toggleOnlineUsers(2)">
-                <font-awesome-icon icon="broadcast-tower" class="fa fa-broadcast-tower" data-toggle="tooltip" data-placement="bottom"/>
+                <font-awesome-icon icon="bullhorn" class="fa fa-bullhorn" data-toggle="tooltip" data-placement="bottom"/>
             </span>
             <span v-bind:title="socket.state.connected ? 'Disconnect' : 'Connect'"  @click="toggleConnection" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live-status' class='badge' v-bind:class="{connected: socket.state.connected}">{{socket.state.connected? 'Online': 'Offline '}}
                 <font-awesome-icon icon="power-off" class="fa fa-power-off" data-toggle="tooltip" data-placement="bottom"/>
             </span>
+            <!--
             <span class="send-invitation-btn" title="Invite people to this page" v-bind:class="{active: state.chatTopPanel==100}" v-if="socket.state.connected" @click="sendInvitation()">
                 <font-awesome-icon icon="bullhorn" class="fa fa-bullhorn" data-toggle="tooltip" data-placement="bottom"/>
             </span>
+            -->
             <span class="online-users-btn" title="Users on this page" v-bind:class="{active: state.chatTopPanel==1}" v-if="socket.state.connected" @click="toggleOnlineUsers(1)">
                 <font-awesome-icon icon="users" class="fa fa-users" data-toggle="tooltip" data-placement="bottom"/><span> {{socket.userCount}}</span>
             </span>
@@ -607,6 +609,9 @@ export default {
             }
 
         });
+    },
+    created () {
+        chatboxUtils.sendInvitation = this.sendInvitation;
     }
 }
 

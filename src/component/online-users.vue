@@ -1,8 +1,8 @@
 <template>
     <transition name="online-users-slide">
         <center v-if="state.chatTopPanel == 1 && socket.state.connected" class="socketchatbox-onlineusers">
+            <center v-if="onlineUsers.length<5" class="invite-people-btn" @click="sendInvitation()"">Invite more people to this page!</center>
             <span class="onlineUser" v-for="user in onlineUsers" @click="viewUser(user)"><center><img v-bind:title="user.username" v-bind:src="user.profileImgSrc" /></center></span>
-            <center v-if="onlineUsers.length==0">No user on this page</center>
         </center>
     <transition name="slide">
 </template>
@@ -45,6 +45,15 @@
     /*margin-bottom: 5px;*/
 }
 
+.invite-people-btn {
+    cursor: pointer;
+    color: lightgray;
+    margin: 5px;
+}
+.invite-people-btn:hover {
+    color: #03A9F4;
+}
+
 </style>
 <script>
 import Vue from 'vue'
@@ -66,6 +75,9 @@ export default {
     methods: {
         viewUser: function (user) {
             chatboxUtils.viewOthersProfile(this.state.view, user.userId, user.username);
+        },
+        sendInvitation: function () {
+            chatboxUtils.sendInvitation();
         },
         setOnlineUsers: function (onlineUsers) {
             var i = 0;
