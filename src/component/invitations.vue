@@ -102,9 +102,7 @@ export default {
             var data = {};
             data[url] = true;
             chatboxUtils.storage.set('tmp_allow', data);
-            setTimeout(function(){
-                window.parent.postMessage({chatboxRedirect: url}, "*");
-            } , 2000);
+            window.parent.postMessage({chatboxRedirect: url}, "*");
         },
         pollInvitation: function () {
             var _this = this;

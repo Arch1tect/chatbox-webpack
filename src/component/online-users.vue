@@ -1,7 +1,7 @@
 <template>
     <transition name="online-users-slide">
         <center v-if="state.chatTopPanel == 1 && socket.state.connected" class="socketchatbox-onlineusers">
-            <center v-if="onlineUsers.length<5" class="invite-people-btn" @click="sendInvitation()"">Invite more people to this page!</center>
+            <center v-if="onlineUsers.length<5" class="invite-people-btn" :class="{alone: onlineUsers.length==1}" @click="sendInvitation()"">Invite more people to this page!</center>
             <span class="onlineUser" v-for="user in onlineUsers" @click="viewUser(user)"><center><img v-bind:title="user.username" v-bind:src="user.profileImgSrc" /></center></span>
         </center>
     <transition name="slide">
@@ -49,6 +49,9 @@
     cursor: pointer;
     color: lightgray;
     margin: 5px;
+}
+.invite-people-btn.alone {
+    color: gray;
 }
 .invite-people-btn:hover {
     color: #03A9F4;
