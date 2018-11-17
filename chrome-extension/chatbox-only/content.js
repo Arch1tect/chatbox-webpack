@@ -103,6 +103,12 @@ function fitChatboxIframe (msg) {
 // can't receive msg from extension directly, to receive msg from extension,
 // use chrome.runtime.onMessage.addListener
 window.addEventListener("message", resizeIFrameToFitContent, false);
+window.addEventListener("message", function(e){
+    if (e && e.data && e.data.chatboxRedirect) {
+        location.replace(e.data.chatboxRedirect);
+    }
+}, false);
+
  // always create the chatbox and make connections, if user don't want it, he can disable the extension
 createChatboxIframe();
 keepCheckingLocationChange();

@@ -31,6 +31,7 @@ export default {
 		userId: 'chat-bot-id'
 	},
 	// data for passing around
+	redirected: false,
 	commentsTotal: 0,
 	pageTitle: 'Unknown',
 	unreadLiveMsgTotal: 0,

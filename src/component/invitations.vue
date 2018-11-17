@@ -5,7 +5,7 @@
             <center v-if="messages.length==0">No invitations.</center>
             <div class="invite-row" :class="{'self-invitation': msg.userId == config.userId}" v-for="msg in messages">
                 <img @click="viewUser(msg.userId, msg.username)" v-bind:title="msg.username" v-bind:src="msg.profileImgSrc" />
-                <span class="lobby-msg-content">Join me at &nbsp; <a target="_blank" v-bind:href="msg.url" v-bind:title="msg.pageTitle"> {{msg.pageTitle}}</a>
+                <span class="lobby-msg-content">Join me at <span class="page-title" @click="redirect(msg.url)" v-bind:title="msg.pageTitle"> {{msg.pageTitle}}</span>
                 </span>
             </div>
         </div>
@@ -64,6 +64,12 @@
     color: #03A9F4;
 }
 
+.invite-row .page-title {
+    cursor: pointer;
+    margin-left: 2px;
+    color: #03A9F4;
+}
+
 
 </style>
 <script>
@@ -87,10 +93,22 @@ export default {
         viewUser: function (userId, username) {
             chatboxUtils.viewOthersProfile(this.state.view, userId, username);
         },
+        redirect: function (url) {
+
+            Vue.notify({
+              title: 'Redirecting you now...',
+              type: 'warn'
+            });
+            var data = {};
+            data[url] = true;
+            chatboxUtils.storage.set('tmp_allow', data);
+            setTimeout(function(){
+                window.parent.postMessage({chatboxRedirect: url}, "*");
+            } , 2000);
+        },
         pollInvitation: function () {
             var _this = this;
             $.get(chatboxConfig.socketUrl + "/api/invitations", function(data) {
-                console.log(data);
                 var i=0;
                 for(; i<data.length; i++) {
                     chatboxUtils.tryLoadingProfileImg(data[i], data[i].userId);
@@ -108,7 +126,6 @@ export default {
                 _this.keepPollingInvitations();
             }, POLL_INTERVAL*1000);
         },
-
     },
     created () {
         chatboxUtils.pollInvitation = this.pollInvitation;

@@ -5,7 +5,7 @@
             <span>There are {{chatbox.commentsTotal}} comments on this page.</span>
         </div>
         <div ref="commentArea" class="socketchatbox-commentsArea">
-            <div class="no-comment-yet" v-if="messages.length==0">Leave the first comment on this page!</div>
+            <div class="no-comment-yet" v-if="messages.length==0">Leave the first comment!</div>
             <div v-for="msg in messages" v-bind:class="{'from-self': msg.fromSelf}">
                 <img class="user-avatar" @click="viewUser(msg)" v-bind:src="msg.profileImgSrc" />
                 <div class="comment-body">

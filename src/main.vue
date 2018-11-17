@@ -290,9 +290,23 @@ export default {
                 if (item && item['height'])
                     _this.state.height = parseInt(item['height']);
             });
+            chatboxUtils.storage.get('tmp_allow', function (item) {
+                if (item && item['tmp_allow']) {
+                    var allowUrlList = item['tmp_allow'];
+                    if (chatboxConfig.location in allowUrlList) {
+                        chatboxConfig.redirected = true;
+                        delete allowUrlList[chatboxConfig.location];
+                        chatboxUtils.storage.set('tmp_allow', allowUrlList);
+
+                        // full size ui
+                        _this.state.display = 'full';
+                        _this.decideChatboxDisplay();
+                    }
+                }
+            });
             chatboxUtils.storage.get('display', function (item) {
 
-                if (item && item['display']) 
+                if (!chatboxConfig.redirected && item && item['display']) 
                     _this.state.display = item['display'];
                 console.log('chatbox.display: '+_this.state.display);
                 _this.decideChatboxDisplay();
