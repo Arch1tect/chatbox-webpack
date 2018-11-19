@@ -110,6 +110,17 @@ window.addEventListener("message", function(e){
 }, false);
 
  // always create the chatbox and make connections, if user don't want it, he can disable the extension
-createChatboxIframe();
-keepCheckingLocationChange();
+// createChatboxIframe();
+// keepCheckingLocationChange();
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (!request.chatboxMsg)
+        return;
+    var msg = request.chatboxMsg;
+    if (msg == "open_chatbox") {
+        createChatboxIframe();
+        keepCheckingLocationChange();
+        sendResponse({msg: "shown"});
+    }
+});
+
 })();
