@@ -33,11 +33,12 @@ function createChatboxIframe() {
     chatboxIFrame.id = CHATBOX_ELEMENT_ID;
     document.body.insertBefore(chatboxIFrame, document.body.firstChild);
     created = true
+    keepCheckingLocationChange();
 }
 function keepCheckingLocationChange() {
     checkLocationChange();
     window.chatboxIFrame.contentWindow.postMessage({'title': document.title}, "*")
-    setTimeout(function(){keepCheckingLocationChange()}, 5*1000);
+    setTimeout(function(){keepCheckingLocationChange()}, 3*1000);
 }
 function checkLocationChange() {
     var newLocation = location.href;
@@ -109,16 +110,14 @@ window.addEventListener("message", function(e){
     }
 }, false);
 
- // always create the chatbox and make connections, if user don't want it, he can disable the extension
+// always create the chatbox and make connections, if user don't want it, he can disable the extension
 // createChatboxIframe();
-// keepCheckingLocationChange();
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (!request.chatboxMsg)
         return;
     var msg = request.chatboxMsg;
     if (msg == "open_chatbox") {
         createChatboxIframe();
-        keepCheckingLocationChange();
         sendResponse({msg: "shown"});
     }
 });
