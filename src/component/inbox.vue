@@ -2,7 +2,7 @@
     <div class="socketchatbox-inbox" v-show="state.view==3">
         <div class="socketchatbox-page-title">
             <font-awesome-icon icon="sync-alt" v-bind:class="{fa: true, 'fa-refresh': true, 'fa-spin': loading }" @click="userClickRefresh" title='Refresh' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-refresh-inbox' />
-            <span>Conversation with <a @click="viewProfile" href='#'>{{selectedFriend.name}}</a></span>
+            <span>Conversation with <span class="username" @click="viewProfile">{{selectedFriend.name}}</span></span>
         </div>
         <div class="socketchatbox-inbox-wrapper">
             <span class="fa fa-chevron-left" id="socketchatbox-toggle-friend-list"></span>
@@ -26,9 +26,9 @@
     </div>
 </template>
 <style>
-.socketchatbox-page-title a {
-    color: black;
-    text-decoration: underline;
+.socketchatbox-page-title .username {
+    color: #00a8ff;
+    cursor: pointer;
 }
 .socketchatbox-inbox-wrapper {
     /*background: #f4f5ff;*/

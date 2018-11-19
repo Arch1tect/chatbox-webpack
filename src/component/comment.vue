@@ -52,8 +52,8 @@
 }
 .comment-body-footer span {
   margin-right: 5px;
-  /*font-size: larger;*/
-  color: #aaaaaa;
+  font-size: smaller;
+  color: #cacaca;
   cursor: pointer;
 }
 .comment-body-footer .flag {
@@ -72,7 +72,8 @@
   color: red;
 }
 .commenter-name {
-  font-weight: bold;
+  /*font-weight: bold;*/
+  color: gray;
 }
 .user-avatar {
   float: left;
@@ -126,6 +127,9 @@
 .from-self .comment-body {
   /*background: #BBFF00;*/
   /*TODO: better way to highlight own comment;*/
+}
+.socketchatbox-page-title {
+  color: gray;
 }
 
 </style>
