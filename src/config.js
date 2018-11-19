@@ -21,6 +21,7 @@ export default {
 	location: 'https://www.youtube.com/',
 	userId: null,
 	shareLocation: true,
+	danmu: true,
 	username: null,
 	aboutMe: null,
 	socketUrl: socketUrl,
@@ -30,6 +31,7 @@ export default {
 		name: 'Chat Bot',
 		userId: 'chat-bot-id'
 	},
+
 	// data for passing around
 	redirected: false,
 	commentsTotal: 0,

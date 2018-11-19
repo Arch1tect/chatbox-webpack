@@ -123,7 +123,7 @@ import chatboxConfig from './config.js'
 import chatboxUtils from './utils.js'
 import chatboxSocket from './socket.js'
 
-var MIN_WIDTH = 300;
+var MIN_WIDTH = 275;
 var MIN_HEIGHT = 100;
 var DISCONNECT_DELAY_TIME = 10*60*1000; // 10 min
 
@@ -315,9 +315,13 @@ export default {
             chatboxUtils.storage.get('danmu', function (item) {
                 var display = item['danmu'];
                 // Default danmu css is display: none
-                // and we don't want to show danmu by default
-                if (!display)
-                    display = 'none';
+                if (!display) {
+                    if (chatboxConfig.danmu) {
+                        display = 'block';
+                    } else {
+                        display = 'none';
+                    }
+                }
                 chatboxUtils.toggleDanmu(display);
             });
         },
