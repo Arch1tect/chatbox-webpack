@@ -117,7 +117,16 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         return;
     var msg = request.chatboxMsg;
     if (msg == "open_chatbox") {
-        createChatboxIframe();
+        if (!document.getElementById(CHATBOX_ELEMENT_ID)) {
+            chrome.storage.local.get('chatbox_config', function(item){
+                var configData = item['chatbox_config'] || {};
+                var tmpAllow = {};
+                tmpAllow[locationHref] = true;
+                configData['tmp_allow'] = tmpAllow;
+                chrome.storage.local.set({'chatbox_config': configData});
+            });
+            createChatboxIframe();
+        }
         sendResponse({msg: "shown"});
     }
 });
