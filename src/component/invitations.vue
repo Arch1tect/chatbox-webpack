@@ -101,7 +101,11 @@ export default {
             });
             var data = {};
             data[url] = true;
-            chatboxUtils.storage.set('tmp_allow', data);
+            chatboxUtils.storage.get('chatbox_config', function(item) {
+                var configData = item['chatbox_config'] || {};
+                configData['tmp_allow'] = data;
+                chatboxUtils.storage.set('chatbox_config', configData);
+            })
             window.parent.postMessage({chatboxRedirect: url}, "*");
         },
         pollInvitation: function () {

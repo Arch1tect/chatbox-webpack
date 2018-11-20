@@ -182,8 +182,16 @@ export default {
                 this.prevX = -1;
                 this.prevY = -1;
                 chatboxUtils.updateIframeSize('fit');
-                chatboxUtils.storage.set('width', this.state.width);
-                chatboxUtils.storage.set('height', this.state.height);
+                var size = {
+                    'width': this.state.width,
+                    'height': this.state.height
+                }
+                chatboxUtils.storage.get('chatbox_config', function(item) {
+                    var configData = item['chatbox_config'] || {};
+                    configData['size'] = size;
+                    chatboxUtils.storage.set('chatbox_config', configData);
+                })
+                
             }
         },
         decideChatboxDisplay () {
@@ -256,73 +264,44 @@ export default {
         loadConfigFromStorage () {
             console.log('Load config from storage');
             var _this = this;
-            // load data from local storage / chrome storage
-            chatboxUtils.storage.get('user-id', function (item) {
-                if (item['user-id']) {
-                    chatboxConfig.userId = item['user-id'];
+            chatboxUtils.storage.get('chatbox_config', function (item) {
+                var configData = item['chatbox_config'] || {};
+                if (configData['user_id']) {
+                    chatboxConfig.userId = configData['user_id'];
                 } else {
                     // 1st time open, also save user in DB
                     chatboxConfig.userId = chatboxUtils.genGuid();
-                    chatboxUtils.storage.set('user-id', chatboxConfig.userId);
+                    configData['user_id'] = chatboxConfig.userId;
                     _this.registerUser();
                 }
-                chatboxUtils.loadComments();
-            });
-            chatboxUtils.storage.get('username', function (item) {
-                if (item['username']) {
-                    chatboxConfig.username = item['username'];
+                if (configData['username']) {
+                    chatboxConfig.username = configData['username'];
                 } else {
                     chatboxConfig.username = 'u'+Math.floor(Math.random() * 1*1000*1000);
-                    chatboxUtils.storage.set('username', chatboxConfig.username);
+                    configData['username'] = chatboxConfig.username;
                 }
-
-            });
-            chatboxUtils.storage.get('share-location', function (item) {
-                if (item && item['share-location']) {
-                    if (item['share-location'] === 'no') chatboxConfig.shareLocation = false;
+                if (configData['size']) {
+                    var size = configData['size'];
+                    _this.state.width = parseInt(size['width']);
+                    _this.state.height = parseInt(size['height']);
                 }
-            });
-            chatboxUtils.storage.get('width', function (item) {
-                if (item && item['width'])
-                    _this.state.width = parseInt(item['width']);
-            });
-            chatboxUtils.storage.get('height', function (item) {
-                if (item && item['height'])
-                    _this.state.height = parseInt(item['height']);
-            });
-            chatboxUtils.storage.get('tmp_allow', function (item) {
-                if (item && item['tmp_allow']) {
-                    var allowUrlList = item['tmp_allow'];
-                    if (chatboxConfig.location in allowUrlList) {
+                if (configData['display']) {
+                    _this.state.display = configData['display'];
+                }
+                if (configData['tmp_allow']) {
+                    var allowUrlDict = configData['tmp_allow']||{};
+                    if (chatboxConfig.location in allowUrlDict) {
                         chatboxConfig.redirected = true;
-                        delete allowUrlList[chatboxConfig.location];
-                        chatboxUtils.storage.set('tmp_allow', allowUrlList);
-
-                        // full size ui
+                        delete allowUrlDict[chatboxConfig.location];
+                        // override disply mode to full size
                         _this.state.display = 'full';
-                        _this.decideChatboxDisplay();
                     }
+                    console.log('tmp allow!');
                 }
-            });
-            chatboxUtils.storage.get('display', function (item) {
-
-                if (!chatboxConfig.redirected && item && item['display']) 
-                    _this.state.display = item['display'];
-                console.log('chatbox.display: '+_this.state.display);
+                chatboxConfig.configLoaded = true;
+                chatboxUtils.storage.set('chatbox_config', configData);
                 _this.decideChatboxDisplay();
-
-            });
-            chatboxUtils.storage.get('danmu', function (item) {
-                var display = item['danmu'];
-                // Default danmu css is display: none
-                if (!display) {
-                    if (chatboxConfig.danmu) {
-                        display = 'block';
-                    } else {
-                        display = 'none';
-                    }
-                }
-                chatboxUtils.toggleDanmu(display);
+                chatboxUtils.loadComments();
             });
         },
         listenToExtension () {

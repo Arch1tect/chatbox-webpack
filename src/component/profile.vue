@@ -189,20 +189,25 @@ export default {
                 return;
             }
             this.savingName = true;
-            this.chatbox.username = this.username;
-            chatboxUtils.storage.set('username', this.username);
+
             var payload = {
                 'uuid': chatboxConfig.userId,
                 'name': this.username
-            }
-            if (chatboxSocket.state.connected) {
-                chatboxSocket.getSocket().emit('change name', {username: this.username});
             }
             var _this = this;
             $.post(chatboxConfig.apiUrl + "/db/user/change_name", payload, function(resp) {
                 Vue.notify({
                   title: 'Name saved!',
                 });
+                _this.chatbox.username = _this.username;
+                chatboxUtils.storage.get('chatbox_config', function(item) {
+                    var configData = item['chatbox_config']||{};
+                    configData['username'] = _this.username;
+                    chatboxUtils.storage.set('chatbox_config', configData);
+                });
+                if (chatboxSocket.state.connected) {
+                    chatboxSocket.getSocket().emit('change name', {username: _this.username});
+                }
             }).fail(function () {
                 Vue.notify({
                   title: 'Failed to save name',

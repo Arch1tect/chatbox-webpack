@@ -576,38 +576,21 @@ export default {
             }
         });
         this.addIntro();
-
         this.registerSocketEvents();
-
         var _this = this;
-        chatboxUtils.storage.get('tmp_allow', function (item) {
-            // TODO: it's bad to have this code duplicated here and in main.vue
-            // Need better initialization procedure
-
-            if (item && item['tmp_allow']) {
-                var allowUrlList = item['tmp_allow'];
-                if (chatboxConfig.location in allowUrlList) {
-                    chatboxConfig.redirected = true;
-                    delete allowUrlList[chatboxConfig.location];
-                    chatboxUtils.storage.set('tmp_allow', allowUrlList);
+        chatboxUtils.storage.get('whitelist', function (item) {
+            var whitelist = item['whitelist'];
+            var url = chatboxUtils.extractRootDomain(chatboxConfig.location);
+            if (whitelist && url in whitelist) {
+                chatboxConfig.liveChatEnabled = true;
+                _this.startConnection();
+            } else {
+                // TODO: need to ensure 'tmp_allowd' already read
+                if (chatboxConfig.redirected) {
                     chatboxConfig.liveChatEnabled = true;
                     _this.startConnection();
                 }
             }
-            if (!chatboxConfig.liveChatEnabled) {
-
-                chatboxUtils.storage.get('whitelist', function (item) {
-                    var whitelist = item['whitelist'];
-                    var url = chatboxUtils.extractRootDomain(chatboxConfig.location);
-
-                    if (whitelist && url in whitelist) {
-                        chatboxConfig.liveChatEnabled = true;
-                        _this.startConnection();
-                        chatboxSocket.connect();
-                    }
-                });
-            }
-
         });
     },
     created () {
