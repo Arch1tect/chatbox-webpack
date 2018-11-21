@@ -281,6 +281,14 @@ export default {
     },
     methods: {
         sendInvitation: function () {
+            var _this = this;
+            if (!chatboxConfig.pageTitle) {
+                // wait for page title from content.js
+                setTimeout(function () {
+                    _this.sendInvitation();
+                }, 1000);
+                return;
+            }
             chatboxSocket.getSocket().emit('invite', {
                 version: chatboxConfig.version,
                 pageTitle: chatboxConfig.pageTitle
