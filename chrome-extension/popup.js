@@ -84,10 +84,10 @@ function showHideChatbox() {
 
     });
 }
-
 function showHideDanmu(display) {
     var msg = {
-        'danmu': display
+        'name': 'toggle-danmu',
+        'value': display
     }
     msgChatboxFrame(msg);
 }
