@@ -8,8 +8,9 @@ var created = false;
 var localChatboxExists = false;
 
 var runningExtension = false;
-if (typeof(chrome) !== 'undefined' && chrome.extension)
+if (typeof(chrome) !== 'undefined' && chrome.extension) {
     runningExtension = true;
+}
 
 function createChatboxIframe() {
     // check if there is already chatbox created
@@ -188,4 +189,44 @@ function extractHostname(url) {
     hostname = hostname.split('?')[0];
     return hostname;
 }
+
+
+// tab visibility change handling code below
+var tabHidden = "hidden";
+function handleTabVisibilityChange() {
+    // only need to handle it if iframe isn't created
+    if (document.getElementById(CHATBOX_ELEMENT_ID)) return;
+
+    if (document[tabHidden]) {
+        // going to hide
+    } else {
+        chrome.runtime.sendMessage({ "clearIcon" : true });
+    }
+}
+// Set the name of the hidden property and the change event for visibility
+var visibilityChange; 
+if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
+  tabHidden = "hidden";
+  visibilityChange = "visibilitychange";
+} else if (typeof document.msHidden !== "undefined") {
+  tabHidden = "msHidden";
+  visibilityChange = "msvisibilitychange";
+} else if (typeof document.webkitHidden !== "undefined") {
+  tabHidden = "webkitHidden";
+  visibilityChange = "webkitvisibilitychange";
+}
+if (!document[tabHidden]) {
+    // when page just load, iframe isn't created yet, we should clear icon
+    // IF page is visible, it's possible user open a tab but it's not visible
+    chrome.runtime.sendMessage({ "clearIcon" : true });
+}
+// Warn if the browser doesn't support addEventListener or the Page Visibility API
+if (typeof document.addEventListener === "undefined" || tabHidden === undefined) {
+  console.log("browser needs to support the Page Visibility API.");
+} else {
+  // Handle page visibility change   
+  document.addEventListener(visibilityChange, handleTabVisibilityChange, false);
+}
+
+
 })();

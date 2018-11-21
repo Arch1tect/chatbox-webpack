@@ -398,6 +398,8 @@ export default {
           document.addEventListener(visibilityChange, this.handleTabVisibilityChange, false);
         }
 
+
+
         window.addEventListener("message", function(e){
             if(e && e.data && e.data.title) 
                 chatboxConfig.pageTitle=e.data.title;

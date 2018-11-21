@@ -1,14 +1,18 @@
 {
-  "name": "Same Page",
-  "short_name": "Same Page",
+  "name": "Chat Anywhere",
+  "short_name": "Chat Anywhere",
   "description": "Leave comments or live chat on any web page!",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "permissions": ["activeTab", "storage", "unlimitedStorage"],
   "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
     "js": ["chatbox-only/content.js","chatbox-only/danmu.js"],
     "css": ["chatbox-only/content.css"]
   }],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
   "icons": { 
       "16": "icon16.png",
       "48": "icon48.png",
