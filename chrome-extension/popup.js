@@ -87,8 +87,7 @@ function showHideChatbox() {
 
 function showHideDanmu(display) {
     var msg = {
-        'name': 'toggle-danmu',
-        'value': display
+        'danmu': display
     }
     msgChatboxFrame(msg);
 }

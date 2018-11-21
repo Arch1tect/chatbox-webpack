@@ -533,13 +533,13 @@ export default {
             }
         },
         startConnection: function () {
+            chatboxConfig.liveChatEnabled = true;
             chatboxSocket.connect();
             Vue.notify({
               title: 'Connecting...',
               type: 'warn'
             });
         }
-
     },
     watch: {
         'state.view': function (newView, prevView) {
@@ -582,13 +582,20 @@ export default {
             var whitelist = item['whitelist'];
             var url = chatboxUtils.extractRootDomain(chatboxConfig.location);
             if (whitelist && url in whitelist) {
-                chatboxConfig.liveChatEnabled = true;
                 _this.startConnection();
             } else {
-                // TODO: need to ensure 'tmp_allowd' already read
                 if (chatboxConfig.redirected) {
-                    chatboxConfig.liveChatEnabled = true;
                     _this.startConnection();
+                } else {
+                    // maybe tmp_allow hasn't been read by main.vue
+                    // cannot combine the if-else because main.vue deletes tmp_allow after reading it
+                    chatboxUtils.storage.get('chatbox_config', function (item) {
+                        var configData = item['chatbox_config'] || {};
+                        var allowUrlDict = configData['tmp_allow']||{};
+                        if (chatboxConfig.location in allowUrlDict) {
+                            _this.startConnection();
+                        }
+                    });
                 }
             }
         });

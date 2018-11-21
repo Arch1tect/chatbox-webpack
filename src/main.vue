@@ -296,7 +296,6 @@ export default {
                         // override disply mode to full size
                         _this.state.display = 'full';
                     }
-                    console.log('tmp allow!');
                 }
                 chatboxConfig.configLoaded = true;
                 chatboxUtils.storage.set('chatbox_config', configData);
@@ -307,9 +306,7 @@ export default {
         listenToExtension () {
             var _this = this;
             // Listen to command from popup.js (extension only)
-            // command always go from popup.js to chatbox frame then
-            // go to content.js/danmu.js if needed, no direct messaging
-            // between pop.js and content/danmu.js
+            // some commands are also sent to content.js danmu.js
             chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                 if (!request.chatboxMsg)
                     return;
@@ -322,12 +319,13 @@ export default {
                 }
                 if (msg == "connect_chatbox") {
                     chatboxConfig.liveChatEnabled = true;
-                    chatboxSocket.connect();
-                    Vue.notify({
-                      title: 'Connecting...',
-                      type: 'warn'
-                    });
-
+                    if (!chatboxSocket.isConnected()) {
+                        chatboxSocket.connect();
+                        Vue.notify({
+                          title: 'Connecting...',
+                          type: 'warn'
+                        });
+                    }
                 }
                 if (msg == "disconnect_chatbox") {
                     chatboxConfig.liveChatEnabled = false;

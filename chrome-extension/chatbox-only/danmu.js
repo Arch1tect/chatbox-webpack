@@ -130,9 +130,11 @@ function receiveMsgFromChatboxFrame (e) {
         toggleDanmu(danmuMsg.display);
     }
 }
-
+chrome.storage.local.get('danmu', function (item) {
+    var display = item['danmu'] || 'block';
+    toggleDanmu(display);
+});
 window.addEventListener("message", receiveMsgFromChatboxFrame, false);
-
 // test cases below
 var testDanmu = [
     {
