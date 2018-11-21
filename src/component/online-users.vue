@@ -47,14 +47,15 @@
 
 .invite-people-btn {
     cursor: pointer;
-    color: lightgray;
+    color: gray;
     margin: 5px;
 }
 .invite-people-btn.alone {
-    color: gray;
+    color: #06a5f1;
 }
 .invite-people-btn:hover {
     color: #03A9F4;
+    text-decoration: underline;
 }
 
 </style>

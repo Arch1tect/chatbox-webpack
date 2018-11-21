@@ -72,7 +72,7 @@
   color: red;
 }
 .commenter-name {
-  /*font-weight: bold;*/
+  font-weight: bold;
   color: gray;
 }
 .user-avatar {
@@ -129,7 +129,7 @@
   /*TODO: better way to highlight own comment;*/
 }
 .socketchatbox-page-title {
-  color: gray;
+  color: #393939;
 }
 
 </style>
