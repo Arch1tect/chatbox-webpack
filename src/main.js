@@ -150,7 +150,7 @@ const messages = {
       invite: '邀请更多人来当前网页！',
       invitations: '邀请',
       onlineUsers: '在当前页面的用户',
-      noInvitation: '没有收到邀请',
+      noInvitation: '没有收到任何邀请',
       typeHere: '输入。。。',
       joinMe: '邀请你去',
       liveChatWelcomeLog: '和当前页面的用户在线聊天',
