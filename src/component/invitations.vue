@@ -1,11 +1,11 @@
 <template>
     <transition name="slide">
         <div v-if="state.chatTopPanel == 2" class="socketchatbox-invites">
-            <center v-if="firstLoad">Loading...</center>
-            <center v-if="messages.length==0">No invitations.</center>
+            <center v-if="firstLoad">{{$t('m.loading')}}</center>
+            <center v-if="messages.length==0">{{$t('m.noInvitation')}}</center>
             <div class="invite-row" :class="{'self-invitation': msg.userId == config.userId}" v-for="msg in messages">
                 <img @click="viewUser(msg.userId, msg.username)" v-bind:title="msg.username" v-bind:src="msg.profileImgSrc" />
-                <span class="lobby-msg-content">Join me at <span class="page-title" @click="redirect(msg.url)" v-bind:title="msg.pageTitle"> {{msg.pageTitle}}</span>
+                <span class="lobby-msg-content">{{$t('m.joinMe')}} <span class="page-title" @click="redirect(msg.url)" v-bind:title="msg.pageTitle"> {{msg.pageTitle}}</span>
                 </span>
             </div>
         </div>
@@ -96,7 +96,7 @@ export default {
         redirect: function (url) {
 
             Vue.notify({
-              title: 'Redirecting you now...',
+              title: this.$t('m.redirecting'),
               type: 'warn'
             });
             var data = {};

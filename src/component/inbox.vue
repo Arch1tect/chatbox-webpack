@@ -2,7 +2,7 @@
     <div class="socketchatbox-inbox" v-show="state.view==3">
         <div class="socketchatbox-page-title">
             <font-awesome-icon icon="sync-alt" v-bind:class="{fa: true, 'fa-refresh': true, 'fa-spin': loading }" @click="userClickRefresh" title='Refresh' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-refresh-inbox' />
-            <span>Conversation with <span class="username" @click="viewProfile">{{selectedFriend.name}}</span></span>
+            <span>{{$t('m.conversationWith')}} <span class="username" @click="viewProfile">{{selectedFriend.name}}</span> {{$t('m.conversationWithAfter')}}</span>
         </div>
         <div class="socketchatbox-inbox-wrapper">
             <span class="fa fa-chevron-left" id="socketchatbox-toggle-friend-list"></span>
@@ -10,7 +10,7 @@
                 <center v-bind:class="{friendnameWrapper: true, selected: friend.selected}" @click="selectFriend(friend, true)" v-for="friend in friends"><span class='message-unread' v-show='friend.unreadMsg'></span><img v-bind:src="friend.profileImgSrc" /><div class="name-text">{{friend.name}}</div></center>
             </div>
             <div ref="msgArea" @click="msgClick" class="socketchatbox-friend-messages">
-                <div class="inbox-conversation-no-message" v-if="!selectedConversation.length">Start the conversation now!</div>
+                <div class="inbox-conversation-no-message" v-if="!selectedConversation.length">{{$t('m.startConversation')}}</div>
                 <div v-bind:class="{ 'socketchatbox-message socketchatbox-inbox-message': true, 'socketchatbox-message-me': msg.me, 'merge-above': false }" v-for="msg in selectedConversation">
                     <div v-if="msg.isLog" class="socketchatbox-log">{{msg.message}}</div>
                     <div v-else>
@@ -21,7 +21,7 @@
                 </div>
             </div>
         </div>
-        <div v-show="state.view == 3 && selectedFriend ==chatbotFriend" @click="goToForum" class="input-bar-mask">Go to the forum!</div>
+        <div v-show="state.view == 3 && selectedFriend ==chatbotFriend" @click="goToForum" class="input-bar-mask">{{$t('m.goForum')}}</div>
 
     </div>
 </template>
@@ -183,7 +183,27 @@ export default {
             shouldAutoSelect: true,
             // track latest msg user received regardless of which friend it's from
             lastMsgId: -1,
-            lastNotificationId: -1
+            lastNotificationId: -1,
+            welcomeMessagesFromChatbot: [
+                {
+                    create_time: "2018-07-08 07:36:15",
+                    id: -1,
+                    message: welcomeBunnyGif,
+                    receiver: chatboxConfig.userId,
+                    receivername: "",
+                    sender: chatboxConfig.chatbot.userId,
+                    sendername: this.$t('m.chatbotName'),
+                },
+                {
+                    create_time: "2018-07-22 20:07:09",
+                    id: 0,
+                    message: this.$t('m.welcomeFromBot'),
+                    receiver: chatboxConfig.userId,
+                    receivername: "",
+                    sender: chatboxConfig.chatbot.userId,
+                    sendername: this.$t('m.chatbotName'),
+                },
+            ]
         }
     },
     methods: {
@@ -231,8 +251,8 @@ export default {
             // set it as default selected friend so we don't
             // need to hide input bar
             var i = 0;
-            for (; i < welcomeMessagesFromChatbot.length; i++) {
-                this.chatbotFriend = this.processMsg(welcomeMessagesFromChatbot[i]);
+            for (; i < this.welcomeMessagesFromChatbot.length; i++) {
+                this.chatbotFriend = this.processMsg(this.welcomeMessagesFromChatbot[i]);
             }
             this.selectFriend(this.chatbotFriend);
         },
@@ -493,7 +513,7 @@ export default {
                     var lastConversationFriend = _this.processMsgInBatch(data, true);
 
                     Vue.notify({
-                        title: 'Received '+data.length+' notifications',
+                        title: data.length+' ' + _this.$t('m.newMessage'),
                     });
                 }
             }).always(function(){
@@ -515,9 +535,10 @@ export default {
                         newMsgFromOthersCount ++;
                     }
                 }
-                var noty = "No new message";
+                var noty = _this.$t('m.noNewMessage');
                 if (newMsgFromOthersCount) {
-                    noty = 'Received '+ newMsgFromOthersCount + ' new message';
+                    noty = newMsgFromOthersCount + ' ' + _this.$t('m.newMessage');
+
                 }
                 if (newMsgFromOthersCount||reportStatus) {
                     Vue.notify({
@@ -527,7 +548,7 @@ export default {
             }).fail(function() {
                 if (reportStatus) {
                     Vue.notify({
-                      title: 'Failed to check new message',
+                      title: _this.$t('m.loadMessageFailed'),
                       type: 'error'
                     });
                 }
@@ -604,27 +625,6 @@ function sortByMsgId(a, b) {
     return a.id > b.id ? -1 : 1;
 }
 var welcomeBunnyGif = "stickers/bunny/hi.gif";
-
-var welcomeMessagesFromChatbot = [
-    {
-        create_time: "2018-07-08 07:36:15",
-        id: -1,
-        message: welcomeBunnyGif,
-        receiver: chatboxConfig.userId,
-        receivername: "",
-        sender: chatboxConfig.chatbot.userId,
-        sendername: chatboxConfig.chatbot.name,
-    },
-    {
-        create_time: "2018-07-08 07:36:15",
-        id: 0,
-        message: "Welcome! Thank you for using this app and please feel free to send us feedback! ;)",
-        receiver: chatboxConfig.userId,
-        receivername: "",
-        sender: chatboxConfig.chatbot.userId,
-        sendername: chatboxConfig.chatbot.name,
-    },
-]
 var testData = [
     {
         create_time: "2018-07-08 07:36:15",

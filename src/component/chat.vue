@@ -1,10 +1,10 @@
 <template>
     <div v-show="state.view==2">
         <div id="socketchatbox-chatroom-title" class="socketchatbox-page-title">
-            <span title="Public invitations" class="invitations" v-bind:class="{active: state.chatTopPanel==2}" @click="toggleOnlineUsers(2)">
+            <span :title="$t('m.invitations')" class="invitations" v-bind:class="{active: state.chatTopPanel==2}" @click="toggleOnlineUsers(2)">
                 <font-awesome-icon icon="bullhorn" class="fa fa-bullhorn" data-toggle="tooltip" data-placement="bottom"/>
             </span>
-            <span v-bind:title="socket.state.connected ? 'Disconnect' : 'Connect'"  @click="toggleConnection" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live-status' class='badge' v-bind:class="{connected: socket.state.connected}">{{socket.state.connected? 'Online': 'Offline '}}
+            <span v-bind:title="socket.state.connected ? $t('m.disconnect') : $t('m.connect')"  @click="toggleConnection" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live-status' class='badge' v-bind:class="{connected: socket.state.connected}">{{socket.state.connected? $t('m.online'): $t('m.offline')}}
                 <font-awesome-icon icon="power-off" class="fa fa-power-off" data-toggle="tooltip" data-placement="bottom"/>
             </span>
             <!--
@@ -12,7 +12,7 @@
                 <font-awesome-icon icon="bullhorn" class="fa fa-bullhorn" data-toggle="tooltip" data-placement="bottom"/>
             </span>
             -->
-            <span class="online-users-btn" title="Users on this page" v-bind:class="{active: state.chatTopPanel==1}" v-if="socket.state.connected" @click="toggleOnlineUsers(1)">
+            <span class="online-users-btn" :title="$t('m.onlineUsers')" v-bind:class="{active: state.chatTopPanel==1}" v-if="socket.state.connected" @click="toggleOnlineUsers(1)">
                 <font-awesome-icon icon="users" class="fa fa-users" data-toggle="tooltip" data-placement="bottom"/><span> {{socket.userCount}}</span>
             </span>
         </div>
@@ -41,7 +41,7 @@
             </div>
         </div>
         <div v-show="typing" class="chat-typing">{{typing}}</div>
-        <div @click="toggleConnection" v-show="state.view == 2 && !config.liveChatEnabled" class="input-bar-mask">Join live chat!</div>
+        <div @click="toggleConnection" v-show="state.view == 2 && !config.liveChatEnabled" class="input-bar-mask">{{$t("m.connect")}}</div>
     </div>
 </template>
 <style>
@@ -294,7 +294,7 @@ export default {
                 pageTitle: chatboxConfig.pageTitle
             });
             Vue.notify({
-                title: 'Invitation sent!',
+                title: this.$t('m.invitationSent'),
             });
             this.state.chatTopPanel = 2;
             chatboxUtils.pollInvitation();
@@ -523,7 +523,7 @@ export default {
 
             var log = {
                 isLog: true,
-                message: 'Live chat with other people on this page!'
+                message: this.$t('m.liveChatWelcomeLog')
             };
             this.messages.push(log);
         },
@@ -532,19 +532,14 @@ export default {
                 chatboxConfig.liveChatEnabled = false;
                 this.socket.disconnect();
             } else {
-                chatboxConfig.liveChatEnabled = true;
-                this.socket.connect();
-                Vue.notify({
-                  title: 'Connecting...',
-                  type: 'warn'
-                });
+                this.startConnection();
             }
         },
         startConnection: function () {
             chatboxConfig.liveChatEnabled = true;
             chatboxSocket.connect();
             Vue.notify({
-              title: 'Connecting...',
+              title: this.$t('m.connecting'),
               type: 'warn'
             });
         }

@@ -9,14 +9,14 @@
                     <img v-bind:src="profileImgSrc" onerror="this.onerror=null;this.src='profile-empty.png';" />
 
                     <div class="upload-profile-image-btn-wrapper">
-                      <button class="upload-profile-image-btn">Upload profile picture</button>
+                      <button class="upload-profile-image-btn">{{$t('m.uploadProfileImage')}}</button>
                       <input accept="image/*" type="file" @change="onFileChanged">
                     </div>
                 </div>
 
                 
-                <input class="username" placeholder="Display name" maxlength="10" type="text" v-model="username">
-                <textarea v-model="aboutMe" placeholder="Introduce yourself here..." class="socketchatbox-aboutme"></textarea>
+                <input class="username" :placeholder="$t('m.displayName')" maxlength="10" type="text" v-model="username">
+                <textarea v-model="aboutMe" :placeholder="$t('m.aboutMe')" class="socketchatbox-aboutme"></textarea>
             </center>
         </div>
 
@@ -145,13 +145,13 @@ export default {
     },
     computed: {
         title: function () {
-            return this.chatbox.username+"'s profile";
+            return this.$t('m.selfProfile');
         },
         saveStr: function () {
             if (this.savingName || this.savingImg)
-                return 'Updating...';
+                return this.$t('m.updating');
             else
-                return 'Update';
+                return this.$t('m.update');
         },
         canSave: function () {
             var saving = this.savingName || this.savingImg;
@@ -197,7 +197,7 @@ export default {
             var _this = this;
             $.post(chatboxConfig.apiUrl + "/db/user/change_name", payload, function(resp) {
                 Vue.notify({
-                  title: 'Name saved!',
+                  title: _this.$t('m.nameUpdated'),
                 });
                 _this.chatbox.username = _this.username;
                 chatboxUtils.storage.get('chatbox_config', function(item) {
@@ -210,7 +210,7 @@ export default {
                 }
             }).fail(function () {
                 Vue.notify({
-                  title: 'Failed to save name',
+                  title: _this.$t('m.nameUpdateFailed'),
                   type: 'error'
                 });
             }).always(function(){
@@ -231,11 +231,11 @@ export default {
             var _this = this;
             $.post(chatboxConfig.apiUrl + "/db/user/change_about_me", payload, function(resp) {
                 Vue.notify({
-                  title: 'Introduction saved!',
+                  title: _this.$t('m.introductionUpdated'),
                 });
             }).fail(function () {
                 Vue.notify({
-                  title: 'Failed to save introduction',
+                  title: _this.$t('m.introductionUpdateFailed'),
                   type: 'error'
                 });
             }).always(function(){
@@ -258,11 +258,11 @@ export default {
             }).done(function () {
                 _this.imgFile = null;
                 Vue.notify({
-                  title: 'Profile image saved!',
+                  title: _this.$t('m.profileImageUpdated'),
                 });
             }).fail(function () {
                 Vue.notify({
-                  title: 'Failed to save profile image',
+                  title: _this.$t('m.profileImageUpdateFailed'),
                   type: 'error'
                 });
             }).always(function(){

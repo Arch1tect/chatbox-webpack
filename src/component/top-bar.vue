@@ -3,19 +3,19 @@
 
         <div v-cloak v-show="state.display == 'full'" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-username'>{{config.username}}</div>
         <span v-on:click='handleMissClick($event)' id='topbar-options' class='float-right'>
-            <span v-on:click='topOptionClicked(1, $event)' class="top-option" title='Comments' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-comments'>
+            <span v-on:click='topOptionClicked(1, $event)' class="top-option" :title="$t('m.commentTab')" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-comments'>
                 <font-awesome-icon icon="comment-alt" class="fa fa-comment-alt"  v-bind:class="{ selected: state.view==1 }" />
                 <span v-show="state.display == 'mini' && config.commentsTotal > 0" class="total-num">{{config.commentsTotal}}</span>
             </span>
-            <span v-on:click='topOptionClicked(2, $event)' class="top-option" title='Live chat' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live'>
+            <span v-on:click='topOptionClicked(2, $event)' class="top-option" :title="$t('m.chatTab')" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live'>
                 <font-awesome-icon icon="comments" class="fa fa-comments"  v-bind:class="{ selected: state.view==2 }" />
                 <span v-show="config.unreadLiveMsgTotal>0" class="unread-notification-dot"></span>
             </span>
-            <span v-on:click='topOptionClicked(3, $event)' class="top-option" title='Inbox' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-inbox'>
+            <span v-on:click='topOptionClicked(3, $event)' class="top-option" :title="$t('m.inboxTab')" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-inbox'>
                 <font-awesome-icon icon="inbox" class="fa fa-inbox"  v-bind:class="{ selected: state.view==3 }" />
                 <span v-show="config.unreadDirectMsg>0" class="unread-notification-dot"></span>
             </span>
-            <span v-on:click='topOptionClicked(0, $event)' class="top-option" v-show="state.display == 'full'" title='Profile' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-profile'><font-awesome-icon icon="user-circle" class="fa fa-user" v-bind:class="{ selected: state.view==0 }" /></span>
+            <span v-on:click='topOptionClicked(0, $event)' class="top-option" v-show="state.display == 'full'" :title="$t('m.profileTab')" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-profile'><font-awesome-icon icon="user-circle" class="fa fa-user" v-bind:class="{ selected: state.view==0 }" /></span>
 
             <span v-on:click='hideChatbox($event)' class="top-option" title="Close"><font-awesome-icon  icon="times" class="fa fa-close" title='Close' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-closeChatbox' /></span>
         </span>
@@ -148,11 +148,11 @@ export default {
         'socket.state.connected': function (newVal, oldVal) {
             if (newVal) {
                 Vue.notify({
-                    title: 'Connected!',
+                    title: this.$t('m.connected'),
                 });
             } else {
                 Vue.notify({
-                    title: 'Disconnected!',
+                    title: this.$t('m.disconnected'),
                     type: 'warn'
                 });
             }

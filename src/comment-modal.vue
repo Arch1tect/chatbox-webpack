@@ -4,8 +4,8 @@
             <textarea ref="commentInput" v-model="comment" :placeholder="placeholder" id="socketchatbox-comment-content"></textarea>
         </div>
         <div class="comment-modal-footer">
-            <span @click="$modal.hide('comment-modal')" >Cancel</span>
-            <span id="submit-comment-btn" v-on:click="submit">Submit!</span>
+            <span @click="$modal.hide('comment-modal')" >{{$t('m.cancel')}}</span>
+            <span id="submit-comment-btn" v-on:click="submit">{{$t('m.submit')}}</span>
         </div>
     </vue-modal>
 </template>
@@ -76,11 +76,11 @@ export default {
                 _this.comment = '';
                 chatboxUtils.loadComments();
                 Vue.notify({
-                  title: 'Submitted!',
+                  title: _this.$t('m.submitted'),
                 });
             }).fail(function(){
                 Vue.notify({
-                  title: 'Fail to leave comment!',
+                  title: _this.$t('m.submitCommentFailed'),
                   type: 'error'
                 });
             });
@@ -98,11 +98,11 @@ export default {
             _this.$modal.show('comment-modal');
             _this.replyToId = null;
             _this.replyToName = null;
-            _this.placeholder = 'Add your comment here...';
+            _this.placeholder = _this.$t('m.commentPlaceholder');
             if (userId) {
                 _this.replyToId = userId;
                 _this.replyToName = name;
-                _this.placeholder = "Reply to " + name;
+                _this.placeholder = _this.$t('m.replyTo') + ' ' + name;
             }
             chatboxUtils.updateIframeSize('full size');
         }

@@ -161,9 +161,10 @@ export default {
                 if (disconnectTimer) {
                     clearTimeout(disconnectTimer);
                 }
-                if(chatboxConfig.liveChatEnabled && !chatboxSocket.state.connected) {chatboxSocket.connect();
+                if(chatboxConfig.liveChatEnabled && !chatboxSocket.state.connected) {
+                    chatboxSocket.connect();
                     Vue.notify({
-                      title: 'Connecting...',
+                      title: this.$t('m.connecting'),
                       type: 'warn'
                     });
                 }
@@ -244,17 +245,17 @@ export default {
         },
         registerUser () {
             if (chatboxConfig.userId && chatboxConfig.username) {
+                var _this = this;
                 var payload = {
                     'uuid': chatboxConfig.userId,
                     'name': chatboxConfig.username
                 }
                 $.post(chatboxConfig.apiUrl + "/db/user/change_name", payload, function(resp) {
                     Vue.notify({
-                      title: 'Welcome to use chat anywhere!',
+                      title: _this.$t('m.welcomeInstall'),
                     });
                 })
             } else {
-                var _this = this;
                 setTimeout(function () {
                     _this.registerUser()
                 }, 500);
@@ -322,7 +323,7 @@ export default {
                     if (!chatboxSocket.isConnected()) {
                         chatboxSocket.connect();
                         Vue.notify({
-                          title: 'Connecting...',
+                          title: _this.$t('m.connecting'),
                           type: 'warn'
                         });
                     }

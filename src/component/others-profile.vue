@@ -12,7 +12,7 @@
         </div>
 
     <button  @click="message" class="socketchatbox-bottom-btn-wrapper">
-        <span>Message</span>
+        <span>{{$t('m.sendPrivateMessage')}}</span>
     </button>
 
     </div>
@@ -70,7 +70,7 @@ export default {
             $.get(chatbox.apiUrl + "/db/user/" + this.userId).done(function(resp) {
                 if (!resp.length) {
                     Vue.notify({
-                      title: 'User not found',
+                      title: _this.$t('m.userNotFound'),
                       type: 'error'
                     });
                     return;
@@ -79,11 +79,11 @@ export default {
                 _this.username = user.name;
                 _this.aboutMe = user.about;
                 _this.joinDate = user.create_time;
-                _this.title = user.name + "'s profile";
+                _this.title = _this.$t('m.othersProfile', {username: user.name});
 
             }).fail(function() {
                 Vue.notify({
-                  title: 'Failed to load profile',
+                  title: _this.$t('m.userLoadFailed'),
                   type: 'error'
                 });
             }).always(function(){
@@ -98,8 +98,8 @@ export default {
             this.prevView = view;
             this.state.view = -1;
             this.username = username;
-            this.userId = userId
-            this.title = username + "'s profile";
+            this.userId = userId;
+            this.title = this.$t('m.othersProfile', {username: username});
             chatboxUtils.tryLoadingProfileImg(this, userId);
             this.loadUserInfoFromDB();
         }

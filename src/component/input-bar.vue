@@ -199,7 +199,7 @@ export default {
         return {
             state: chatboxUIState,
             config: chatboxConfig,
-            InputPlaceHolder: 'Type here...',
+            InputPlaceHolder: this.$t('m.typeHere'),
             content: '',
             emojiSearch: '',
             showStickers: false,

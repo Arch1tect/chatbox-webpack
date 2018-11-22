@@ -2,10 +2,10 @@
     <div v-show="state.view==1">
         <div class="socketchatbox-page-title">
             <font-awesome-icon icon="sync-alt" v-bind:class="{fa: true, 'fa-refresh': true, 'fa-spin': loading }" v-on:click="userClickedRefresh" title='Refresh comments' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-refresh-comments' />
-            <span>There are {{chatbox.commentsTotal}} comments on this page.</span>
+            <span>{{$t('m.commentsTotal', {num: chatbox.commentsTotal})}}</span>
         </div>
         <div ref="commentArea" class="socketchatbox-commentsArea">
-            <div class="no-comment-yet" v-if="messages.length==0">Leave the first comment!</div>
+            <div class="no-comment-yet" v-if="messages.length==0">{{$t('m.leaveFirstComment')}}</div>
             <div v-for="msg in messages" v-bind:class="{'from-self': msg.fromSelf}">
                 <img class="user-avatar" @click="viewUser(msg)" v-bind:src="msg.profileImgSrc" />
                 <div class="comment-body">
@@ -16,14 +16,14 @@
                     <span @click="vote(msg, 1)" v-bind:class="{voted: msg.voted == 1 }"><font-awesome-icon :icon="['fas', 'thumbs-up']" class="fa fa-thumbs-up" /></span>
                     <span v-if="msg.score!=0" class="comment-score">{{msg.score}}</span>
                     <span @click="vote(msg, -1)" v-bind:class="{voted: msg.voted == -1 }"><font-awesome-icon :icon="['fas', 'thumbs-down']" class="fa fa-thumbs-down" /></span>
-                    <span @click="chatboxUtils.openCommentModal(msg.user_id, msg.name)" class='reply'>Reply</span>
+                    <span @click="chatboxUtils.openCommentModal(msg.user_id, msg.name)" class='reply'>{{$t('m.reply')}}</span>
                     <!-- <span class="flag" title="flag as inappropriate"><font-awesome-icon :icon="['fas', 'flag']" class="fa fa-flag" /></span> -->
                   </div>
                 </div>
             </div>
         </div>
         <button v-show="state.view == 1" @click="chatboxUtils.openCommentModal(false)" class="socketchatbox-bottom-btn-wrapper">
-            <font-awesome-icon icon="pen" class="fa fa-pen" data-toggle="tooltip" data-placement="bottom"/><span>Leave a comment!</span>
+            <font-awesome-icon icon="pen" class="fa fa-pen" data-toggle="tooltip" data-placement="bottom"/><span>{{$t('m.comment')}}</span>
         </button>
     </div>
 </template>
@@ -178,10 +178,11 @@ export default {
                 'user_id': chatboxConfig.userId,
                 'vote': vote
             }
+            var _this = this;
             $.post(chatboxConfig.apiUrl + "/db/comment/"+ msg.id+"/vote", payload, function(resp) {
             }).fail(function(){
                 Vue.notify({
-                  title: 'Vote failed',
+                  title: _this.$t('m.voteFailed'),
                   type: 'error'
                 });
             });
@@ -197,11 +198,11 @@ export default {
             this.loadComments(function(data){
                 if (!data.length) {
                     Vue.notify({
-                      title: 'No new comment',
+                      title: _this.$t('m.noNewComment'),
                     });
                 } else {
                     Vue.notify({
-                      title: data.length + ' new comment',
+                      title: data.length + ' ' + _this.$t('m.newComment'),
                     });
                 }
             });
@@ -263,7 +264,7 @@ export default {
                     callback(resp);
             }).fail(function() {
                 Vue.notify({
-                  title: 'Failed to load comments',
+                  title: _this.$t('m.loadCommentFailed'),
                   type: 'error'
                 });
             }).always(function(){

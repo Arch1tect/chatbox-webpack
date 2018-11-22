@@ -21,7 +21,7 @@ export default {
 	location: 'https://www.youtube.com/',
 	userId: null,
 	shareLocation: true,
-	danmu: true,
+	danmu: true, // is this used?
 	username: null,
 	aboutMe: null,
 	socketUrl: socketUrl,
