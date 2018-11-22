@@ -105,11 +105,11 @@ function showHideChatbox() {
     }
     msgChatboxFrame(msg, function(resp){
         if (resp && resp.msg == "shown") { 
-            $('#open-chatbox').text(closeBoxStr);
+            $('.open-chatbox').text(closeBoxStr);
             chatboxOpenState = true;
         }
         if (resp && resp.msg == "closed") { 
-            $('#open-chatbox').text(openBoxStr);
+            $('.open-chatbox').text(openBoxStr);
             chatboxOpenState = false;
         }
 
@@ -133,11 +133,11 @@ function checkChatboxStatus() {
         }, 3000); 
         if (resp) {
             if (resp.is_chatbox_open) { 
-                $('#open-chatbox').text(closeBoxStr);
+                $('.open-chatbox').text(closeBoxStr);
                 chatboxOpenState = true;
             }
             else { 
-                $('#open-chatbox').text(openBoxStr);
+                $('.open-chatbox').text(openBoxStr);
                 chatboxOpenState = false;
             }
             if (resp.userCount > 0) {
@@ -153,7 +153,7 @@ function checkChatboxStatus() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    $('#open-chatbox').text(openBoxStr);
+    $('button.open-chatbox').text(openBoxStr);
     $('.display-mode').text(defaultDisplayModeStr);
     $('label .full').text(fullStr);
     $('label .mini').text(miniStr);
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
     $('.auto-join-list').text(autoJoinListStr);
 
 
-    $('#open-chatbox').click(showHideChatbox);
+    $('.open-chatbox').click(showHideChatbox);
     $('body').on('click', 'a', function(){
         chrome.tabs.create({url: $(this).attr('href')});
         return false;
