@@ -244,36 +244,30 @@ export default {
             }
         },
         registerUser () {
-            if (chatboxConfig.userId && chatboxConfig.username) {
-                var _this = this;
-                var payload = {
-                    'uuid': chatboxConfig.userId,
-                    'name': chatboxConfig.username
-                }
-                $.post(chatboxConfig.apiUrl + "/db/user/change_name", payload, function(resp) {
-                    Vue.notify({
-                      title: _this.$t('m.welcomeInstall'),
-                    });
-                })
-            } else {
-                setTimeout(function () {
-                    _this.registerUser()
-                }, 500);
+            var _this = this;
+            var payload = {
+                'uuid': chatboxConfig.userId,
+                'name': chatboxConfig.username
             }
-
+            $.post(chatboxConfig.apiUrl + "/db/user/change_name", payload, function(resp) {
+                Vue.notify({
+                  title: _this.$t('m.welcomeInstall'),
+                });
+            })
         },
         loadConfigFromStorage () {
             console.log('Load config from storage');
             var _this = this;
             chatboxUtils.storage.get('chatbox_config', function (item) {
                 var configData = item['chatbox_config'] || {};
+                var needRegister = false;
                 if (configData['user_id']) {
                     chatboxConfig.userId = configData['user_id'];
                 } else {
                     // 1st time open, also save user in DB
                     chatboxConfig.userId = chatboxUtils.genGuid();
                     configData['user_id'] = chatboxConfig.userId;
-                    _this.registerUser();
+                    needRegister = true;
                 }
                 if (configData['username']) {
                     chatboxConfig.username = configData['username'];
@@ -300,6 +294,9 @@ export default {
                 }
                 chatboxConfig.configLoaded = true;
                 chatboxUtils.storage.set('chatbox_config', configData);
+                if(needRegister) {
+                    _this.registerUser();
+                }
                 _this.decideChatboxDisplay();
                 chatboxUtils.loadComments();
             });
