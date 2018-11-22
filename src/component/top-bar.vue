@@ -17,7 +17,7 @@
             </span>
             <span v-on:click='topOptionClicked(0, $event)' class="top-option" v-show="state.display == 'full'" :title="$t('m.profileTab')" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-profile'><font-awesome-icon icon="user-circle" class="fa fa-user" v-bind:class="{ selected: state.view==0 }" /></span>
 
-            <span v-on:click='hideChatbox($event)' class="top-option" title="Close"><font-awesome-icon  icon="times" class="fa fa-close" title='Close' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-closeChatbox' /></span>
+            <span v-on:click='hideChatbox($event)' class="top-option" :title="$t('m.close')"><font-awesome-icon  icon="times" class="fa fa-close" title='Close' data-toggle="tooltip" data-placement="bottom" id='socketchatbox-closeChatbox' /></span>
         </span>
     </div>
 </template>
