@@ -1,9 +1,36 @@
-var openBoxStr= 'Open';
-var closeBoxStr = 'Close';
 var whitelist = {};
 var pageURL = null;
 var configDataFromStorage = {};
+var chatboxOpenState = false;
+// visible strings
+var openBoxStr= 'Open';
+var closeBoxStr = 'Close';
+var defaultDisplayModeStr = 'Default display mode';
+var fullStr = 'Full';
+var miniStr = 'Mini';
+var hiddenStr = 'Hidden';
+var danmuStr = 'Show scrolling text for live message?';
+var yesStr = 'Yes';
+var noStr = 'No';
+var autoJoinStr = 'Always join live chat on this website?';
+var autoJoinListStr = 'Always join live chat on following sites';
+var emptyListStr = 'Not enabled on any website.';
 
+var lng = window.navigator.userLanguage || window.navigator.language;
+if (lng.indexOf('zh')>-1) {
+    openBoxStr = '打开';
+    closeBoxStr = '关闭';
+    defaultDisplayModeStr = '默认显示模式';
+    fullStr = '正常显示';
+    miniStr ='最小化';
+    hiddenStr = '不显示';
+    danmuStr = '显示弹幕？';
+    yesStr = '是';
+    noStr = '否';
+    autoJoinStr = '浏览当前网站时自动连线？';
+    autoJoinListStr = '浏览以下网站时自动连线';
+    emptyListStr = '浏览任何网站时都不会自动连线。';
+}
 function renderWhitelist() {
 
     // if (pageURL in whitelist) {
@@ -33,7 +60,9 @@ function renderWhitelist() {
         $('.whitelist').append($urlEntry);
     }
     if (!counter) {
-        $('.whitelist').append($('<p>Not enabled on any website.</p>'));
+        var $emptyListP = $('<p></p>');
+        $emptyListP.text(emptyListStr);
+        $('.whitelist').append($emptyListP);
     }
 }
 
@@ -71,15 +100,17 @@ function msgChatboxFrame(msg, callback) {
 
 function showHideChatbox() {
     var msg = 'open_chatbox';
-    if ($('#open-chatbox').text().toLowerCase().indexOf("close") >= 0) {
+    if (chatboxOpenState) {
         msg = 'close_chatbox';
     }
     msgChatboxFrame(msg, function(resp){
         if (resp && resp.msg == "shown") { 
             $('#open-chatbox').text(closeBoxStr);
+            chatboxOpenState = true;
         }
         if (resp && resp.msg == "closed") { 
             $('#open-chatbox').text(openBoxStr);
+            chatboxOpenState = false;
         }
 
     });
@@ -103,9 +134,11 @@ function checkChatboxStatus() {
         if (resp) {
             if (resp.is_chatbox_open) { 
                 $('#open-chatbox').text(closeBoxStr);
+                chatboxOpenState = true;
             }
             else { 
                 $('#open-chatbox').text(openBoxStr);
+                chatboxOpenState = false;
             }
             if (resp.userCount > 0) {
                 $('#user-count').text(resp.userCount);
@@ -120,6 +153,18 @@ function checkChatboxStatus() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+    $('#open-chatbox').text(openBoxStr);
+    $('.display-mode').text(defaultDisplayModeStr);
+    $('label .full').text(fullStr);
+    $('label .mini').text(miniStr);
+    $('label .hidden').text(hiddenStr);
+    $('.danmu').text(danmuStr);
+    $('label .yes').text(yesStr);
+    $('label .no').text(noStr);
+    $('.auto-join').text(autoJoinStr);
+    $('.auto-join-list').text(autoJoinListStr);
+
+
     $('#open-chatbox').click(showHideChatbox);
     $('body').on('click', 'a', function(){
         chrome.tabs.create({url: $(this).attr('href')});
