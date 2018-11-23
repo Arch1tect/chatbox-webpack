@@ -194,6 +194,7 @@ const messages = {
     }
   }
 }
+
 import * as moment from 'moment';
 var lng = window.navigator.userLanguage || window.navigator.language;
 var vueLng = 'en';

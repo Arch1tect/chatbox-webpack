@@ -164,7 +164,6 @@ document.addEventListener('DOMContentLoaded', function () {
     $('.auto-join').text(autoJoinStr);
     $('.auto-join-list').text(autoJoinListStr);
 
-
     $('.open-chatbox').click(showHideChatbox);
     $('body').on('click', 'a', function(){
         chrome.tabs.create({url: $(this).attr('href')});

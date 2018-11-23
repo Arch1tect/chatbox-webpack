@@ -78,7 +78,7 @@ import Vue from 'vue'
 import chatboxConfig from '../config.js'
 import chatboxUtils from '../utils.js'
 import chatboxSocket from '../socket.js'
-var POLL_INTERVAL = 15;
+var POLL_INTERVAL = 7;
 export default {
     name: 'lobby',
     data () {
@@ -118,6 +118,19 @@ export default {
                 _this.messages = data.reverse();
             }).fail(function(){}).always(function(){});
         },
+        addSelfToInvitation: function () {
+            // there's a delay before user's own invitation is returned, manually put it there
+            var msg = {
+                'userId': chatboxConfig.userId,
+                'username': chatboxConfig.username,
+                'pageTitle': chatboxConfig.pageTitle,
+                'url': chatboxConfig.location
+
+            }
+            chatboxUtils.tryLoadingProfileImg(msg, msg.userId);
+            this.messages.unshift(msg);
+
+        },
         keepPollingInvitations: function () {
             var _this = this;
             if (this.firstLoad||(chatboxConfig.tabVisible && this.state.display == "full" && this.state.view == 2 && this.state.chatTopPanel == 2)) {
@@ -130,7 +143,7 @@ export default {
         },
     },
     created () {
-        chatboxUtils.pollInvitation = this.pollInvitation;
+        chatboxUtils.addSelfToInvitation = this.addSelfToInvitation;
         // this.messages.push(msg);
         this.keepPollingInvitations();
     }

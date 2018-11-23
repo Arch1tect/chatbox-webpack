@@ -297,7 +297,7 @@ export default {
                 title: this.$t('m.invitationSent'),
             });
             this.state.chatTopPanel = 2;
-            chatboxUtils.pollInvitation();
+            chatboxUtils.addSelfToInvitation();
         },
         toggleOnlineUsers: function (val) {
             if (this.state.chatTopPanel != val) {
