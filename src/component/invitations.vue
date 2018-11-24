@@ -103,7 +103,7 @@ export default {
             data[url] = true;
             chatboxUtils.storage.get('chatbox_config', function(item) {
                 var configData = item['chatbox_config'] || {};
-                configData['tmp_allow'] = data;
+                configData['redirect'] = data;
                 chatboxUtils.storage.set('chatbox_config', configData);
             })
             window.parent.postMessage({chatboxRedirect: url}, "*");

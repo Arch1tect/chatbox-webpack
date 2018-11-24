@@ -585,25 +585,29 @@ export default {
             var whitelist = item['whitelist'];
             var url = chatboxUtils.extractRootDomain(chatboxConfig.location);
             // check whitelist then check general config
-            // TODO: simplify this code, maybe combine anywehere into whitelist
+            // TODO: simplify this code, maybe combine livechat_anywhere into whitelist
             if (whitelist && url in whitelist) {
                 _this.startConnection();
             } else {
 
-                if (chatboxConfig.configLoaded) {
-                    if (chatboxConfig.redirected || chatboxConfig.liveChatEnabled) {
-                        _this.startConnection();
-                    }
+                if (chatboxConfig.redirected) {
+                    _this.startConnection();
                 } else {
-                    // maybe tmp_allow hasn't been read by main.vue
-                    // cannot combine the if-else because main.vue deletes tmp_allow after reading it
+                    // maybe redirect hasn't been read by main.vue
+                    // cannot combine the if-else because main.vue deletes redirect after reading it
                     chatboxUtils.storage.get('chatbox_config', function (item) {
                         var configData = item['chatbox_config'] || {};
-                        var allowUrlDict = configData['tmp_allow']||{};
-                        if (chatboxConfig.location in allowUrlDict) {
-                            _this.startConnection();
+                        var redirectlDict = configData['redirect']||{};
+                        var liveChatEnabled = false;
+                        if (chatboxConfig.location in redirectlDict) {
+                            liveChatEnabled = true;
                         }
-                        if (configData['livechat_anywhere']) {
+                        if ('livechat_anywhere' in configData) {
+                            liveChatEnabled = configData['livechat_anywhere'];
+                        } else {
+                            liveChatEnabled = true;
+                        }
+                        if (liveChatEnabled) {
                             _this.startConnection();
                         }
                     });

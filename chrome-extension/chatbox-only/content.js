@@ -119,11 +119,16 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     var msg = request.chatboxMsg;
     if (msg == "open_chatbox") {
         if (!document.getElementById(CHATBOX_ELEMENT_ID)) {
+            // If user clicks on open chatbox and chat box not created
+            // full size and connect chat like redirected case
+            // Maybe shouldn't connect live chat in such case,
+            // using the redirect since there's no flag to tell chatbox to show
+            // full size temporarily
             chrome.storage.local.get('chatbox_config', function(item){
                 var configData = item['chatbox_config'] || {};
-                var tmpAllow = {};
-                tmpAllow[locationHref] = true;
-                configData['tmp_allow'] = tmpAllow;
+                var redirectDict = {};
+                redirectDict[locationHref] = true;
+                configData['redirect'] = redirectDict;
                 chrome.storage.local.set({'chatbox_config': configData});
             });
             createChatboxIframe();
@@ -135,9 +140,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 chrome.storage.local.get('chatbox_config', function(item){
     var configData = item['chatbox_config'] || {};
     var shouldCreateIframe = false;
-    if (configData['livechat_anywhere']) shouldCreateIframe = true;
-    if (configData['tmp_allow']) {
-        var allowUrlList = configData['tmp_allow'] || [];
+    if ('livechat_anywhere' in configData) {
+        shouldCreateIframe = configData['livechat_anywhere'];
+    } else {
+        // If not set, join live chat by default
+        shouldCreateIframe = true;
+    }
+    if (configData['redirect']) {
+        var allowUrlList = configData['redirect'] || [];
         if (locationHref in allowUrlList) {
             shouldCreateIframe = true;
         }
@@ -145,15 +155,16 @@ chrome.storage.local.get('chatbox_config', function(item){
     if (configData['display'] && configData['display'] !== 'hidden') {
         shouldCreateIframe = true;
     }
-    if (shouldCreateIframe) {
-        createChatboxIframe();
-    } else {
+
+    if (shouldCreateIframe) createChatboxIframe();
+
+    if (!shouldCreateIframe) {
         chrome.storage.local.get('whitelist', function(item){
             var whitelist = item['whitelist'];
             var url = extractRootDomain(locationHref);
             if (whitelist && url in whitelist) {
                 createChatboxIframe();
-            } 
+            }
         });
     }
 });

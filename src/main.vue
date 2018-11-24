@@ -283,17 +283,14 @@ export default {
                 if (configData['display']) {
                     _this.state.display = configData['display'];
                 }
-                if (configData['tmp_allow']) {
-                    var allowUrlDict = configData['tmp_allow']||{};
+                if (configData['redirect']) {
+                    var allowUrlDict = configData['redirect']||{};
                     if (chatboxConfig.location in allowUrlDict) {
                         chatboxConfig.redirected = true;
                         delete allowUrlDict[chatboxConfig.location];
                         // override disply mode to full size
                         _this.state.display = 'full';
                     }
-                }
-                if (configData['livechat_anywhere']) {
-                    chatboxConfig.liveChatEnabled = true;
                 }
                 chatboxConfig.configLoaded = true;
                 chatboxUtils.storage.set('chatbox_config', configData);
