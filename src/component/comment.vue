@@ -255,7 +255,7 @@ export default {
                     data.content = chatboxUtils.addClassToEmoji(data.content);
                     _this.messages.push(data);
                     data.fromSelf = data.user_id == chatboxConfig.userId
-                    // chatboxUtils.queueDanmu(data);
+                    // chatboxUtils.queueDanmu(data, 'comment');
                 }
                 Vue.nextTick(function(){
                     _this.scrollToBottom();

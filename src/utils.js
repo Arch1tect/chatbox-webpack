@@ -73,10 +73,10 @@ export default {
         }
         window.parent.postMessage(resizeMsg, "*");
     },
-    queueDanmu: function (msg, live) {
+    queueDanmu: function (msg, type) {
         // send chat box size to content.js
         var danmuMsg = {};
-        msg.live = live;
+        msg.type = type;
         danmuMsg.msg = msg;
         window.parent.postMessage(danmuMsg, "*");
     },

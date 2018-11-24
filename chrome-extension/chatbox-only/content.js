@@ -136,7 +136,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         sendResponse({msg: "shown"});
     }
 });
-
+// TODO: if show danmu selected, create iframe so we can pull
+// invitations?
+// Separate invitation danmu and chat danmu?
 chrome.storage.local.get('chatbox_config', function(item){
     var configData = item['chatbox_config'] || {};
     var shouldCreateIframe = false;

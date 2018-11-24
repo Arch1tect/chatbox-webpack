@@ -1,6 +1,11 @@
 (function() {
     "use strict";
 
+var invitationStr = ' invites you to ';
+var lng = window.navigator.userLanguage || window.navigator.language;
+if (lng.indexOf('zh')>-1) {
+    invitationStr = ' 邀请大家去 '
+}
 const ROW_NUM = 12;
 var messages = []; // keep list of active danmu
 var waitlist = [];
@@ -17,26 +22,50 @@ function toggleDanmu(display) {
         showing = false;
     }
 }
+
+document.addEventListener('click',function(e){
+    if(e.target && e.target.className== 'invitation-url'){
+        chrome.storage.local.get('chatbox_config', function(item) {
+            var url = e.target.title;
+            var configData = item['chatbox_config'] || {};
+            var data = {};
+            data[url] = true;
+            configData['redirect'] = data;
+            chrome.storage.local.set({'chatbox_config': configData});
+            location.replace(url);
+        })
+    }
+ })
 function createDanmu(msg) {
+    // msg = {
+    //     'type': live/comment/invitation,
+    //     'content': 'str'
+    // }
     messages.push(msg);
     var danmu  = document.createElement("div");
     msg.el = danmu;
     danmu.className = 'danmu';
-    if (msg.live)
+    var innerHtml = "";
+
+    if (msg.type == 'live') {
         danmu.className += ' live';
-    var content = msg.content;
-    if (!msg.content) content = msg.message;
-    var innerHtml = "<div class='danmu-text'>"+content+"</div>";
-    if(content.startsWith('stickers/')) {
-        var src = ""
-        if (chrome && chrome.extension)
-            src = chrome.extension.getURL('chatbox-only/'+content);
-        else
-            src = 'chatbox-only/'+content;
-
-        innerHtml = "<img src='"+src+"' />";
-
+        var content = msg.content;
+        if (!msg.content) content = msg.message;
+        innerHtml = "<div class='danmu-text'>"+content+"</div>";
+        if(content.startsWith('stickers/')) {
+            var src = ""
+            if (chrome && chrome.extension)
+                src = chrome.extension.getURL('chatbox-only/'+content);
+            else
+                src = 'chatbox-only/'+content;
+            innerHtml = "<img src='"+src+"' />";
+        }
     }
+    if (msg.type == 'invitation') {
+        var content = msg.username+invitationStr+" <span class='invitation-url' title='"+msg.url+"'>"+msg.pageTitle+"</span>";
+        innerHtml = "<div class='invitation'>"+content+"</div>";
+    }
+
     danmu.innerHTML = innerHtml;
     danmu.style.top = 30 + msg.row*40 + 'px';
     var startX = window.innerWidth + 'px';

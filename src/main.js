@@ -152,7 +152,7 @@ const messages = {
       onlineUsers: '在当前页面的用户',
       noInvitation: '没有收到任何邀请',
       typeHere: '输入。。。',
-      joinMe: '邀请你去',
+      joinMe: '邀请大家去',
       liveChatWelcomeLog: '和当前页面的用户在线聊天',
       comment: '留言！',
       commentsTotal: '{num} 条留言',

@@ -40,6 +40,25 @@
     padding-bottom: 5px;
     padding-top: 5px;
 }
+.danmu .invitation {
+    border: 1px solid lightgray;
+    color: #0089ff;
+    color: black;
+    box-shadow: 7px 7px 3px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    background: white;
+    padding: 10px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+span.invitation-url {
+    color: #0089ff;
+    cursor: pointer;
+}
+span.invitation-url:hover {
+    text-decoration: underline;
+}
+
 .danmu img{
     max-height: 50px;
 }

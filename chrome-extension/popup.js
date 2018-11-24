@@ -25,7 +25,7 @@ if (lng.indexOf('zh')>-1) {
     fullStr = '正常显示';
     miniStr ='最小化';
     hiddenStr = '不显示';
-    danmuStr = '显示聊天弹幕？';
+    danmuStr = '显示弹幕？';
     yesStr = '是';
     noStr = '否';
     autoJoinAnywhereStr = '浏览任何网站时都自动连线聊天？';
@@ -238,11 +238,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if ($(this).val() == 'yes') {
             console.log('adding to whitelist');
             whitelist[pageURL]=1;
-            msgChatboxFrame('connect_chatbox');
+            // msgChatboxFrame('connect_chatbox');
         } else {
             console.log('removing from whitelist');
             delete whitelist[pageURL];
-            msgChatboxFrame('disconnect_chatbox');
+            // msgChatboxFrame('disconnect_chatbox');
         }
         chrome.storage.local.set({ 'whitelist': whitelist });
         renderWhitelist();
