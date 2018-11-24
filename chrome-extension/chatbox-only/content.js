@@ -135,6 +135,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 chrome.storage.local.get('chatbox_config', function(item){
     var configData = item['chatbox_config'] || {};
     var shouldCreateIframe = false;
+    if (configData['livechat_anywhere']) shouldCreateIframe = true;
     if (configData['tmp_allow']) {
         var allowUrlList = configData['tmp_allow'] || [];
         if (locationHref in allowUrlList) {

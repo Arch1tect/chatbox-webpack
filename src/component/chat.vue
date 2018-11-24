@@ -584,11 +584,16 @@ export default {
         chatboxUtils.storage.get('whitelist', function (item) {
             var whitelist = item['whitelist'];
             var url = chatboxUtils.extractRootDomain(chatboxConfig.location);
+            // check whitelist then check general config
+            // TODO: simplify this code, maybe combine anywehere into whitelist
             if (whitelist && url in whitelist) {
                 _this.startConnection();
             } else {
-                if (chatboxConfig.redirected) {
-                    _this.startConnection();
+
+                if (chatboxConfig.configLoaded) {
+                    if (chatboxConfig.redirected || chatboxConfig.liveChatEnabled) {
+                        _this.startConnection();
+                    }
                 } else {
                     // maybe tmp_allow hasn't been read by main.vue
                     // cannot combine the if-else because main.vue deletes tmp_allow after reading it
@@ -596,6 +601,9 @@ export default {
                         var configData = item['chatbox_config'] || {};
                         var allowUrlDict = configData['tmp_allow']||{};
                         if (chatboxConfig.location in allowUrlDict) {
+                            _this.startConnection();
+                        }
+                        if (configData['livechat_anywhere']) {
                             _this.startConnection();
                         }
                     });

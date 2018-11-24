@@ -292,6 +292,9 @@ export default {
                         _this.state.display = 'full';
                     }
                 }
+                if (configData['livechat_anywhere']) {
+                    chatboxConfig.liveChatEnabled = true;
+                }
                 chatboxConfig.configLoaded = true;
                 chatboxUtils.storage.set('chatbox_config', configData);
                 if(needRegister) {

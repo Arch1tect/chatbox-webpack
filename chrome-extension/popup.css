@@ -29,6 +29,9 @@
 .option-title.first {
 	border-top: none;
 }
+.whitelist-options.disabled {
+	color:lightgray !important;
+}
 
 
 /*.enable-chatbox {

@@ -12,6 +12,7 @@ var hiddenStr = 'Hidden';
 var danmuStr = 'Show scrolling text for live message?';
 var yesStr = 'Yes';
 var noStr = 'No';
+var autoJoinAnywhereStr = 'Always join live chat on any website?';
 var autoJoinStr = 'Always join live chat on this website?';
 var autoJoinListStr = 'Always join live chat on following sites';
 var emptyListStr = 'Not enabled on any website.';
@@ -20,15 +21,16 @@ var lng = window.navigator.userLanguage || window.navigator.language;
 if (lng.indexOf('zh')>-1) {
     openBoxStr = '打开';
     closeBoxStr = '关闭';
-    defaultDisplayModeStr = '默认显示模式';
+    defaultDisplayModeStr = '聊天盒默认显示模式';
     fullStr = '正常显示';
     miniStr ='最小化';
     hiddenStr = '不显示';
-    danmuStr = '显示弹幕？';
+    danmuStr = '显示聊天弹幕？';
     yesStr = '是';
     noStr = '否';
-    autoJoinStr = '浏览当前网站时自动连线？';
-    autoJoinListStr = '浏览以下网站时自动连线';
+    autoJoinAnywhereStr = '浏览任何网站时都自动连线聊天？';
+    autoJoinStr = '浏览当前网站时自动连线聊天？';
+    autoJoinListStr = '浏览以下网站时自动连线聊天';
     emptyListStr = '浏览任何网站时都不会自动连线。';
 }
 function renderWhitelist() {
@@ -151,7 +153,18 @@ function checkChatboxStatus() {
         }
     });
 }
+function toggleWhitelistOptions (enable) {
+    // if auto join live chat anywhere is selected
+    // no need to show whitelist options
+    if (enable) {
+        $('.whitelist-options').removeClass('disabled');
+        $('.whitelist-options input').prop('disabled', false);
+    } else {
+        $('.whitelist-options').addClass('disabled');
+        $('.whitelist-options input').prop('disabled', true);
+    }
 
+}
 document.addEventListener('DOMContentLoaded', function () {
     $('button.open-chatbox').text(openBoxStr);
     $('.display-mode').text(defaultDisplayModeStr);
@@ -161,6 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
     $('.danmu').text(danmuStr);
     $('label .yes').text(yesStr);
     $('label .no').text(noStr);
+    $('.auto-join-anywhere').text(autoJoinAnywhereStr);
     $('.auto-join').text(autoJoinStr);
     $('.auto-join-list').text(autoJoinListStr);
 
@@ -171,16 +185,35 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     chrome.storage.local.get('chatbox_config', function(data) {
         var configDataFromStorage = data['chatbox_config'] || {};
-        if (configDataFromStorage['display']){
+        if (configDataFromStorage['display']) {
             var checkbox = "input[name=open_chatbox_when][value="+configDataFromStorage['display']+"]";
             $(checkbox).prop("checked",true);
         }
+        if ('livechat_anywhere' in configDataFromStorage) {
+            var val = configDataFromStorage['livechat_anywhere'];
+            if (val) val = 'yes';
+            else val = 'no';
+            var checkbox = "input[name=livechat_anywhere][value="+val+"]";
+            $(checkbox).prop("checked",true);
+        }
+        toggleWhitelistOptions(val=='no');
     });
     $('input:radio[name="open_chatbox_when"]').change(function() {
         var val = $(this).val();
         chrome.storage.local.get('chatbox_config', function(data) {
             var configDataFromStorage = data['chatbox_config'] || {};
             configDataFromStorage['display'] = val;
+            chrome.storage.local.set({'chatbox_config': configDataFromStorage});
+        });
+    });
+    $('input:radio[name="livechat_anywhere"]').change(function() {
+        var val = $(this).val();
+        if (val == 'yes') val = true;
+        else val = false;
+        toggleWhitelistOptions(!val);
+        chrome.storage.local.get('chatbox_config', function(data) {
+            var configDataFromStorage = data['chatbox_config'] || {};
+            configDataFromStorage['livechat_anywhere'] = val;
             chrome.storage.local.set({'chatbox_config': configDataFromStorage});
         });
     });
