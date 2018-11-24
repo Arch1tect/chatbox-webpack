@@ -85,6 +85,7 @@ export default {
         return {
             config: chatboxConfig,
             state: chatboxUIState,
+            selfAdded: false,
             firstLoad: true,
             messages: []
         }
@@ -112,7 +113,11 @@ export default {
             var _this = this;
             $.get(chatboxConfig.socketUrl + "/api/invitations", function(data) {
                 var i=0;
+                _this.selfAdded = false;
                 for(; i<data.length; i++) {
+                    if (data[i].userId == chatboxConfig.userId) {
+                        _this.selfAdded = true;
+                    }
                     chatboxUtils.tryLoadingProfileImg(data[i], data[i].userId);
                 }
                 _this.messages = data.reverse();
@@ -120,6 +125,7 @@ export default {
         },
         addSelfToInvitation: function () {
             // there's a delay before user's own invitation is returned, manually put it there
+            if (this.selfAdded) return;
             var msg = {
                 'userId': chatboxConfig.userId,
                 'username': chatboxConfig.username,
@@ -129,6 +135,7 @@ export default {
             }
             chatboxUtils.tryLoadingProfileImg(msg, msg.userId);
             this.messages.unshift(msg);
+            this.selfAdded = true;
 
         },
         keepPollingInvitations: function () {
