@@ -1,7 +1,7 @@
 <template>
     <transition name="slide">
         <div v-if="state.chatTopPanel == 2" class="socketchatbox-invites">
-            <center v-if="firstLoad">{{$t('m.loading')}}</center>
+            <center v-if="config.firstLoadInvitation">{{$t('m.loading')}}</center>
             <center v-if="messages.length==0">{{$t('m.noInvitation')}}</center>
             <div class="invite-row" :class="{'self-invitation': msg.userId == config.userId}" v-for="msg in messages">
                 <img @click="viewUser(msg.userId, msg.username)" v-bind:title="msg.username" v-bind:src="msg.profileImgSrc" />
@@ -87,7 +87,6 @@ export default {
             state: chatboxUIState,
             invitationUrls: {},
             selfAdded: false,
-            firstLoad: true,
             messages: []
         }
     },
@@ -121,14 +120,14 @@ export default {
                     }
                     var url = data[i].url;
                     invitationUrlsNew[url] = true;
-                    if (!_this.firstLoad && !(url in _this.invitationUrls)) {
+                    if (!chatboxConfig.firstLoadInvitation && !(url in _this.invitationUrls)) {
                         chatboxUtils.queueDanmu(data[i], 'invitation');
                     }
                     chatboxUtils.tryLoadingProfileImg(data[i], data[i].userId);
                 }
                 _this.invitationUrls = invitationUrlsNew;
                 _this.messages = data.reverse();
-                _this.firstLoad = false;
+                chatboxConfig.firstLoadInvitation = false;
             }).fail(function(){}).always(function(){});
 
         },
@@ -149,8 +148,8 @@ export default {
         },
         keepPollingInvitations: function () {
             var _this = this;
-            // if (this.firstLoad||(chatboxConfig.tabVisible && this.state.display == "full" && this.state.view == 2 && this.state.chatTopPanel == 2)) {
-            if (this.firstLoad||chatboxConfig.tabVisible) {
+            // if (chatboxConfig.firstLoadInvitation||(chatboxConfig.tabVisible && this.state.display == "full" && this.state.view == 2 && this.state.chatTopPanel == 2)) {
+            if (chatboxConfig.firstLoadInvitation||chatboxConfig.tabVisible) {
                 this.pollInvitation();
             }
             setTimeout(function(){

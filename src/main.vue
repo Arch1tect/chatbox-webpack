@@ -158,6 +158,11 @@ export default {
                 this.disconnectAfterHiddenSomeTime();
             } else {
                 chatboxConfig.tabVisible = true;
+                // set firstLoadInvitation flag to true so that
+                // old invitation doesn't show up in danmu
+                chatboxConfig.firstLoadInvitation = true;
+                chatboxUtils.updateExtensionBadge();
+
                 if (disconnectTimer) {
                     clearTimeout(disconnectTimer);
                 }
@@ -168,7 +173,6 @@ export default {
                       type: 'warn'
                     });
                 }
-                chatboxUtils.updateExtensionBadge();
             }
         },
         resizeStart (e) {

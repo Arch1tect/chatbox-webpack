@@ -33,6 +33,7 @@ export default {
 	},
 
 	// data for passing around
+	firstLoadInvitation: true,
 	redirected: false,
 	commentsTotal: 0,
 	pageTitle: null,
