@@ -1,8 +1,8 @@
 <template>
     <transition name="slide">
         <div v-if="state.chatTopPanel == 2" class="socketchatbox-invites">
-            <center v-if="config.firstLoadInvitation">{{$t('m.loading')}}</center>
-            <center v-if="messages.length==0">{{$t('m.noInvitation')}}</center>
+            <center class='loading-invitations' v-show="config.firstLoadInvitation">{{$t('m.loading')}}</center>
+            <center v-show="messages.length==0">{{$t('m.noInvitation')}}</center>
             <div class="invite-row" :class="{'self-invitation': msg.userId == config.userId}" v-for="msg in messages">
                 <img @click="viewUser(msg.userId, msg.username)" v-bind:title="msg.username" v-bind:src="msg.profileImgSrc" />
                 <span class="lobby-msg-content">{{$t('m.joinMe')}} <span class="page-title" @click="redirect(msg.url)" v-bind:title="msg.pageTitle"> {{msg.pageTitle}}</span>
@@ -34,6 +34,9 @@
     position: absolute;
     z-index: 1;
     outline: 1px solid #d3d3d3;
+}
+.loading-invitations {
+    margin-bottom: 10px;
 }
 .invite-row {
     padding: 3px;
