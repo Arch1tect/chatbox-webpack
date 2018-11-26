@@ -508,7 +508,9 @@ export default {
                     chatboxConfig.unreadLiveMsgTotal ++;
                 }
                 _this.processMsg(data);
-                chatboxUtils.queueDanmu(data, 'live');
+                if (chatboxConfig.livechatDanmu) {
+                    chatboxUtils.queueDanmu(data, 'live');
+                }
                 _this.saveMsgToStorage(data);
             });
             // Received file

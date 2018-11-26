@@ -118,21 +118,32 @@ export default {
                 _this.selfAdded = false;
                 var invitationUrlsNew = {};
                 for(; i<data.length; i++) {
+                    var msg = data[i];
                     if (data[i].userId == chatboxConfig.userId) {
                         _this.selfAdded = true;
                     }
-                    var url = data[i].url;
-                    invitationUrlsNew[url] = true;
-                    if (!chatboxConfig.firstLoadInvitation && !(url in _this.invitationUrls)) {
-                        chatboxUtils.queueDanmu(data[i], 'invitation');
-                    }
-                    chatboxUtils.tryLoadingProfileImg(data[i], data[i].userId);
+                    invitationUrlsNew[msg.url] = true;
+                    _this.queueDanmu(msg);
+                    chatboxUtils.tryLoadingProfileImg(msg, msg.userId);
                 }
                 _this.invitationUrls = invitationUrlsNew;
                 _this.messages = data.reverse();
                 chatboxConfig.firstLoadInvitation = false;
             }).fail(function(){}).always(function(){});
 
+        },
+        queueDanmu: function (msg) {
+            var notFirstLoad = !chatboxConfig.firstLoadInvitation;
+            var notAlreadySeen = !(msg.url in this.invitationUrls);
+            var allowDanmu = false;
+            if (chatboxConfig.invitationDanmu == 'any_site') {
+                allowDanmu = true;
+            } else if (chatboxConfig.invitationDanmu == 'same_site') {
+                allowDanmu = chatboxUtils.extractRootDomain(chatboxConfig.location) == chatboxUtils.extractRootDomain(msg.url);
+            }
+            if (allowDanmu && notFirstLoad && notAlreadySeen) {
+                chatboxUtils.queueDanmu(msg, 'invitation');
+            }
         },
         addSelfToInvitation: function () {
             // there's a delay before user's own invitation is returned, manually put it there

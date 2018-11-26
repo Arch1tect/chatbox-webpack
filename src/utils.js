@@ -80,11 +80,6 @@ export default {
         danmuMsg.msg = msg;
         window.parent.postMessage(danmuMsg, "*");
     },
-    toggleDanmu: function (display) {
-        var danmuMsg = {};
-        danmuMsg.display = display;
-        window.parent.postMessage(danmuMsg, "*");
-    },
     storage: storage,
     tryLoadingProfileImg: function (obj, userId) {
         // TODO: implement cache and bust cache image

@@ -24,31 +24,43 @@
 			<div class="option-title first"><b class="display-mode">Default display mode</b></div>
 			<form>
 				<label>
-					<input class="form-radio" type="radio" name="open_chatbox_when" value="full"> <span class='full'>Full</span>
+					<input class="form-radio" type="radio" name="default_display" value="full"> <span class='full'>Full</span>
 				</label>
 				<label>
-					<input class="form-radio" type="radio" name="open_chatbox_when" value="mini"> <span class='mini'>Mini</span>
+					<input class="form-radio" type="radio" name="default_display" value="mini"> <span class='mini'>Mini</span>
 				</label>
-<!-- 				<label>
-					<input type="radio" checked="checked" name="open_chatbox_when" value="when_msg"> When there is message <br>
-				</label> -->
 				<label>
-			  		<input class="form-radio" type="radio" checked="checked" name="open_chatbox_when" value="hidden"> <span class='hidden'>Hidden</span> 
+			  		<input class="form-radio" type="radio" checked="checked" name="default_display" value="hidden"> <span class='hidden'>Hidden</span> 
 				</label>
 			</form>
 			<br/>
-			<div class="option-title"><b class="danmu">Show scrolling text for live message?</b></div>
+			<div class="option-title"><b class="invitation-danmu">Show scrolling message for invitation</b></div>
 			<form>
 				<label>
-					<input class="form-radio" type="radio" checked="checked" name="toggle_danmu" value="block"> <span class='yes'>Yes</span>
+					<input class="form-radio" type="radio" name="invitation_danmu" value="any_site"> <span class='invitation-from-anywhere'>From anywhere</span>
+				</label>
+				<br/>
+				<label>
+					<input class="form-radio" type="radio" checked="checked" name="invitation_danmu" value="same_site"> <span class='same-site-invite-only'>From same website only</span>
+				</label>
+				<br/>
+				<label>
+					<input class="form-radio" type="radio" name="invitation_danmu" value="never"> <span class='invitation-from-nowhere'>Never</span>
+				</label>
+			</form>
+			<br/>
+			<div class="option-title"><b class="danmu">Show scrolling message for live chat</b></div>
+			<form>
+				<label>
+					<input class="form-radio" type="radio" checked="checked" name="livechat_danmu" value="yes"> <span class='yes'>Yes</span>
 				</label>
 				<label>
-					<input class="form-radio" type="radio" name="toggle_danmu" value="none"> <span class='no'>No</span>
+					<input class="form-radio" type="radio" name="livechat_danmu" value="no"> <span class='no'>No</span>
 				</label>
 			</form>
 			<br/>
 
-			<div class="option-title"><b class="auto-join-anywhere">Always join live chat on any website?</b></div>
+			<div class="option-title"><b class="auto-join-anywhere">Auto join live chat on any website</b></div>
 			<form>
 				<label>
 					<input class="form-radio" type="radio" checked="checked" name="livechat_anywhere" value="yes"> <span class='yes'>Yes</span>
@@ -60,7 +72,7 @@
 
 			<br/>
 			<div class="whitelist-options">
-				<div class="option-title"><b class="auto-join">Always join live chat on this website?</b></div>
+				<div class="option-title"><b class="auto-join">Auto join live chat on this website</b></div>
 				<form>
 					<label>
 						<input class="form-radio" type="radio" checked="checked" name="toggle_whitelist" value="yes"> <span class='yes'>Yes</span>
@@ -82,7 +94,7 @@
 				</form> -->
 
 				<br/>
-				<div class="option-title"><b class='auto-join-list'>Always join live chat on following sites</b></div>
+				<div class="option-title"><b class='auto-join-list'>Auto join live chat on following sites</b></div>
 				<div class="whitelist"></div>
 			</div>
 

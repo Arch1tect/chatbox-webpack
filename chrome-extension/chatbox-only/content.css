@@ -18,7 +18,7 @@
     margin-bottom: 0px;
 }
 .danmuWrapper {
-    display: none;
+    /*display: none;*/
 }
 .danmu {
     position: fixed;

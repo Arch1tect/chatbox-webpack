@@ -157,6 +157,13 @@ chrome.storage.local.get('chatbox_config', function(item){
     if (configData['display'] && configData['display'] !== 'hidden') {
         shouldCreateIframe = true;
     }
+    if ('invitation_danmu' in configData) {
+        if (configData['invitation_danmu']!='never') {
+            shouldCreateIframe = true;
+        }
+    } else {
+        shouldCreateIframe = true;
+    }
 
     if (shouldCreateIframe) createChatboxIframe();
 

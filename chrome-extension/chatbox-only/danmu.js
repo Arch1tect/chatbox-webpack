@@ -13,15 +13,15 @@ var danmuWrapper = document.createElement("div");
 danmuWrapper.className = 'danmuWrapper';
 var showing = true;
 document.body.insertBefore(danmuWrapper, document.body.firstChild);
-function toggleDanmu(display) {
-    danmuWrapper.style.display = display;
-    if (display == 'block') {
-        showing = true;
-        checkDanmu();
-    } else {
-        showing = false;
-    }
-}
+// function toggleDanmu(display) {
+//     danmuWrapper.style.display = display;
+//     if (display == 'block') {
+//         showing = true;
+//         checkDanmu();
+//     } else {
+//         showing = false;
+//     }
+// }
 
 document.addEventListener('click',function(e){
     if(e.target && e.target.className== 'invitation-url'){
@@ -154,15 +154,18 @@ function receiveMsgFromChatboxFrame (e) {
         waitlist.push(danmuMsg.msg);
         checkDanmu();
     }
-
-    if (danmuMsg.display) {
-        toggleDanmu(danmuMsg.display);
-    }
+    // This is deprecated, but there's no way to suddenly
+    // hide danmu anywhere...
+    // if (danmuMsg.display) {
+    //     toggleDanmu(danmuMsg.display);
+    // }
 }
-chrome.storage.local.get('danmu', function (item) {
-    var display = item['danmu'] || 'block';
-    toggleDanmu(display);
-});
+// This is deprecated, danmu is always enabled in UI
+// the switch is set before sending msg to danmu.js
+// chrome.storage.local.get('danmu', function (item) {
+//     var display = item['danmu'] || 'block';
+//     toggleDanmu(display);
+// });
 window.addEventListener("message", receiveMsgFromChatboxFrame, false);
 // test cases below
 var testDanmu = [

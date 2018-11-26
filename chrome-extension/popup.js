@@ -9,13 +9,17 @@ var defaultDisplayModeStr = 'Default display mode';
 var fullStr = 'Full';
 var miniStr = 'Mini';
 var hiddenStr = 'Hidden';
-var danmuStr = 'Show scrolling text for live message?';
+var invitationStr = 'Show scrolling message for invitation';
+var fromAnywhereStr= 'From anywhere';
+var fromSameSiteOnlyStr = 'From same website only';
+var fromNowhereStr = 'Never';
+var danmuStr = 'Show scrolling message for live chat';
 var yesStr = 'Yes';
 var noStr = 'No';
-var autoJoinAnywhereStr = 'Always join live chat on any website?';
-var autoJoinStr = 'Always join live chat on this website?';
-var autoJoinListStr = 'Always join live chat on following sites';
-var emptyListStr = 'Not enabled on any website.';
+var autoJoinAnywhereStr = 'Auto join live chat on any website';
+var autoJoinStr = 'Auto join live chat on current website';
+var autoJoinListStr = 'Auto join live chat on following sites';
+var emptyListStr = 'Never auto join live chat.';
 
 var lng = window.navigator.userLanguage || window.navigator.language;
 if (lng.indexOf('zh')>-1) {
@@ -25,11 +29,15 @@ if (lng.indexOf('zh')>-1) {
     fullStr = '正常显示';
     miniStr ='最小化';
     hiddenStr = '不显示';
-    danmuStr = '显示弹幕？';
+    invitationStr = '显示邀请弹幕';
+    fromAnywhereStr = '显示来自任何网站的邀请';
+    fromSameSiteOnlyStr = '只显示来自当前网站的邀请';
+    fromNowhereStr = '从不显示';
+    danmuStr = '显示实时聊天弹幕';
     yesStr = '是';
     noStr = '否';
-    autoJoinAnywhereStr = '浏览任何网站时都自动连线聊天？';
-    autoJoinStr = '浏览当前网站时自动连线聊天？';
+    autoJoinAnywhereStr = '浏览任何网站时都自动连线聊天';
+    autoJoinStr = '浏览当前网站时自动连线聊天';
     autoJoinListStr = '浏览以下网站时自动连线聊天';
     emptyListStr = '浏览任何网站时都不会自动连线。';
 }
@@ -117,10 +125,11 @@ function showHideChatbox() {
 
     });
 }
-function showHideDanmu(display) {
+function showHideDanmu(type, val) {
     var msg = {
         'name': 'toggle-danmu',
-        'value': display
+        'type': type,
+        'value': val
     }
     msgChatboxFrame(msg);
 }
@@ -157,9 +166,11 @@ function toggleWhitelistOptions (enable) {
     // if auto join live chat anywhere is selected
     // no need to show whitelist options
     if (enable) {
+        $('.whitelist-options').show();
         $('.whitelist-options').removeClass('disabled');
         $('.whitelist-options input').prop('disabled', false);
     } else {
+        $('.whitelist-options').hide();
         $('.whitelist-options').addClass('disabled');
         $('.whitelist-options input').prop('disabled', true);
     }
@@ -171,6 +182,10 @@ document.addEventListener('DOMContentLoaded', function () {
     $('label .full').text(fullStr);
     $('label .mini').text(miniStr);
     $('label .hidden').text(hiddenStr);
+    $('.invitation-danmu').text(invitationStr);
+    $('label .invitation-from-anywhere').text(fromAnywhereStr);
+    $('label .same-site-invite-only').text(fromSameSiteOnlyStr);
+    $('label .invitation-from-nowhere').text(fromNowhereStr);
     $('.danmu').text(danmuStr);
     $('label .yes').text(yesStr);
     $('label .no').text(noStr);
@@ -185,54 +200,54 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     chrome.storage.local.get('chatbox_config', function(data) {
         var configDataFromStorage = data['chatbox_config'] || {};
-        if (configDataFromStorage['display']) {
-            var checkbox = "input[name=open_chatbox_when][value="+configDataFromStorage['display']+"]";
+        if ('display' in configDataFromStorage) {
+            var checkbox = "input[name=default_display][value="+configDataFromStorage['display']+"]";
+            $(checkbox).prop("checked",true);
+        }
+        if ('invitation_danmu' in configDataFromStorage) {
+            var checkbox = "input[name=invitation_danmu][value="+configDataFromStorage['invitation_danmu']+"]";
+            $(checkbox).prop("checked",true);
+        }
+        if ('livechat_danmu' in configDataFromStorage) {
+            var val = configDataFromStorage['livechat_danmu'];
+            if (val) val = 'yes';
+            else val = 'no';
+            var checkbox = "input[name=livechat_danmu][value="+val+"]";
             $(checkbox).prop("checked",true);
         }
         if ('livechat_anywhere' in configDataFromStorage) {
             var val = configDataFromStorage['livechat_anywhere'];
+            toggleWhitelistOptions(!val);
             if (val) val = 'yes';
             else val = 'no';
             var checkbox = "input[name=livechat_anywhere][value="+val+"]";
             $(checkbox).prop("checked",true);
+        } else {
+            toggleWhitelistOptions(false);
         }
-        toggleWhitelistOptions(val=='no');
     });
-    $('input:radio[name="open_chatbox_when"]').change(function() {
+    $('input:radio[name="default_display"]').change(function() {
         var val = $(this).val();
-        chrome.storage.local.get('chatbox_config', function(data) {
-            var configDataFromStorage = data['chatbox_config'] || {};
-            configDataFromStorage['display'] = val;
-            chrome.storage.local.set({'chatbox_config': configDataFromStorage});
-        });
+        saveConfig('display', val);
     });
     $('input:radio[name="livechat_anywhere"]').change(function() {
         var val = $(this).val();
         if (val == 'yes') val = true;
         else val = false;
+        saveConfig('livechat_anywhere', val);
         toggleWhitelistOptions(!val);
-        chrome.storage.local.get('chatbox_config', function(data) {
-            var configDataFromStorage = data['chatbox_config'] || {};
-            configDataFromStorage['livechat_anywhere'] = val;
-            chrome.storage.local.set({'chatbox_config': configDataFromStorage});
-        });
     });
-    chrome.storage.local.get('danmu', function(data) {
-        var checkbox = "input[name=toggle_danmu][value="+data['danmu']+"]";
-        $(checkbox).prop("checked", true);
+    $('input:radio[name="livechat_danmu"]').change(function() {
+        var val = $(this).val();
+        if (val == 'yes') val = true;
+        else val = false;
+        showHideDanmu('livechat', val);
+        saveConfig('livechat_danmu', val);
     });
-    $('input:radio[name="toggle_danmu"]').change(function() {
-        var display = $(this).val();
-        console.log('show danmu ' + display);
-        showHideDanmu(display);
-        chrome.storage.local.set({ 'danmu': display });
-    });
-    chrome.storage.local.get('share-location', function(data) {
-        var checkbox = "input[name=toggle_share_location][value="+data['share-location']+"]";
-        $(checkbox).prop("checked", true);
-    });
-    $('input:radio[name="toggle_share_location"]').change(function() {
-        chrome.storage.local.set({ 'share-location': $(this).val() });
+    $('input:radio[name="invitation_danmu"]').change(function() {
+        var val = $(this).val();
+        showHideDanmu('invitation', val);
+        saveConfig('invitation_danmu', val);
     });
     $('input:radio[name="toggle_whitelist"]').change(function() {
         if ($(this).val() == 'yes') {
@@ -250,7 +265,15 @@ document.addEventListener('DOMContentLoaded', function () {
     checkChatboxStatus();
 
 });
-
+function saveConfig(key, value) {
+    // IMPORTANT: async
+    // get latest setting of chatbox_config then update a field
+    chrome.storage.local.get('chatbox_config', function(data) {
+        var configDataFromStorage = data['chatbox_config'] || {};
+        configDataFromStorage[key] = value;
+        chrome.storage.local.set({'chatbox_config': configDataFromStorage});
+    });
+}
 function extractHostname(url) {
     var hostname;
     //find & remove protocol (http, ftp, etc.) and get hostname

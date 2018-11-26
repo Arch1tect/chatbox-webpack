@@ -173,6 +173,16 @@ export default {
                       type: 'warn'
                     });
                 }
+                chatboxUtils.storage.get('chatbox_config', function (item) {
+                    // what other config do we need to reload?
+                    var configData = item['chatbox_config'] || {};
+                    if ('livechat_danmu' in configData) {
+                        chatboxConfig.livechatDanmu = configData['livechat_danmu'];
+                    }
+                    if ('invitation_danmu' in configData) {
+                        chatboxConfig.invitationDanmu = configData['invitation_danmu'];
+                    }
+                });
             }
         },
         resizeStart (e) {
@@ -265,7 +275,7 @@ export default {
             chatboxUtils.storage.get('chatbox_config', function (item) {
                 var configData = item['chatbox_config'] || {};
                 var needRegister = false;
-                if (configData['user_id']) {
+                if ('user_id' in configData) {
                     chatboxConfig.userId = configData['user_id'];
                 } else {
                     // 1st time open, also save user in DB
@@ -273,21 +283,27 @@ export default {
                     configData['user_id'] = chatboxConfig.userId;
                     needRegister = true;
                 }
-                if (configData['username']) {
+                if ('username' in configData) {
                     chatboxConfig.username = configData['username'];
                 } else {
                     chatboxConfig.username = 'u'+Math.floor(Math.random() * 1*1000*1000);
                     configData['username'] = chatboxConfig.username;
                 }
-                if (configData['size']) {
+                if ('size' in configData) {
                     var size = configData['size'];
                     _this.state.width = parseInt(size['width']);
                     _this.state.height = parseInt(size['height']);
                 }
-                if (configData['display']) {
+                if ('display' in configData) {
                     _this.state.display = configData['display'];
                 }
-                if (configData['redirect']) {
+                if ('livechat_danmu' in configData) {
+                    chatboxConfig.livechatDanmu = configData['livechat_danmu'];
+                }
+                if ('invitation_danmu' in configData) {
+                    chatboxConfig.invitationDanmu = configData['invitation_danmu'];
+                }
+                if ('redirect' in configData) {
                     var allowUrlDict = configData['redirect']||{};
                     if (chatboxConfig.location in allowUrlDict) {
                         chatboxConfig.redirected = true;
@@ -349,7 +365,12 @@ export default {
                     );
                 }
                 if (msg.name == "toggle-danmu") {
-                    chatboxUtils.toggleDanmu(msg.value);
+                    if (msg['type'] == 'livechat') {
+                        chatboxConfig.livechatDanmu = msg['value'];
+                    }
+                    if (msg['type'] == 'invitation') {
+                        chatboxConfig.invitationDanmu = msg['value'];
+                    }
                 }
             });
         }

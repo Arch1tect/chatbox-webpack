@@ -16,12 +16,12 @@ if (localInboxServer) {
 
 export default {
 	// testing: true,
-	version: '2.2.1',
+	version: '2.2.2',
 	detectLocation: true,
-	location: 'https://www.youtube.com/',
 	userId: null,
 	shareLocation: true,
-	danmu: true, // is this used?
+	livechatDanmu: true,
+	invitationDanmu: 'same_site', // never, same_site, any_site
 	username: null,
 	aboutMe: null,
 	socketUrl: socketUrl,
@@ -33,6 +33,7 @@ export default {
 	},
 
 	// data for passing around
+	location: 'https://www.youtube.com/',
 	firstLoadInvitation: true,
 	redirected: false,
 	commentsTotal: 0,
