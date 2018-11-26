@@ -474,10 +474,15 @@ export default {
             var _this = this;
             // Once connected, user will receive the invitation to login using uuid
             chatboxSocket.registerCallback('login', function (data) {
+                var roomId = chatboxConfig.location;
+                if (!chatboxConfig.samePageChat) {
+                    roomId = chatboxConfig.domain;
+                }
+
                 chatboxSocket.getSocket().emit('login', {
                     username: chatboxConfig.username,
                     userId: chatboxConfig.userId,
-                    roomId: chatboxConfig.location,
+                    roomId: roomId,
                     shareLocation: chatboxConfig.shareLocation,
                     version: chatboxConfig.version,
                     pageTitle: chatboxConfig.pageTitle
@@ -544,6 +549,53 @@ export default {
               title: this.$t('m.connecting'),
               type: 'warn'
             });
+        },
+        loadChatHistory: function () {
+            // load chat history from storage
+            var roomId = chatboxConfig.location;
+            if (!chatboxConfig.samePageChat) {
+                roomId = chatboxConfig.domain;
+            }
+            chatboxUtils.storage.get(roomId, function(item) {
+                if (item && item[roomId]) {
+                    var messages = JSON.parse(item[roomId]);
+                    var i = 0;
+                    for (; i< messages.length; i++)
+                        _this.processMsg(messages[i]);
+                }
+            });
+        },
+        init: function () {
+            if (!chatboxConfig.configLoaded) {
+                var _this = this;
+                console.log('config not loaded yet');
+                setTimeout(function(){
+                    _this.init();
+                }, 1000);
+                return;
+            }
+            this.registerSocketEvents();
+            if (chatboxConfig.testing)
+                this.loadTestData();
+            this.keepUpdatingLogTime();
+
+            var liveChatEnabled = false;
+            if (chatboxConfig.redirected) {
+                chatboxConfig.samePageChat = true;
+                liveChatEnabled = true;
+            }
+            this.loadChatHistory(); // after we know same page chat or not
+            if (liveChatEnabled || chatboxConfig.liveChatEnabled) {
+                // chatboxConfig.liveChatEnabled is set in Main.vue
+                this.startConnection();
+            } else {
+                chatboxUtils.storage.get('whitelist', function (item) {
+                    var whitelist = item['whitelist'];
+                    if (whitelist && chatboxConfig.domain in whitelist) {
+                        _this.startConnection();
+                    }
+                });
+            }
         }
     },
     watch: {
@@ -565,60 +617,9 @@ export default {
             }
         }
     },
-    mounted () {
-
-        if (chatboxConfig.testing)
-            this.loadTestData();
-        this.keepUpdatingLogTime();
-        var _this = this;
-        // load chat history from storage
-        chatboxUtils.storage.get(chatboxConfig.location, function(item) {
-            if (item && item[chatboxConfig.location]) {
-                var messages = JSON.parse(item[chatboxConfig.location]);
-                var i = 0;
-                for (; i< messages.length; i++)
-                    _this.processMsg(messages[i]);
-            }
-        });
-        this.addIntro();
-        this.registerSocketEvents();
-        var _this = this;
-        chatboxUtils.storage.get('whitelist', function (item) {
-            var whitelist = item['whitelist'];
-            var url = chatboxUtils.extractRootDomain(chatboxConfig.location);
-            // check whitelist then check general config
-            // TODO: simplify this code, maybe combine livechat_anywhere into whitelist
-            if (whitelist && url in whitelist) {
-                _this.startConnection();
-            } else {
-
-                if (chatboxConfig.redirected) {
-                    _this.startConnection();
-                } else {
-                    // maybe redirect hasn't been read by main.vue
-                    // cannot combine the if-else because main.vue deletes redirect after reading it
-                    chatboxUtils.storage.get('chatbox_config', function (item) {
-                        var configData = item['chatbox_config'] || {};
-                        var redirectlDict = configData['redirect']||{};
-                        var liveChatEnabled = false;
-                        if (chatboxConfig.location in redirectlDict) {
-                            liveChatEnabled = true;
-                        }
-                        if ('livechat_anywhere' in configData) {
-                            liveChatEnabled = configData['livechat_anywhere'];
-                        } else {
-                            liveChatEnabled = true;
-                        }
-                        if (liveChatEnabled) {
-                            _this.startConnection();
-                        }
-                    });
-                }
-            }
-        });
-    },
     created () {
         chatboxUtils.sendInvitation = this.sendInvitation;
+        this.init();
     }
 }
 

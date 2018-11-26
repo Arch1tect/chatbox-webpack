@@ -312,6 +312,15 @@ export default {
                         _this.state.display = 'full';
                     }
                 }
+                if ('livechat_anywhere' in configData) {
+                    chatboxConfig.liveChatEnabled = configData['livechat_anywhere'];
+                }
+
+                if ('same_page_chat' in configData) {
+                    chatboxConfig.samePageChat = configData['same-page-chat'];
+                }
+
+
                 chatboxConfig.configLoaded = true;
                 chatboxUtils.storage.set('chatbox_config', configData);
                 if(needRegister) {
@@ -336,6 +345,7 @@ export default {
                     sendResponse({msg: "shown"});
                 }
                 if (msg == "connect_chatbox") {
+                    // deprecated, shouldn't be called
                     chatboxConfig.liveChatEnabled = true;
                     if (!chatboxSocket.isConnected()) {
                         chatboxSocket.connect();
@@ -346,6 +356,7 @@ export default {
                     }
                 }
                 if (msg == "disconnect_chatbox") {
+                    // deprecated
                     chatboxConfig.liveChatEnabled = false;
                     chatboxSocket.disconnect();
                 }
@@ -379,6 +390,7 @@ export default {
         if (chatboxConfig.detectLocation) {
             chatboxConfig.location = location.search.substring(1);
         }
+        chatboxConfig.domain = chatboxUtils.extractRootDomain(chatboxConfig.location);
         this.loadConfigFromStorage();
         if (chatboxUtils.runningExtension) {
             this.listenToExtension();

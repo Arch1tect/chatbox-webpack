@@ -22,6 +22,7 @@ export default {
 	shareLocation: true,
 	livechatDanmu: true,
 	invitationDanmu: 'same_site', // never, same_site, any_site
+	samePageChat: false, // same page chat vs same site chat
 	username: null,
 	aboutMe: null,
 	socketUrl: socketUrl,
@@ -34,6 +35,7 @@ export default {
 
 	// data for passing around
 	location: 'https://www.youtube.com/',
+	domain: 'https://www.youtube.com/',
 	firstLoadInvitation: true,
 	redirected: false,
 	commentsTotal: 0,
@@ -42,5 +44,5 @@ export default {
 	unreadDirectMsg: 0,
 	tabVisible: true,
 	directMsgEnabled: true,
-	liveChatEnabled: false, // this is per page
+	liveChatEnabled: true, // this is per page
 }
