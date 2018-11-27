@@ -1,7 +1,8 @@
 <template>
     <transition name="online-users-slide">
         <center v-if="state.chatTopPanel == 1 && socket.state.connected" class="socketchatbox-onlineusers">
-            <center v-if="onlineUsers.length<5" class="invite-people-btn" :class="{alone: onlineUsers.length==1}" @click="sendInvitation()">{{$t('m.invite')}}</center>
+            <center v-if="config.samePageChat" class="invite-people-btn" :class="{alone: onlineUsers.length==1}" @click="sendInvitation()">{{$t('m.invite')}}</center>
+            <center v-if="!config.samePageChat" class="same-page-chat-title" >{{$t('m.sameSiteChatTitle')}}</center>
             <span class="onlineUser" v-for="user in onlineUsers" @click="viewUser(user)"><center><img v-bind:title="user.username" v-bind:src="user.profileImgSrc" /></center></span>
         </center>
     <transition name="slide">
@@ -28,14 +29,12 @@
     /*padding-top: 5px;*/
     outline: 1px solid #d3d3d3;
 }
-
 .socketchatbox-onlineusers .onlineUser {
     margin: 5px;
 /*    margin-bottom: 0px;
 */    display: inline-block;
     cursor: pointer;
 }
-
 .onlineUser img {
     width: 30px;
     height: 30px;
@@ -44,10 +43,12 @@
     box-shadow: 0 0 6px black;
     /*margin-bottom: 5px;*/
 }
-
 .invite-people-btn {
     cursor: pointer;
     color: gray;
+    margin: 5px;
+}
+.same-page-chat-title {
     margin: 5px;
 }
 .invite-people-btn.alone {

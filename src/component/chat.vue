@@ -7,11 +7,10 @@
             <span v-bind:title="socket.state.connected ? $t('m.disconnect') : $t('m.connect')"  @click="toggleConnection" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live-status' class='badge' v-bind:class="{connected: socket.state.connected}">{{socket.state.connected? $t('m.online'): $t('m.offline')}}
                 <font-awesome-icon icon="power-off" class="fa fa-power-off" data-toggle="tooltip" data-placement="bottom"/>
             </span>
-            <!--
-            <span class="send-invitation-btn" title="Invite people to this page" v-bind:class="{active: state.chatTopPanel==100}" v-if="socket.state.connected" @click="sendInvitation()">
-                <font-awesome-icon icon="bullhorn" class="fa fa-bullhorn" data-toggle="tooltip" data-placement="bottom"/>
+            <span class='site-page-chat-toggle' :title="$t('m.toggleSamePageChat')">
+                <span @click='toggleSamePageChat(true)' class='toggle-switch left-switch' :class='{selected: config.samePageChat}'>{{$t('m.samePageChat')}}</span>
+                <span @click='toggleSamePageChat(false)' class='toggle-switch right-switch' :class='{selected: !config.samePageChat}'>{{$t('m.sameSiteChat')}}</span>
             </span>
-            -->
             <span class="online-users-btn" :title="$t('m.onlineUsers')" v-bind:class="{active: state.chatTopPanel==1}" v-if="socket.state.connected" @click="toggleOnlineUsers(1)">
                 <font-awesome-icon icon="users" class="fa fa-users" data-toggle="tooltip" data-placement="bottom"/><span> {{socket.userCount}}</span>
             </span>
@@ -49,7 +48,29 @@
     /*margin-left: 10px;*/
     /*margin-right: 5px;*/
 }
+.site-page-chat-toggle {
+    display: inline-table;
+    margin-left: 10px;
+    color: white;
+    cursor: pointer;
+}
+.toggle-switch {
+    padding: 3px 7px;
+    background: #d3d3d3;
+}
+.toggle-switch.left-switch {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
 
+}
+.toggle-switch.right-switch {
+    /*border-left: ;*/
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.toggle-switch.selected {
+    background: rgba(0,0,0,.75);
+}
 #socketchatbox-live-status .fa {
     color: white;
 }
@@ -280,6 +301,15 @@ export default {
         }
     },
     methods: {
+        toggleSamePageChat: function (val) {
+            if (chatboxConfig.samePageChat != val) {
+                chatboxConfig.samePageChat = val;
+                if (chatboxConfig.liveChatEnabled) {
+                    this.socket.disconnect();
+                    this.socket.connect();
+                }
+            }
+        },
         sendInvitation: function () {
             var _this = this;
             if (!chatboxConfig.pageTitle) {
@@ -452,10 +482,14 @@ export default {
             }
         },
         saveMsgToStorage: function (data) {
-            chatboxUtils.storage.get(chatboxConfig.location, function(item) {
+            var roomId = chatboxConfig.location;
+            if (!chatboxConfig.samePageChat) {
+                roomId = chatboxConfig.domain;
+            }
+            chatboxUtils.storage.get(roomId, function(item) {
                 var messages = [];
-                if (item && item[chatboxConfig.location])
-                    messages = JSON.parse(item[chatboxConfig.location]);
+                if (item && item[roomId])
+                    messages = JSON.parse(item[roomId]);
                 // avoid saving message multiple times if
                 // user open multiple tabs of same page
                 if (!messages.length || messages[messages.length-1].message !== data.message) {
@@ -466,7 +500,7 @@ export default {
                         username: data.username+''
                     }
                     messages.push(msg);
-                    chatboxUtils.storage.set(chatboxConfig.location, JSON.stringify(messages));
+                    chatboxUtils.storage.set(roomId, JSON.stringify(messages));
                 }
             });
         },
@@ -527,10 +561,13 @@ export default {
         addIntro: function () {
             var emptyLog = {isLog: true, message:''};
             this.messages.push(emptyLog);
-
+            var msg = this.$t('m.liveChatWelcomeLog');
+            if (!chatboxConfig.samePageChat) {
+                msg = this.$t('m.liveChatWelcomeLogSameSite');
+            }
             var log = {
                 isLog: true,
-                message: this.$t('m.liveChatWelcomeLog')
+                message: msg
             };
             this.messages.push(log);
         },
@@ -556,6 +593,7 @@ export default {
             if (!chatboxConfig.samePageChat) {
                 roomId = chatboxConfig.domain;
             }
+            var _this = this;
             chatboxUtils.storage.get(roomId, function(item) {
                 if (item && item[roomId]) {
                     var messages = JSON.parse(item[roomId]);
@@ -585,6 +623,7 @@ export default {
                 liveChatEnabled = true;
             }
             this.loadChatHistory(); // after we know same page chat or not
+            // this.addIntro();
             if (liveChatEnabled || chatboxConfig.liveChatEnabled) {
                 // chatboxConfig.liveChatEnabled is set in Main.vue
                 this.startConnection();

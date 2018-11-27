@@ -16,7 +16,7 @@ if (localInboxServer) {
 
 export default {
 	// testing: true,
-	version: '2.2.2',
+	version: '2.3.0',
 	detectLocation: true,
 	userId: null,
 	shareLocation: true,
