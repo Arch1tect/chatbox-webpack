@@ -305,15 +305,21 @@ export default {
             if (chatboxConfig.samePageChat != val) {
                 chatboxConfig.samePageChat = val;
                 if (chatboxConfig.liveChatEnabled) {
+                    Vue.notify({
+                        title: this.$t('m.toggleSamePageChatING'),
+                        type: 'warning'
+                    });
                     this.socket.disconnect();
                     this.socket.connect();
+
                 }
             }
         },
         sendInvitation: function () {
             var _this = this;
-            if (!chatboxConfig.pageTitle) {
+            if (!chatboxConfig.pageTitle||!chatboxSocket.isConnected()) {
                 // wait for page title from content.js
+                // wait for socket connection
                 setTimeout(function () {
                     _this.sendInvitation();
                 }, 1000);
@@ -326,7 +332,9 @@ export default {
             Vue.notify({
                 title: this.$t('m.invitationSent'),
             });
-            this.state.chatTopPanel = 2;
+            // this.state.chatTopPanel = 2; 
+            // stay at friends view to see new user joining
+            // and change view is a bit UI animation busy when sending invitation during site chat
             chatboxUtils.addSelfToInvitation();
         },
         toggleOnlineUsers: function (val) {

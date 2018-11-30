@@ -16,12 +16,12 @@ if (localInboxServer) {
 
 export default {
 	// testing: true,
-	version: '2.3.0',
+	version: '2.3.1',
 	detectLocation: true,
 	userId: null,
 	shareLocation: true,
 	livechatDanmu: true,
-	invitationDanmu: 'same_site', // never, same_site, any_site
+	invitationDanmu: 'any_site', // never, same_site, any_site
 	samePageChat: false, // same page chat vs same site chat
 	username: null,
 	aboutMe: null,

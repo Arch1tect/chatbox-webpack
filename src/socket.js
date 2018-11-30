@@ -32,8 +32,10 @@ export default {
 			console.log('not connected, no need to disconnect');
 			return;
 		}
+		console.log('disconnect now');
 		socket.disconnect();
-		// state.connected = false;
+		// once receive disconnect event, we'll set state.connected = false;
+		// this is instant when disconnect() is call by client
 	},
 	getSocket: function () {
 		return socket;
