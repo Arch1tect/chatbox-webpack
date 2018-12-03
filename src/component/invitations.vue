@@ -170,11 +170,48 @@ export default {
                 _this.keepPollingInvitations();
             }, POLL_INTERVAL*1000);
         },
+        loadTestData: function () {
+            var msg = {
+                'userId': '1c5422f7-2164-b84d-59bc-180060392825',
+                'username': '杰伦',
+                'pageTitle': '双节棍MV | Youtube',
+                'url': chatboxConfig.location
+            }
+            chatboxUtils.queueDanmu(msg, 'invitation');
+            msg = {
+                'userId': '1c5422f7-2164-b84d-59bc-180060392825',
+                'username': '发哥',
+                'pageTitle': '上海滩 | 优酷娱乐',
+                'url': chatboxConfig.location
+            }
+            chatboxUtils.queueDanmu(msg, 'invitation');
+            msg = {
+                'userId': '1c5422f7-2164-b84d-59bc-180060392825',
+                'username': '肥猫',
+                'pageTitle': '哥布林杀手 | Bilibili',
+                'url': chatboxConfig.location
+            }
+            chatboxUtils.queueDanmu(msg, 'invitation');
+            msg = {
+                'userId': '1c5422f7-2164-b84d-59bc-180060392825',
+                'username': 'David',
+                'pageTitle': '刀剑神域第三季第1集 | Bilibili',
+                'url': chatboxConfig.location
+            }
+            chatboxUtils.queueDanmu(msg, 'invitation');
+            msg = {
+                'userId': '1c5422f7-2164-b84d-59bc-180060392825',
+                'username': '燕姿',
+                'pageTitle': '绿光 | Youtube',
+                'url': chatboxConfig.location
+            }
+            chatboxUtils.queueDanmu(msg, 'invitation');
+        }
     },
     created () {
         chatboxUtils.addSelfToInvitation = this.addSelfToInvitation;
-        // this.messages.push(msg);
         this.keepPollingInvitations();
+        // this.loadTestData();
     }
 }
 </script>
