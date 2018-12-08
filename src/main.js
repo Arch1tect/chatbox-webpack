@@ -8,6 +8,7 @@ Vue.use(VueI18n)
 
 import chatboxMainVue from './main.vue'
 import commentModal from './comment-modal.vue'
+import imageModal from './image-modal.vue'
 import topBar from './component/top-bar.vue'
 import chat from './component/chat.vue'
 import inbox from './component/inbox.vue'
@@ -224,6 +225,11 @@ new Vue({
   el: '#comment-modal',
   i18n,
   render: h => h(commentModal)
+})
+
+new Vue({
+  el: '#image-modal',
+  render: h => h(imageModal)
 })
 
 new Vue({

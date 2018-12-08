@@ -30,7 +30,7 @@
                         </span>
                         <span v-else class="user-avatar-placeholder"></span>
 
-                        <div v-if="msg.renderType=='media'" class="socketchatbox-messageBody image-or-video"><img class="chatbox-image" v-bind:src="msg.message" /></div>
+                        <div v-if="msg.renderType=='media'" class="socketchatbox-messageBody image-or-video"><img class="chatbox-image" v-bind:src="msg.message" @click="viewImage(msg.message)"/></div>
                         <div v-if="msg.renderType=='file'" class="socketchatbox-messageBody"><a target='_blank' v-bind:download="msg.fileName" v-bind:href="msg.file">{{msg.fileName}}</a></div>
                         <!-- use v-html because message contain html due to adding class to emoji -->
                         <div v-if="msg.renderType=='text'" v-html="msg.message" class="socketchatbox-messageBody"></div>
@@ -223,6 +223,7 @@
   box-shadow:none;
   padding: 0px;
   border-radius: 5px;
+  cursor: pointer;
 }
 .input-bar-mask {
     height: 35px;
@@ -346,6 +347,9 @@ export default {
         },
         viewUser: function (msg) {
             chatboxUtils.viewOthersProfile(2, msg.sender, msg.username);
+        },
+        viewImage: function (src) {
+            chatboxUtils.openImageModal(src);
         },
         scrollToBottom: function () {
             this.$refs.chatArea.scrollTop = this.$refs.chatArea.scrollHeight;
