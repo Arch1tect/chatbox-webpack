@@ -211,7 +211,7 @@ export default {
     created () {
         chatboxUtils.addSelfToInvitation = this.addSelfToInvitation;
         this.keepPollingInvitations();
-        // this.loadTestData();
+        if (chatboxConfig.testing) this.loadTestData();
     }
 }
 </script>

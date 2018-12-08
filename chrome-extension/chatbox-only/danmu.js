@@ -32,7 +32,8 @@ document.addEventListener('click',function(e){
             data[url] = true;
             configData['redirect'] = data;
             chrome.storage.local.set({'chatbox_config': configData});
-            location.replace(url);
+            // location.replace(url); // this change browse history and back doesn't work
+            window.open(url, '_blank');
         })
     }
  })

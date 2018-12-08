@@ -2,7 +2,7 @@
 // but also for passing variables between components
 "use strict";
 
-var localSocketServer = false;
+var localSocketServer = true;
 var localInboxServer = false;
 var socketUrl = 'https://quotime.me'
 var apiUrl = socketUrl;
@@ -16,7 +16,7 @@ if (localInboxServer) {
 
 export default {
 	// testing: true,
-	version: '2.3.1',
+	version: '2.3.2',
 	detectLocation: true,
 	userId: null,
 	shareLocation: true,
