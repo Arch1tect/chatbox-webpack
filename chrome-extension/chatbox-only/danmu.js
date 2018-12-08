@@ -25,8 +25,10 @@ document.body.insertBefore(danmuWrapper, document.body.firstChild);
 
 document.addEventListener('click',function(e){
     if(e.target && e.target.className== 'invitation-url'){
+        var url = e.target.title;
+        // don't redirect if already on right page
+        if (url == location.href) return;
         chrome.storage.local.get('chatbox_config', function(item) {
-            var url = e.target.title;
             var configData = item['chatbox_config'] || {};
             var data = {};
             data[url] = true;
