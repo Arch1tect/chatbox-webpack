@@ -141,7 +141,6 @@ export default {
             state: chatboxUIState,
             prevX:-1,
             prevY:-1,
-            dragX:-1 // TODO: for moving horizontally
         }
     },
     methods: {
@@ -209,6 +208,23 @@ export default {
                 
             }
         },
+        resizing (e) {
+            if (this.prevX !== -1) {
+                // e.preventDefault();
+                var dx = e.screenX - this.prevX;
+                var dy = e.screenY - this.prevY;
+                this.state.height -= dy;
+                this.state.width += dx;
+                this.prevX = e.screenX;
+                this.prevY = e.screenY;
+                if(this.state.width<MIN_WIDTH) {
+                    this.state.width = MIN_WIDTH;
+                }
+                if(this.state.height<MIN_HEIGHT) {
+                    this.state.height = MIN_HEIGHT;
+                }
+            }
+        },
         decideChatboxDisplay () {
             if (this.state.display == 'full') {
                 this.showChatboxFull();
@@ -239,23 +255,6 @@ export default {
             console.log('hide chatbox');
             this.state.display = 'hidden';
             chatboxUtils.updateIframeSize('close');
-        },
-        resizing (e) {
-            if (this.prevX !== -1) {
-                e.preventDefault();
-                var dx = e.screenX - this.prevX;
-                var dy = e.screenY - this.prevY;
-                this.state.height -= dy;
-                this.state.width += dx;
-                this.prevX = e.screenX;
-                this.prevY = e.screenY;
-                if(this.state.width<MIN_WIDTH) {
-                    this.state.width = MIN_WIDTH;
-                }
-                if(this.state.height<MIN_HEIGHT) {
-                    this.state.height = MIN_HEIGHT;
-                }
-            }
         },
         registerUser () {
             var _this = this;
@@ -296,6 +295,19 @@ export default {
                 }
                 if ('display' in configData) {
                     _this.state.display = configData['display'];
+                }
+                if ('left' in configData) {
+                    chatboxUIState.left = parseInt(configData['left']);
+                    // var maxLeft = window.innerWidth - _this.state.width;
+                    // console.log(chatboxUIState.left);
+                    // console.log(window.innerWidth);
+                    // console.log(_this.state.width);
+                    // if (chatboxUIState.left > maxLeft) {
+                    //     chatboxUIState.left = maxLeft;
+                    // }
+                    console.log(chatboxUIState.left);
+
+                    window.parent.postMessage({state: 'moving', dx: chatboxUIState.left}, "*");
                 }
                 if ('livechat_danmu' in configData) {
                     chatboxConfig.livechatDanmu = configData['livechat_danmu'];
@@ -396,10 +408,10 @@ export default {
             this.listenToExtension();
         }
         var _this = this;
-        $(document).mouseup(function(e){
+        $(window).mouseup(function(e){
             _this.resizeEnd(e);
         });
-        $(document).mousemove(function(e){
+        $(window).mousemove(function(e){
             _this.resizing(e);
         })
 

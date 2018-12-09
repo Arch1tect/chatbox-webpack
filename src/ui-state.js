@@ -5,5 +5,6 @@ export default {
 	// width/height must always be interger rather than string!
 	// Otherwise reisze will fail during calculation
     width: 300,
-    height: 350
+    height: 350,
+    left: 10
 }

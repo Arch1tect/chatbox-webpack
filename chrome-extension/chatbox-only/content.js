@@ -2,7 +2,6 @@
 var CHATBOX_ELEMENT_ID = 'chatbox-iframe';
 var CHATBOX_FRAME_SRC = 'chatbox-only/chatbox-frame.html';
 var chatboxIFrame;
-var chatboxLeft = 0;
 var locationHref = location.href;
 var created = false;
 var localChatboxExists = false;
@@ -75,7 +74,7 @@ function resizeIFrameToFitContent(e) {
     }
     else if (msg.state ==='full size') {
         chatboxIFrame.style.display  = "block";
-        chatboxIFrame.style.width  = "100%";
+        chatboxIFrame.style.width  = "200%"; //dragging may show shadow if drag too left
         chatboxIFrame.style.height = "100%";
         console.log('resize iframe to 100%');
     }
@@ -86,15 +85,24 @@ function resizeIFrameToFitContent(e) {
         chatboxIFrame.style.display  = "none";
         console.log('hide iframe');
     }
-    else if (msg.state === 'move start') {
-        chatboxLeft = chatboxIFrame.style.left.replace('px','');
+    // else if (msg.state === 'move start') {
+    //     chatboxLeft = chatboxIFrame.style.left.replace('px','');
+    //     if (!chatboxLeft)
+    //         chatboxLeft = 0;
+    //     else
+    //         chatboxLeft = parseInt(chatboxLeft);
+    // }
+    else if (msg.state === 'moving') {
+        var chatboxLeft = chatboxIFrame.style.left.replace('px','');
         if (!chatboxLeft)
             chatboxLeft = 0;
         else
             chatboxLeft = parseInt(chatboxLeft);
-    }
-    else if (msg.state === 'moving') {
-        chatboxIFrame.style.left = chatboxLeft + msg.dx + 'px';
+        chatboxLeft += msg.dx;
+        if (chatboxLeft < 0) chatboxLeft = 0;
+        var maxLeft = window.innerWidth - 200;
+        if (chatboxLeft > maxLeft) chatboxLeft = maxLeft;
+        chatboxIFrame.style.left = chatboxLeft + 'px';
     }
     else if (msg.state === 'fit') { // fit - make page same size as chatbox
         fitChatboxIframe(msg);

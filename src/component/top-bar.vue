@@ -1,5 +1,5 @@
 <template>
-    <div v-on:click="toggleChatbox" v-bind:class="{ mini: state.display == 'mini' }" id='socketchatbox-top'>
+    <div v-on:click="toggleChatbox" @mousedown="dragStart" v-bind:class="{ mini: state.display == 'mini' }" id='socketchatbox-top'>
 
         <div v-cloak v-show="state.display == 'full'" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-username'>{{config.username}}</div>
         <span v-on:click='handleMissClick($event)' id='topbar-options' class='float-right'>
@@ -142,6 +142,8 @@ export default {
             config: chatboxConfig,
             state: chatboxUIState,
             socket: chatboxSocket,
+            prevMoveX: -1,
+            isDragging: false
         }
     },
     watch: {
@@ -159,8 +161,43 @@ export default {
         }
     },
     methods: {
+        dragStart (e) {
+            this.prevMoveX = e.screenX;
+            // full size iframe is necessary because the event listener is 
+            // inside iframe, once cursor move outside iframe, it can't track
+            this.isDragging = false; // set to true when mousemove
+        },
+        dragEnd (e) {
+            if (this.prevMoveX !== -1) {
+                // e.preventDefault();
+                // e.stopPropagation();
+                this.prevMoveX = -1;
+                chatboxUtils.updateIframeSize('fit');
+                var _this = this;
+                chatboxUtils.storage.get('chatbox_config', function(item) {
+                    var configData = item['chatbox_config'] || {};
+                    configData['left'] = _this.state.left;
+                    chatboxUtils.storage.set('chatbox_config', configData);
+                })
+            }
+        },
+        dragging (e) {
+            if (this.prevMoveX !== -1) {
+                if (!this.isDragging) {
+                    chatboxUtils.updateIframeSize('full size');
+                    this.isDragging = true;
+                }
+                // e.preventDefault();
+                // e.stopPropagation();
+                var dx = e.screenX - this.prevMoveX;
+                this.state.left += dx;
+                // TODO: Pass x rather than dx seems easier
+                this.prevMoveX = e.screenX;
+                window.parent.postMessage({state: 'moving', dx: dx}, "*");
+            }
+        },
         topOptionClicked: function (view, event) {
-            if (this.state.display == 'mini') {
+            if (this.isDragging || this.state.display == 'mini') {
                 return;
             }
             this.state.view = view;
@@ -174,6 +211,7 @@ export default {
             }
         },
         toggleChatbox: function () {
+            if (this.isDragging) return;
             if (this.state.display == 'mini') {
                 this.state.display = 'full';
             } else {
@@ -187,6 +225,7 @@ export default {
         hideChatbox: function (event) {
             // This is hiding entire iframe, not minimize
             // duplicate function in main.vue, should be the same
+            if (this.isDragging) return;
             this.state.display = 'hidden';
             chatboxUtils.updateIframeSize('close');
             event.stopPropagation();
@@ -194,6 +233,13 @@ export default {
         }
     },
     created () {
+        var _this = this;
+        $(window).mouseup(function(e){
+            _this.dragEnd(e);
+        });
+        $(window).mousemove(function(e){
+            _this.dragging(e);
+        })
     }
 }
 </script>
