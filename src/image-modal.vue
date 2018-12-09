@@ -37,7 +37,7 @@ export default {
         chatboxUtils.openImageModal = function (imgSrc) {
             _this.$modal.show('image-modal');
             _this.imgSrc = imgSrc;
-            chatboxUtils.updateIframeSize('full size');
+            chatboxUtils.updateIframeSize('show modal');
         }
     }
 }

@@ -1,7 +1,7 @@
 <template>
     <div id="chatbox-main-vue">
 
-        <div v-cloak v-show="state.display!='hidden'" id="socketchatbox-all" class="socketchatbox-page">
+        <div v-cloak v-show="state.display!='hidden'" id="socketchatbox-all" class="socketchatbox-page" :style="{ marginLeft: marginLeft }">
             <div v-if="state.display=='full'" id="socketchatbox-ne" class="socketchatbox-resize" @mousedown="resizeStart"></div>
             <top-bar v-cloak></top-bar>
             <div :style="{ height: state.height + 'px', width: state.width + 'px'}" id='socketchatbox-body' v-show="state.display=='full'">
@@ -142,6 +142,13 @@ export default {
             prevX:-1,
             prevY:-1,
         }
+    },
+    computed: {
+        marginLeft: function () {
+            if (this.state.shwModal)
+                return this.state.left + 'px';
+            return '0px';
+        },
     },
     methods: {
         disconnectAfterHiddenSomeTime() {

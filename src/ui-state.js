@@ -6,5 +6,6 @@ export default {
 	// Otherwise reisze will fail during calculation
     width: 300,
     height: 350,
-    left: 10
+    left: 10,
+    shwModal: false,
 }

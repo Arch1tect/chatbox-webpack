@@ -6,6 +6,7 @@ if (typeof(chrome) !== 'undefined' && chrome.extension)
     runningExtension = true;
 
 import chatboxConfig from './config.js'
+import uiState from './ui-state.js'
 
 var storage = {
     get: function (key, callback) {
@@ -65,7 +66,12 @@ export default {
         resizeMsg.state = state;
         resizeMsg.width  = document.getElementById('socketchatbox-all').offsetWidth + 8 + "px";
         resizeMsg.height = document.getElementById('socketchatbox-all').offsetHeight + "px";
-
+        resizeMsg.left = uiState.left;
+        if (state == 'show modal') {
+            uiState.shwModal = true;
+        } else {
+            uiState.shwModal = false;
+        }
         if (resizeMsg.height == '0px') {
             console.log('Cannot detect size, using default size');
             resizeMsg.width  = DEFAULT_CHATBOX_WIDTH+'px';

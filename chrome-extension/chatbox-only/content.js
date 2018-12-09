@@ -5,6 +5,7 @@ var chatboxIFrame;
 var locationHref = location.href;
 var created = false;
 var localChatboxExists = false;
+// var chatboxLeft = 0;
 
 var runningExtension = false;
 if (typeof(chrome) !== 'undefined' && chrome.extension) {
@@ -74,9 +75,16 @@ function resizeIFrameToFitContent(e) {
     }
     else if (msg.state ==='full size') {
         chatboxIFrame.style.display  = "block";
-        chatboxIFrame.style.width  = "200%"; //dragging may show shadow if drag too left
+        chatboxIFrame.style.width  = "100%"; //dragging may show shadow if drag too left
         chatboxIFrame.style.height = "100%";
         console.log('resize iframe to 100%');
+    }
+    else if (msg.state ==='show modal') {
+        chatboxIFrame.style.display  = "block";
+        chatboxIFrame.style.width  = "100%"; //dragging may show shadow if drag too left
+        chatboxIFrame.style.height = "100%";
+        chatboxIFrame.style.left = "0px";
+        console.log('resize iframe to 100% and center');
     }
     else if (msg.state === 'minimize') {
         fitChatboxIframe(msg);
@@ -85,28 +93,19 @@ function resizeIFrameToFitContent(e) {
         chatboxIFrame.style.display  = "none";
         console.log('hide iframe');
     }
-    // else if (msg.state === 'move start') {
-    //     chatboxLeft = chatboxIFrame.style.left.replace('px','');
-    //     if (!chatboxLeft)
-    //         chatboxLeft = 0;
-    //     else
-    //         chatboxLeft = parseInt(chatboxLeft);
-    // }
     else if (msg.state === 'moving') {
-        var chatboxLeft = chatboxIFrame.style.left.replace('px','');
-        if (!chatboxLeft)
-            chatboxLeft = 0;
-        else
-            chatboxLeft = parseInt(chatboxLeft);
-        chatboxLeft += msg.dx;
-        if (chatboxLeft < 0) chatboxLeft = 0;
-        var maxLeft = window.innerWidth - 200;
-        if (chatboxLeft > maxLeft) chatboxLeft = maxLeft;
-        chatboxIFrame.style.left = chatboxLeft + 'px';
+        moveFrame(msg.left);
     }
     else if (msg.state === 'fit') { // fit - make page same size as chatbox
         fitChatboxIframe(msg);
     }
+}
+function moveFrame (left) {
+    var chatboxLeft = left;
+    if (chatboxLeft < 0) chatboxLeft = 0;
+    var maxLeft = window.innerWidth - 200;
+    if (chatboxLeft > maxLeft) chatboxLeft = maxLeft;
+    chatboxIFrame.style.left = chatboxLeft + 'px';
 }
 
 function fitChatboxIframe (msg) {
@@ -114,6 +113,8 @@ function fitChatboxIframe (msg) {
     chatboxIFrame.style.display  = "block";
     chatboxIFrame.style.width  = msg.width;
     chatboxIFrame.style.height = msg.height;
+    chatboxIFrame.style.left = msg.left + 'px';
+    moveFrame(msg.left);
 }
 
 // NOTE: window.addEventListener("message" ...) only receive msg from tab,

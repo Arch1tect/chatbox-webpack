@@ -104,7 +104,7 @@ export default {
                 _this.replyToName = name;
                 _this.placeholder = _this.$t('m.replyTo') + ' ' + name;
             }
-            chatboxUtils.updateIframeSize('full size');
+            chatboxUtils.updateIframeSize('show modal');
         }
     }
 }
