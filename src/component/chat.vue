@@ -321,6 +321,7 @@ export default {
             if (!chatboxConfig.pageTitle||!chatboxSocket.isConnected()) {
                 // wait for page title from content.js
                 // wait for socket connection
+                console.log('no page title or not connected yet...');
                 setTimeout(function () {
                     _this.sendInvitation();
                 }, 1000);
@@ -637,7 +638,6 @@ export default {
             this.loadChatHistory(); // after we know same page chat or not
             // this.addIntro();
             if (liveChatEnabled || chatboxConfig.liveChatEnabled) {
-                // chatboxConfig.liveChatEnabled is set in Main.vue
                 this.startConnection();
             } else {
                 chatboxUtils.storage.get('whitelist', function (item) {
@@ -671,6 +671,23 @@ export default {
     created () {
         chatboxUtils.sendInvitation = this.sendInvitation;
         this.init();
+        // Check if page has changed url or title
+        window.addEventListener("message", function(e){
+            if(e && e.data && e.data.locationUpdate) {
+                chatboxConfig.pageTitle=e.data.title;
+                var url = e.data.url;
+                if (chatboxConfig.location != url) {
+                    console.log('Location changed from ' + chatboxConfig.location+
+                        ' to '+ url);
+                    chatboxConfig.location = url;
+                    if (chatboxConfig.samePageChat && chatboxSocket.isConnected) {
+                        // Add a message about chat room change?
+                        chatboxSocket.disconnect();
+                        chatboxSocket.connect();
+                    }
+                }
+            }
+        }, false);
     }
 }
 

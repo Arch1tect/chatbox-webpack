@@ -38,10 +38,17 @@ function createChatboxIframe() {
 }
 function keepCheckingLocationChange() {
     checkLocationChange();
-    window.chatboxIFrame.contentWindow.postMessage({'title': document.title}, "*")
+    var msg = {
+        'locationUpdate': true,
+        'title': document.title,
+        'url': location.href
+    }
+    window.chatboxIFrame.contentWindow.postMessage(msg, "*");
     setTimeout(function(){keepCheckingLocationChange()}, 3*1000);
 }
 function checkLocationChange() {
+    return;
+    // Do not recreate whole iframe, just notify iframe that url has changed
     var newLocation = location.href;
     if (window.chatboxLocation) newLocation = window.chatboxLocation;
     if (newLocation !== locationHref) {
@@ -105,11 +112,13 @@ function fitChatboxIframe (msg) {
 // can't receive msg from extension directly, to receive msg from extension,
 // use chrome.runtime.onMessage.addListener
 window.addEventListener("message", resizeIFrameToFitContent, false);
-window.addEventListener("message", function(e){
-    if (e && e.data && e.data.chatboxRedirect) {
-        location.replace(e.data.chatboxRedirect);
-    }
-}, false);
+// window.addEventListener("message", function(e){
+//     if (e && e.data && e.data.chatboxRedirect) {
+//         var url = e.data.chatboxRedirect;
+//         location.replace(e.data.chatboxRedirect); // same page no good
+//         window.open(url, '_blank');
+//     }
+// }, false);
 
 // always create the chatbox and make connections, if user don't want it, he can disable the extension
 // createChatboxIframe();

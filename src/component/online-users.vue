@@ -99,6 +99,7 @@ export default {
             }
             this.onlineUsers = onlineUsers;
             chatboxSocket.userCount = this.onlineUsers.length;
+
         },
         registerSocketEvents: function () {
             var _this = this;

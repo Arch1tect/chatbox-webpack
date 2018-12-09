@@ -98,10 +98,6 @@ export default {
             chatboxUtils.viewOthersProfile(this.state.view, userId, username);
         },
         redirect: function (url) {
-            Vue.notify({
-              title: this.$t('m.redirecting'),
-              type: 'warn'
-            });
             var data = {};
             data[url] = true;
             chatboxUtils.storage.get('chatbox_config', function(item) {
@@ -109,7 +105,12 @@ export default {
                 configData['redirect'] = data;
                 chatboxUtils.storage.set('chatbox_config', configData);
             })
-            window.parent.postMessage({chatboxRedirect: url}, "*");
+            window.open(url, '_blank');
+            // window.parent.postMessage({chatboxRedirect: url}, "*"); // same page redirect is bad, browse history changed and can't go back to previous page
+            // Vue.notify({
+            //   title: this.$t('m.redirecting'),
+            //   type: 'warn'
+            // });
         },
         pollInvitation: function () {
             var _this = this;
