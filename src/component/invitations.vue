@@ -120,8 +120,9 @@ export default {
                 var invitationUrlsNew = {};
                 for(; i<data.length; i++) {
                     var msg = data[i];
-                    if (data[i].userId == chatboxConfig.userId) {
+                    if (msg.userId == chatboxConfig.userId) {
                         _this.selfAdded = true;
+                        msg.me = true;
                     }
                     invitationUrlsNew[msg.url] = true;
                     _this.queueDanmu(msg);

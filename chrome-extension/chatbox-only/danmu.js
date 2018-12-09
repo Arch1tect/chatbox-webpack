@@ -49,7 +49,9 @@ function createDanmu(msg) {
     msg.el = danmu;
     danmu.className = 'danmu';
     var innerHtml = "";
-
+    if (msg.me) {
+        danmu.className += ' self';
+    }
     if (msg.type == 'live') {
         danmu.className += ' live';
         var content = msg.content;
