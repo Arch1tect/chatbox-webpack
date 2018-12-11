@@ -77,7 +77,7 @@ button:disabled, button[disabled]{
 .socketchatbox-aboutme {
     padding: 5px;
     width:80%;
-    height: 100px;
+    min-height: 50px;
     resize: none;
     background: none;
     border: 1px solid lightgray;
