@@ -74,11 +74,10 @@ function createDanmu(msg) {
     danmu.innerHTML = innerHtml;
     danmu.style.top = 30 + msg.row*40 + 'px';
     var startX = window.innerWidth + 'px';
-    var time = 12;
-    if (msg.content)
-        time = 20 - msg.content.length/5;
-    if (time < 10)
-        time = 10;
+    var time = 15;
+    // TODO: figure out good algorithm...
+    // if (msg.content) time = 20 - msg.content.length/5;
+    // if (time < 10) time = 10;
     if (!danmu.animate)
         return; // safari doesn't support this!
     var danmuAnimation = danmu.animate([
