@@ -406,6 +406,7 @@ export default {
         }
     },
     created () {
+        chatboxConfig.lang = this.$i18n.locale;
         if (chatboxConfig.detectLocation) {
             chatboxConfig.location = location.search.substring(1);
         }

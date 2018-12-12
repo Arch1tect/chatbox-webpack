@@ -63,6 +63,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 // Ready translated locale messages
 const messages = {
   en: {
+    429: 'Slow down please',
     m: {
       redirecting: 'Redirecting you now...',
       commentTab: 'Comment',
@@ -135,6 +136,7 @@ const messages = {
     }
   },
   zh: {
+    429: '请放慢速度',
     m: {
       redirecting: '跳转中。。。',
       commentTab: '留言板',

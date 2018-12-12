@@ -532,9 +532,9 @@ export default {
                     roomId: roomId,
                     shareLocation: chatboxConfig.shareLocation,
                     version: chatboxConfig.version,
+                    lang: chatboxConfig.lang,
                     pageTitle: chatboxConfig.pageTitle
                 });
-                console.log(chatboxConfig.pageTitle);
             });
             chatboxSocket.registerCallback('disconnect', function (data) {
                 chatboxSocket.state.connected = false;
@@ -569,6 +569,12 @@ export default {
             chatboxSocket.registerCallback('base64 file', function (data) {
                 data.isFile = true;
                 _this.processMsg(data);
+            });
+            chatboxSocket.registerCallback('alert', function (data) {
+                Vue.notify({
+                  title: _this.$t(data.errorCode),
+                  type: 'error'
+                });
             });
         },
         addIntro: function () {

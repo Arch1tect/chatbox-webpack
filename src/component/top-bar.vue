@@ -192,8 +192,6 @@ export default {
                 e.stopPropagation();
                 var dx = e.screenX - this.prevMoveX;
                 this.state.left += dx;
-                console.log(this.state.left);
-                // TODO: Pass x rather than dx seems easier
                 this.prevMoveX = e.screenX;
                 window.parent.postMessage({state: 'moving', left: this.state.left}, "*");
             }
