@@ -183,6 +183,8 @@ export default {
         },
         dragging (e) {
             if (this.prevMoveX !== -1) {
+                var dx = e.screenX - this.prevMoveX;
+                if (!this.isDragging && dx>-5 && dx<5) return; //avoid shaking hands
                 if (!this.isDragging) {
                     chatboxUtils.updateIframeSize('full size');
                     this.isDragging = true;
@@ -190,7 +192,6 @@ export default {
                 // prevent selecting text
                 e.preventDefault();
                 e.stopPropagation();
-                var dx = e.screenX - this.prevMoveX;
                 this.state.left += dx;
                 this.prevMoveX = e.screenX;
                 window.parent.postMessage({state: 'moving', left: this.state.left}, "*");
