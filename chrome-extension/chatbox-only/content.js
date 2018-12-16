@@ -1,9 +1,8 @@
-(function() {
 var CHATBOX_ELEMENT_ID = 'chatbox-iframe';
 var CHATBOX_FRAME_SRC = 'chatbox-only/chatbox-frame.html';
 var chatboxIFrame;
 var locationHref = location.href;
-var created = false;
+var iframeCreated = false;
 var localChatboxExists = false;
 // var chatboxLeft = 0;
 
@@ -33,7 +32,7 @@ function createChatboxIframe() {
     chatboxIFrame.src +=  "?"+locationHref;
     chatboxIFrame.id = CHATBOX_ELEMENT_ID;
     document.body.insertBefore(chatboxIFrame, document.body.firstChild);
-    created = true
+    iframeCreated = true
     keepCheckingLocationChange();
 }
 function keepCheckingLocationChange() {
@@ -60,7 +59,7 @@ function checkLocationChange() {
 window.checkLocationChange = checkLocationChange;
 
 function resizeIFrameToFitContent(e) {
-    if (!created) return;
+    if (!iframeCreated) return;
     if (!e || !e.data )
         return;
     var msg = e.data;
@@ -109,7 +108,7 @@ function moveFrame (left) {
 }
 
 function fitChatboxIframe (msg) {
-    if (!created) return;
+    if (!iframeCreated) return;
     chatboxIFrame.style.display  = "block";
     chatboxIFrame.style.width  = msg.width;
     chatboxIFrame.style.height = msg.height;
@@ -121,16 +120,7 @@ function fitChatboxIframe (msg) {
 // can't receive msg from extension directly, to receive msg from extension,
 // use chrome.runtime.onMessage.addListener
 window.addEventListener("message", resizeIFrameToFitContent, false);
-// window.addEventListener("message", function(e){
-//     if (e && e.data && e.data.chatboxRedirect) {
-//         var url = e.data.chatboxRedirect;
-//         location.replace(e.data.chatboxRedirect); // same page no good
-//         window.open(url, '_blank');
-//     }
-// }, false);
 
-// always create the chatbox and make connections, if user don't want it, he can disable the extension
-// createChatboxIframe();
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (!request.chatboxMsg)
         return;
@@ -266,6 +256,3 @@ if (typeof document.addEventListener === "undefined" || tabHidden === undefined)
   // Handle page visibility change   
   document.addEventListener(visibilityChange, handleTabVisibilityChange, false);
 }
-
-
-})();

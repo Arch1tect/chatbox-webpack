@@ -315,7 +315,6 @@ export default {
                     });
                     this.socket.disconnect();
                     this.socket.connect();
-
                 }
             }
         },
@@ -706,7 +705,8 @@ export default {
         })
         // Check if page has changed url or title
         window.addEventListener("message", function(e){
-            if(e && e.data && e.data.locationUpdate) {
+            if (!e || !e.data) return
+            if(e.data.locationUpdate) {
                 chatboxConfig.pageTitle=e.data.title;
                 var url = e.data.url;
                 if (chatboxConfig.location != url) {
@@ -720,6 +720,17 @@ export default {
                     }
                 }
             }
+            // danmu clicked
+            if(e.data.type == 'chat') {
+                _this.state.view = 2;
+                _this.state.chatTopPanel = 0;
+                _this.scrollToBottom();
+            }
+            if(e.data.type == 'invitation') {
+                _this.state.view = 2;
+                _this.state.chatTopPanel = 2;
+            }
+
         }, false);
 
         this.init();

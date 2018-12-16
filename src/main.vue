@@ -383,6 +383,12 @@ export default {
         $(window).mousemove(function(e){
             _this.resizing(e);
         })
+        window.addEventListener("message", function(e) {
+            // danmu clicked
+            if(e && e.data && e.data.openChatbox) {
+                _this.showChatboxFull();
+            }
+        }, false);
 
         if (!chatboxUtils.runningExtension) {
             // Safari doesn't display 

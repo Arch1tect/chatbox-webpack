@@ -1,6 +1,6 @@
-(function() {
-    "use strict";
+"use strict";
 
+var draggingElement = null;
 var invitationStr = ' invites you to ';
 var lng = window.navigator.userLanguage || window.navigator.language;
 if (lng.indexOf('zh')>-1) {
@@ -10,6 +10,8 @@ const ROW_NUM = 12;
 var messages = []; // keep list of active danmu
 var waitlist = [];
 var danmuWrapper = document.createElement("div");
+var dragX = 0;
+var dragY = 0;
 danmuWrapper.className = 'danmuWrapper';
 var showing = true;
 document.body.insertBefore(danmuWrapper, document.body.firstChild);
@@ -47,10 +49,14 @@ function createDanmu(msg) {
     messages.push(msg);
     var danmu  = document.createElement("div");
     msg.el = danmu;
+    danmu.setAttribute('draggable', "true");
     danmu.className = 'danmu';
     var innerHtml = "";
     if (msg.me) {
         danmu.className += ' self';
+    }
+    var onclickMsg = {
+        'openChatbox': true,
     }
     if (msg.type == 'live') {
         danmu.className += ' live';
@@ -65,25 +71,32 @@ function createDanmu(msg) {
                 src = 'chatbox-only/'+content;
             innerHtml = "<img src='"+src+"' />";
         }
+        onclickMsg.type = 'chat';
     }
     if (msg.type == 'invitation') {
         var content = msg.username+invitationStr+" <span class='invitation-url' title='"+msg.url+"'>"+msg.pageTitle+"</span>";
         innerHtml = "<div class='invitation'>"+content+"</div>";
+        onclickMsg.type = 'invitation';
     }
-
+    danmu.onclick = function () {
+        window.chatboxIFrame.contentWindow.postMessage(onclickMsg, "*");
+    }
     danmu.innerHTML = innerHtml;
     danmu.style.top = 30 + msg.row*40 + 'px';
     var startX = window.innerWidth + 'px';
-    var time = 15;
+    var time = 30;
     // TODO: figure out good algorithm...
     // if (msg.content) time = 20 - msg.content.length/5;
     // if (time < 10) time = 10;
+
+    // If drag then it's possible to move more than screen wide
+    // but animation has stopped...
     if (!danmu.animate)
         return; // safari doesn't support this!
     var danmuAnimation = danmu.animate([
           // keyframes, at least two
           { transform: 'translateX('+startX+')' }, 
-          { transform: 'translateX(-800px)' }
+          { transform: 'translateX(-1800px)' }
         ],
         {
           // timing options
@@ -91,6 +104,7 @@ function createDanmu(msg) {
           // easing: 'ease-in-out'
         }
     );
+    danmu.animation = danmuAnimation;
     danmuAnimation.onfinish = function () {
         var i = messages.indexOf(msg);
         messages.splice(i, 1);
@@ -99,8 +113,14 @@ function createDanmu(msg) {
     danmu.onmouseover = function () {
         danmuAnimation.pause();
     }
+    danmu.onmousedown = function (e) {
+        draggingElement = danmu;
+        dragX = e.clientX;
+        dragY = e.clientY;
+    }
     danmu.onmouseout = function () {
-        danmuAnimation.play();
+        if (draggingElement != danmu)
+            danmuAnimation.play();
     }
     danmuWrapper.appendChild(danmu);
 }
@@ -164,12 +184,21 @@ function receiveMsgFromChatboxFrame (e) {
     //     toggleDanmu(danmuMsg.display);
     // }
 }
-// This is deprecated, danmu is always enabled in UI
-// the switch is set before sending msg to danmu.js
-// chrome.storage.local.get('danmu', function (item) {
-//     var display = item['danmu'] || 'block';
-//     toggleDanmu(display);
-// });
+window.onmouseup = function (e) {
+    draggingElement.animation.play();
+    draggingElement = null;
+}
+
+window.onmousemove = function (e) {
+    if (!draggingElement) return;
+    e.preventDefault();
+    var dx = e.clientX - dragX;
+    var dy = e.clientY - dragY;
+    dragX = e.clientX;
+    dragY = e.clientY;
+    draggingElement.style.top = draggingElement.offsetTop + dy + 'px';
+    draggingElement.style.left = draggingElement.offsetLeft + dx + 'px';
+}
 window.addEventListener("message", receiveMsgFromChatboxFrame, false);
 // test cases below
 var testDanmu = [
@@ -183,4 +212,3 @@ var testDanmu = [
 ]
 // waitlist = testDanmu;
 checkDanmu();
-})();
