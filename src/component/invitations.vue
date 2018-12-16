@@ -1,9 +1,9 @@
 <template>
     <transition name="slide">
         <div v-if="state.chatTopPanel == 2" class="socketchatbox-invites">
-            <center class='loading-invitations' v-show="config.firstLoadInvitation">{{$t('m.loading')}}</center>
-            <center v-show="messages.length==0">{{$t('m.noInvitation')}}</center>
-            <div class="invite-row" :class="{'self-invitation': msg.userId == config.userId}" v-for="msg in messages">
+            <center class='loading-invitations' v-show="loadingInvitations">{{$t('m.loading')}}</center>
+            <center v-show="Object.keys(invitations).length==0">{{$t('m.noInvitation')}}</center>
+            <div class="invite-row" :class="{'self-invitation': msg.userId == config.userId}" v-for="msg in invitations">
                 <img @click="viewUser(msg.userId, msg.username)" v-bind:title="msg.username" v-bind:src="msg.profileImgSrc" />
                 <span class="lobby-msg-content">{{$t('m.joinMe')}} <span class="page-title" @click="redirect(msg.url)" v-bind:title="msg.pageTitle"> {{msg.pageTitle}}</span>
                 </span>
@@ -81,16 +81,15 @@ import Vue from 'vue'
 import chatboxConfig from '../config.js'
 import chatboxUtils from '../utils.js'
 import chatboxSocket from '../socket.js'
-var POLL_INTERVAL = 7;
+var POLL_INTERVAL = 20;
 export default {
     name: 'lobby',
     data () {
         return {
             config: chatboxConfig,
             state: chatboxUIState,
-            invitationUrls: {},
-            selfAdded: false,
-            messages: []
+            loadingInvitations: true,
+            invitations: {}
         }
     },
     methods: {
@@ -106,69 +105,60 @@ export default {
                 chatboxUtils.storage.set('chatbox_config', configData);
             })
             window.open(url, '_blank');
-            // window.parent.postMessage({chatboxRedirect: url}, "*"); // same page redirect is bad, browse history changed and can't go back to previous page
-            // Vue.notify({
-            //   title: this.$t('m.redirecting'),
-            //   type: 'warn'
-            // });
         },
-        pollInvitation: function () {
+        registerInvitationCallback: function () {
+            var _this = this;
+            chatboxSocket.registerCallback('invite', function (msg) {
+                _this.processInvitation(msg);
+                _this.queueDanmu(msg);
+            });
+        },
+        processInvitation: function (msg) {
+            // Either realtime invitation from socket event
+            // or bulk get from API poll
+            Vue.set(this.invitations, msg.url, msg);
+            chatboxUtils.tryLoadingProfileImg(msg, msg.userId);
+            if (msg.userId == chatboxConfig.userId) {
+                msg.me = true;
+            }
+        },
+        pollInvitations: function () {
             var _this = this;
             $.get(chatboxConfig.socketUrl + "/api/invitations", function(data) {
-                var i=0;
-                _this.selfAdded = false;
-                var invitationUrlsNew = {};
-                for(; i<data.length; i++) {
-                    var msg = data[i];
-                    if (msg.userId == chatboxConfig.userId) {
-                        _this.selfAdded = true;
-                        msg.me = true;
-                    }
-                    invitationUrlsNew[msg.url] = true;
-                    _this.queueDanmu(msg);
-                    chatboxUtils.tryLoadingProfileImg(msg, msg.userId);
-                }
-                _this.invitationUrls = invitationUrlsNew;
-                _this.messages = data.reverse();
-                chatboxConfig.firstLoadInvitation = false;
-            }).fail(function(){}).always(function(){});
+                var invitationsNew = {}
+                data.forEach(function(msg) {
+                    var showDanmu = !(msg.url in _this.invitations);
+                    _this.processInvitation(msg);
+                    invitationsNew[msg.url] = msg;
+                    // TODO: invitation might already seen in other tab, use localStorage to sync between tabs?
+                    // if (showDanmu) _this.queueDanmu(msg);
+                })
+                _this.invitations = invitationsNew;
+            }).fail(function(){}).always(function(){
+                _this.loadingInvitations = false;
+            });
 
         },
         queueDanmu: function (msg) {
-            var notFirstLoad = !chatboxConfig.firstLoadInvitation;
-            var notAlreadySeen = !(msg.url in this.invitationUrls);
             var allowDanmu = false;
             if (chatboxConfig.invitationDanmu == 'any_site') {
                 allowDanmu = true;
             } else if (chatboxConfig.invitationDanmu == 'same_site') {
                 allowDanmu = chatboxUtils.extractRootDomain(chatboxConfig.location) == chatboxUtils.extractRootDomain(msg.url);
             }
-            if (allowDanmu && notFirstLoad && notAlreadySeen) {
+            if (allowDanmu) {
                 chatboxUtils.queueDanmu(msg, 'invitation');
             }
         },
-        addSelfToInvitation: function () {
-            // there's a delay before user's own invitation is returned, manually put it there
-            if (this.selfAdded) return;
-            var msg = {
-                'userId': chatboxConfig.userId,
-                'username': chatboxConfig.username,
-                'pageTitle': chatboxConfig.pageTitle,
-                'url': chatboxConfig.location
-
-            }
-            chatboxUtils.tryLoadingProfileImg(msg, msg.userId);
-            this.messages.unshift(msg);
-            this.selfAdded = true;
-
-        },
         keepPollingInvitations: function () {
             var _this = this;
-            // if (chatboxConfig.firstLoadInvitation||(chatboxConfig.tabVisible && this.state.display == "full" && this.state.view == 2 && this.state.chatTopPanel == 2)) {
-            if (chatboxConfig.firstLoadInvitation||chatboxConfig.tabVisible) {
-                this.pollInvitation();
-            }
+            // Should poll from API if not connected to socket
+            // and tab is visible
             setTimeout(function(){
+                var shouldPoll = chatboxConfig.tabVisible && !chatboxSocket.isConnected();
+                if (shouldPoll) {
+                    _this.pollInvitations();
+                }
                 _this.keepPollingInvitations();
             }, POLL_INTERVAL*1000);
         },
@@ -211,7 +201,8 @@ export default {
         }
     },
     created () {
-        chatboxUtils.addSelfToInvitation = this.addSelfToInvitation;
+        this.registerInvitationCallback();
+        this.pollInvitations();
         this.keepPollingInvitations();
         if (chatboxConfig.testing) this.loadTestData();
     }

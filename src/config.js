@@ -2,7 +2,7 @@
 // but also for passing variables between components
 "use strict";
 
-var localSocketServer = false;
+var localSocketServer = true;
 var localInboxServer = false; // DB APIs
 var socketUrl = 'https://quotime.me'
 var apiUrl = socketUrl;
@@ -16,7 +16,7 @@ if (localInboxServer) {
 
 export default {
 	// testing: true,
-	version: '2.3.4',
+	version: '2.3.5',
 	detectLocation: true,
 	lang: 'en', // or zh
 	userId: null,
@@ -37,7 +37,6 @@ export default {
 	// data for passing around
 	location: 'https://www.youtube.com/',
 	domain: 'https://www.youtube.com/',
-	firstLoadInvitation: true,
 	redirected: false,
 	commentsTotal: 0,
 	pageTitle: null,

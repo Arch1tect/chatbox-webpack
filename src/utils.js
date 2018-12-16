@@ -29,6 +29,8 @@ var storage = {
         
     }
 }
+
+var imageCache = {};
 function extractHostname(url) {
     var hostname;
     //find & remove protocol (http, ftp, etc.) and get hostname
@@ -88,11 +90,16 @@ export default {
     },
     storage: storage,
     tryLoadingProfileImg: function (obj, userId) {
-        // TODO: implement cache and bust cache image
-        obj.profileImgSrc = 'profile-empty.png';
+        // TODO: implement bust local cache 
         var src = chatboxConfig.s3Url+userId+'.jpg?v=';
+        if (src in imageCache) {
+            obj.profileImgSrc = src;
+            return;
+        }
+        obj.profileImgSrc = 'profile-empty.png';
         $("<img/>").on('load', function() {
             obj.profileImgSrc = src;
+            imageCache[src] = true;
          }).on('error', function() {
             // no profile image
         }).attr("src", src);

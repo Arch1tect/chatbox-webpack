@@ -334,10 +334,6 @@ export default {
             Vue.notify({
                 title: this.$t('m.invitationSent'),
             });
-            // this.state.chatTopPanel = 2; 
-            // stay at friends view to see new user joining
-            // and change view is a bit UI animation busy when sending invitation during site chat
-            chatboxUtils.addSelfToInvitation();
         },
         toggleOnlineUsers: function (val) {
             if (this.state.chatTopPanel != val) {

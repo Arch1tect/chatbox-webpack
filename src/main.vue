@@ -164,9 +164,7 @@ export default {
                 this.disconnectAfterHiddenSomeTime();
             } else {
                 chatboxConfig.tabVisible = true;
-                // set firstLoadInvitation flag to true so that
-                // old invitation doesn't show up in danmu
-                chatboxConfig.firstLoadInvitation = true;
+                // TODO: write a callback in utils so different component can register events! awesome!
                 chatboxUtils.updateExtensionBadge();
 
                 if (disconnectTimer) {
