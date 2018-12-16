@@ -39,6 +39,11 @@
     padding: 10px;
     padding-bottom: 5px;
     padding-top: 5px;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 .danmu .invitation {
     border: 1px solid lightgray;
@@ -66,4 +71,9 @@ span.invitation-url:hover {
 
 .danmu img{
     max-height: 50px;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }

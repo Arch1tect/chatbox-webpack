@@ -69,7 +69,7 @@ function createDanmu(msg) {
                 src = chrome.extension.getURL('chatbox-only/'+content);
             else
                 src = 'chatbox-only/'+content;
-            innerHtml = "<img src='"+src+"' />";
+            innerHtml = "<img draggable='false' src='"+src+"' />";
         }
         onclickMsg.type = 'chat';
     }

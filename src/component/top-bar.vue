@@ -99,6 +99,10 @@
   max-width: 80px;  
   min-width: 30px;
   text-align: center;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 #socketchatbox-top {
