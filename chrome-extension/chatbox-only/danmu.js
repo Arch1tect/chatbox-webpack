@@ -85,7 +85,7 @@ function createDanmu(msg) {
     danmu.innerHTML = innerHtml;
     danmu.style.top = 30 + msg.row*40 + 'px';
     var startX = window.innerWidth + 'px';
-    var time = 200;
+    var time = 20;
     // TODO: figure out good algorithm...
     // if (msg.content) time = 20 - msg.content.length/5;
     // if (time < 10) time = 10;
@@ -97,7 +97,7 @@ function createDanmu(msg) {
     var danmuAnimation = danmu.animate([
           // keyframes, at least two
           { transform: 'translateX('+startX+')' }, 
-          { transform: 'translateX(-20000px)' }
+          { transform: 'translateX(-2000px)' }
         ],
         {
           // timing options
