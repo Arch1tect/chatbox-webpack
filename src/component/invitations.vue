@@ -112,6 +112,9 @@ export default {
                 _this.processInvitation(msg);
                 _this.queueDanmu(msg);
             });
+            chatboxSocket.registerCallback('invitation expired', function (msg) {
+                Vue.delete(_this.invitations, msg.url);
+            });
         },
         processInvitation: function (msg) {
             // Either realtime invitation from socket event
