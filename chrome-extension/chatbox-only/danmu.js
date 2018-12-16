@@ -12,6 +12,7 @@ var waitlist = [];
 var danmuWrapper = document.createElement("div");
 var dragX = 0;
 var dragY = 0;
+var dragging = false;
 danmuWrapper.className = 'danmuWrapper';
 var showing = true;
 document.body.insertBefore(danmuWrapper, document.body.firstChild);
@@ -49,7 +50,6 @@ function createDanmu(msg) {
     messages.push(msg);
     var danmu  = document.createElement("div");
     msg.el = danmu;
-    danmu.setAttribute('draggable', "true");
     danmu.className = 'danmu';
     var innerHtml = "";
     if (msg.me) {
@@ -78,8 +78,9 @@ function createDanmu(msg) {
         innerHtml = "<div class='invitation'>"+content+"</div>";
         onclickMsg.type = 'invitation';
     }
-    danmu.onclick = function () {
-        window.chatboxIFrame.contentWindow.postMessage(onclickMsg, "*");
+    danmu.onclick = function (e) {
+        if (!dragging)
+            window.chatboxIFrame.contentWindow.postMessage(onclickMsg, "*");
     }
     danmu.innerHTML = innerHtml;
     danmu.style.top = 30 + msg.row*40 + 'px';
@@ -115,6 +116,7 @@ function createDanmu(msg) {
     }
     danmu.onmousedown = function (e) {
         draggingElement = danmu;
+        dragging = false;
         dragX = e.clientX;
         dragY = e.clientY;
     }
@@ -185,19 +187,26 @@ function receiveMsgFromChatboxFrame (e) {
     // }
 }
 window.onmouseup = function (e) {
-    draggingElement.animation.play();
-    draggingElement = null;
+    if (draggingElement) {
+        draggingElement.animation.play();
+        draggingElement = null;
+        e.preventDefault();
+        e.stopPropagation();
+    }
 }
-
 window.onmousemove = function (e) {
     if (!draggingElement) return;
-    e.preventDefault();
     var dx = e.clientX - dragX;
     var dy = e.clientY - dragY;
-    dragX = e.clientX;
-    dragY = e.clientY;
-    draggingElement.style.top = draggingElement.offsetTop + dy + 'px';
-    draggingElement.style.left = draggingElement.offsetLeft + dx + 'px';
+    if (dx > 3 || dx < -3|| dragging) {
+        dragging = true;
+        dragX = e.clientX;
+        dragY = e.clientY;
+        draggingElement.style.top = draggingElement.offsetTop + dy + 'px';
+        draggingElement.style.left = draggingElement.offsetLeft + dx + 'px';
+        e.stopPropagation();
+        e.preventDefault();
+    }
 }
 window.addEventListener("message", receiveMsgFromChatboxFrame, false);
 // test cases below
