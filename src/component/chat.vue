@@ -285,10 +285,13 @@ import chatboxSocket from '../socket.js'
 
 "use strict";
 const TYPING_STAY_TIME = 3*1000; // ms
+const DISCONNECT_DELAY_TIME = 10*60*1000; // 10 min
 
 var useDifferentStyleForPureEmoji = false;
 var LOG_MESSAGE_TIME_AFTER = 1*60*1000; // 1 min
 var typingUserDict = {};
+var disconnectTimer = null;
+
 export default {
     name: 'chat-body',
     data () {
@@ -449,6 +452,7 @@ export default {
             }
         },
         // Add typing user, auto remove after centain amount of time
+        // TODO: use user id not name
         addTypingUser: function (username) {
             if (username === chatboxConfig.username) return;
 
@@ -534,6 +538,7 @@ export default {
             });
             chatboxSocket.registerCallback('disconnect', function (data) {
                 chatboxSocket.state.connected = false;
+                chatboxUtils.updateExtensionBadge();
             });
             chatboxSocket.registerCallback('name changed', function (data) {
                 var log = {
@@ -671,8 +676,34 @@ export default {
         }
     },
     created () {
+        var _this = this;
         chatboxUtils.sendInvitation = this.sendInvitation;
-        this.init();
+        chatboxUtils.registerTabInvisibleCallbacks(function () {
+            if (!chatboxSocket.isConnected()) return;
+            disconnectTimer = setTimeout(function(){
+                chatboxSocket.disconnect();
+                console.log('Disconnected socket after invisble for a long time');
+            }, DISCONNECT_DELAY_TIME)
+        });
+        chatboxUtils.registerTabVisibleCallbacks(function () {
+            if (disconnectTimer) {
+                clearTimeout(disconnectTimer);
+            }
+            if(chatboxConfig.liveChatEnabled && !chatboxSocket.state.connected) {
+                chatboxSocket.connect();
+                Vue.notify({
+                  title: _this.$t('m.connecting'),
+                  type: 'warn'
+                });
+            }
+            chatboxUtils.storage.get('chatbox_config', function (item) {
+                // what other config do we need to reload?
+                var configData = item['chatbox_config'] || {};
+                if ('livechat_danmu' in configData) {
+                    chatboxConfig.livechatDanmu = configData['livechat_danmu'];
+                }
+            });
+        })
         // Check if page has changed url or title
         window.addEventListener("message", function(e){
             if(e && e.data && e.data.locationUpdate) {
@@ -690,6 +721,9 @@ export default {
                 }
             }
         }, false);
+
+        this.init();
+
     }
 }
 

@@ -125,14 +125,12 @@ import chatboxSocket from './socket.js'
 
 var MIN_WIDTH = 275;
 var MIN_HEIGHT = 100;
-var DISCONNECT_DELAY_TIME = 10*60*1000; // 10 min
 
 // expose chatbox config to window so it's easier to debug
 window.Vue = Vue;
 window.chatbox = chatboxConfig;
 window.chatboxUIState = chatboxUIState;
 window.chatboxUtils = chatboxUtils;
-var disconnectTimer = null;
 export default {
     name: 'chatbox-main-vue',
     data () {
@@ -151,42 +149,15 @@ export default {
         },
     },
     methods: {
-        disconnectAfterHiddenSomeTime() {
-            disconnectTimer = setTimeout(function(){
-                chatboxSocket.disconnect();
-            }, DISCONNECT_DELAY_TIME)
-        },
         handleTabVisibilityChange() {
             // reconnect/disconnect base on tab visibility
             // ensure socket has been initiated properly
             if (document[this.tabHidden]) {
                 chatboxConfig.tabVisible = false;
-                this.disconnectAfterHiddenSomeTime();
+                chatboxUtils.runTabInvisibleCallbacks();
             } else {
                 chatboxConfig.tabVisible = true;
-                // TODO: write a callback in utils so different component can register events! awesome!
-                chatboxUtils.updateExtensionBadge();
-
-                if (disconnectTimer) {
-                    clearTimeout(disconnectTimer);
-                }
-                if(chatboxConfig.liveChatEnabled && !chatboxSocket.state.connected) {
-                    chatboxSocket.connect();
-                    Vue.notify({
-                      title: this.$t('m.connecting'),
-                      type: 'warn'
-                    });
-                }
-                chatboxUtils.storage.get('chatbox_config', function (item) {
-                    // what other config do we need to reload?
-                    var configData = item['chatbox_config'] || {};
-                    if ('livechat_danmu' in configData) {
-                        chatboxConfig.livechatDanmu = configData['livechat_danmu'];
-                    }
-                    if ('invitation_danmu' in configData) {
-                        chatboxConfig.invitationDanmu = configData['invitation_danmu'];
-                    }
-                });
+                chatboxUtils.runTabVisibleCallbacks();
             }
         },
         resizeStart (e) {
@@ -303,15 +274,7 @@ export default {
                 }
                 if ('left' in configData) {
                     chatboxUIState.left = parseInt(configData['left']);
-                    // var maxLeft = window.innerWidth - _this.state.width;
-                    // console.log(chatboxUIState.left);
-                    // console.log(window.innerWidth);
-                    // console.log(_this.state.width);
-                    // if (chatboxUIState.left > maxLeft) {
-                    //     chatboxUIState.left = maxLeft;
-                    // }
                     console.log(chatboxUIState.left);
-
                     window.parent.postMessage({state: 'moving', dx: chatboxUIState.left}, "*");
                 }
                 if ('livechat_danmu' in configData) {

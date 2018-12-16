@@ -29,7 +29,8 @@ var storage = {
         
     }
 }
-
+var tabVisibleCallbacks = [];
+var tabInvisibleCallbacks = [];
 var imageCache = {};
 function extractHostname(url) {
     var hostname;
@@ -60,6 +61,25 @@ export default {
     },
     deepCopy: function (data) {
     	return JSON.parse(JSON.stringify(data));
+    },
+    registerTabVisibleCallbacks: function (func) {
+        tabVisibleCallbacks.push(func);
+    },
+    registerTabInvisibleCallbacks: function (func) {
+        tabInvisibleCallbacks.push(func);
+    },
+    runTabVisibleCallbacks: function () {
+        tabVisibleCallbacks.forEach(function (func) {
+            func();
+        });
+    },
+    runTabInvisibleCallbacks: function () {
+        tabInvisibleCallbacks.forEach(function (func) {
+            func();
+        })
+    },
+    updateExtensionBadge: function () {
+        console.log('updateExtensionBadge not registered yet');
     },
     updateIframeSize: function (state) {
         // send chat box size to content.js

@@ -99,7 +99,20 @@ export default {
             }
             this.onlineUsers = onlineUsers;
             chatboxSocket.userCount = this.onlineUsers.length;
-
+            this.updateExtensionBadge();
+        },
+        updateExtensionBadge: function () {
+            if (chrome && chrome.browserAction) {
+                if (chatboxConfig.unreadDirectMsg > 0) {
+                    chrome.browserAction.setBadgeText({text: 'mail'});
+                    chrome.browserAction.setBadgeBackgroundColor({color: "orange"});
+                } else if (chatboxSocket.isConnected()){
+                    chrome.browserAction.setBadgeText({text: this.onlineUsers.length+''});
+                    chrome.browserAction.setBadgeBackgroundColor({color: "#0099ff"});
+                } else {
+                    chrome.browserAction.setBadgeText({text: ''});
+                }
+            }
         },
         registerSocketEvents: function () {
             var _this = this;
@@ -121,6 +134,8 @@ export default {
     },
     created () {
         this.registerSocketEvents();
+        chatboxUtils.updateExtensionBadge = this.updateExtensionBadge;
+        chatboxUtils.registerTabVisibleCallbacks(this.updateExtensionBadge);
     }
 }
 </script>

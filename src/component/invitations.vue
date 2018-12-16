@@ -204,6 +204,18 @@ export default {
         this.registerInvitationCallback();
         this.pollInvitations();
         this.keepPollingInvitations();
+
+        chatboxUtils.registerTabVisibleCallbacks(function(){
+            chatboxUtils.storage.get('chatbox_config', function (item) {
+                // what other config do we need to reload?
+                var configData = item['chatbox_config'] || {};
+                if ('invitation_danmu' in configData) {
+                    chatboxConfig.invitationDanmu = configData['invitation_danmu'];
+                }
+            });
+        })
+
+
         if (chatboxConfig.testing) this.loadTestData();
     }
 }

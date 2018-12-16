@@ -221,28 +221,11 @@ export default {
               return 1;
           });
         },
-        updateExtensionBadge: function () {
-            if (chrome && chrome.browserAction) {
-              if (chatboxConfig.unreadDirectMsg > 0) {
-                  chrome.browserAction.setBadgeText({text: 'mail'});
-                  chrome.browserAction.setBadgeBackgroundColor({color: "orange"});
-              } else {
-              var val = chatboxConfig.commentsTotal;
-              if (val > 9999) val = '10k+';
-              if (val == 0) val = '';
-              val += '';
-              chrome.browserAction.setBadgeText({text: val});
-              chrome.browserAction.setBadgeBackgroundColor({color: "#0099ff"});
-              }
-            }
-        },
         loadComments: function (callback) {
             this.loading = true;
             var _this = this;
-
             $.get(chatbox.apiUrl + "/db/comments_with_votes/offset/" + this.lastCommentId + "/user_id/" + chatboxConfig.userId + "/url/" + chatbox.location).done(function(resp) {
                 chatboxConfig.commentsTotal += resp.length;
-                _this.updateExtensionBadge();
                 _this.sortComemnts(resp);
                 var index = 0;
                 for (; index<resp.length; index++) {
@@ -275,7 +258,6 @@ export default {
     created () {
         // Make the method accessible from comment modal
         chatboxUtils.loadComments = this.loadComments;
-        chatboxUtils.updateExtensionBadge = this.updateExtensionBadge;
     }
 }
 
