@@ -2,7 +2,7 @@
 // but also for passing variables between components
 "use strict";
 
-var localSocketServer = false;
+var localSocketServer = true;
 var localInboxServer = false; // DB APIs
 var socketUrl = 'https://quotime.me'
 var apiUrl = socketUrl;
@@ -16,7 +16,7 @@ if (localInboxServer) {
 
 export default {
 	// testing: true,
-	version: '2.3.5',
+	version: '2.3.6',
 	detectLocation: true,
 	lang: 'en', // or zh
 	userId: null,

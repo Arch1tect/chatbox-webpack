@@ -313,8 +313,7 @@ export default {
                         title: this.$t('m.toggleSamePageChatING'),
                         type: 'warning'
                     });
-                    this.socket.disconnect();
-                    this.socket.connect();
+                    this.socket.reconnect();
                 }
             }
         },
@@ -715,8 +714,7 @@ export default {
                     chatboxConfig.location = url;
                     if (chatboxConfig.samePageChat && chatboxSocket.isConnected) {
                         // Add a message about chat room change?
-                        chatboxSocket.disconnect();
-                        chatboxSocket.connect();
+                        chatboxSocket.reconnect();
                     }
                 }
             }

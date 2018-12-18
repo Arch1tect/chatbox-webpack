@@ -86,8 +86,7 @@ export default {
         sendInvitation: function () {
             if (!chatboxConfig.samePageChat) {
                 chatboxConfig.samePageChat = true;
-                chatboxSocket.disconnect();
-                chatboxSocket.connect();
+                chatboxSocket.reconnect();
             }
             chatboxUtils.sendInvitation();
         },
