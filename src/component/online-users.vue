@@ -101,6 +101,7 @@ export default {
             this.updateExtensionBadge();
         },
         updateExtensionBadge: function () {
+            if (!this.config.tabVisible) return;
             if (chrome && chrome.browserAction) {
                 if (chatboxConfig.unreadDirectMsg > 0) {
                     chrome.browserAction.setBadgeText({text: 'mail'});
