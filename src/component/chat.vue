@@ -103,8 +103,12 @@
     position: fixed;
     color: white;
     text-align: center;
-    bottom: 35px;
-    padding: 8px;
+    /*bottom: 35px;*/
+    top: 60px;
+    line-height: 18px;
+    padding: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     background: #0189feba;
 }
 .socketchatbox-chatArea {
@@ -703,6 +707,17 @@ export default {
                 }
             });
         })
+        // Listen to command from popup.js (extension only)
+        chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+            if (!request.chatboxMsg)
+                return;
+            var msg = request.chatboxMsg;
+            // Receive message sent from extension
+            if (msg == "open_chatbox") {
+                // TODO: maybe only auto scroll first time
+                _this.scrollToBottomLater();
+            }
+        });
         // Check if page has changed url or title
         window.addEventListener("message", function(e){
             if (!e || !e.data) return

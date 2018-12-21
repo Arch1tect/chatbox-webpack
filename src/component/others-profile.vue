@@ -99,6 +99,7 @@ export default {
             this.state.view = -1;
             this.username = username;
             this.userId = userId;
+            this.aboutMe = '';
             this.title = this.$t('m.othersProfile', {username: username});
             chatboxUtils.tryLoadingProfileImg(this, userId);
             this.loadUserInfoFromDB();

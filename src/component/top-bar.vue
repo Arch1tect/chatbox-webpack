@@ -1,7 +1,7 @@
 <template>
     <div v-on:click="toggleChatbox" @mousedown="dragStart" v-bind:class="{ mini: state.display == 'mini' }" id='socketchatbox-top'>
 
-        <div v-cloak v-show="state.display == 'full'" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-username'>{{config.username}}</div>
+<!--         <div v-cloak v-show="state.display == 'full'" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-username'>{{config.username}}</div> -->
         <span v-on:click='handleMissClick($event)' id='topbar-options' class='float-right'>
             <span v-on:click='topOptionClicked(1, $event)' class="top-option" :title="$t('m.commentTab')" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-comments'>
                 <font-awesome-icon icon="comment-alt" class="fa fa-comment-alt"  v-bind:class="{ selected: state.view==1 }" />

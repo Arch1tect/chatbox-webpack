@@ -117,13 +117,13 @@ export default {
         registerSocketEvents: function () {
             var _this = this;
             chatboxSocket.registerCallback('user joined', function (data) {
-              console.log('user joined');
+              // console.log('user joined');
               chatboxSocket.state.connected = true;
               _this.setOnlineUsers(data.onlineUsers);
 
             });
             chatboxSocket.registerCallback('user left', function (data) {
-                console.log('user left');
+                // console.log('user left');
                 _this.setOnlineUsers(data.onlineUsers);
             });
             chatboxSocket.registerCallback('name changed', function (data) {
