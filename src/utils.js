@@ -113,15 +113,17 @@ export default {
         // TODO: implement bust local cache 
         var src = chatboxConfig.s3Url+userId+'.jpg';
         if (src in imageCache) {
-            obj.profileImgSrc = src;
+            obj.profileImgSrc = imageCache[src];
             return;
         }
         obj.profileImgSrc = 'profile-empty.png';
         $("<img/>").on('load', function() {
             obj.profileImgSrc = src;
-            imageCache[src] = true;
+            imageCache[src] = src;
          }).on('error', function() {
             // no profile image
+            // TODO: is this a problem? Wouldn't retry until page refresh
+            imageCache[src] = 'profile-empty.png';
         }).attr("src", src);
     },
     genGuid: function() {
