@@ -666,12 +666,13 @@ export default {
                     chatboxConfig.unreadLiveMsgTotal = 0;
             }
         },
-        'socket.state.connected': function (newState, prevState) {
-            // once connected, show users in the same room
-            if (newState) {
-                this.state.chatTopPanel = 1;
-            }
-        }
+        // 'socket.state.connected': function (newState, prevState) {
+        //     // once connected, show users in the same room
+        //     // This is blocking view, deprecated
+        //     if (newState) {
+        //         this.state.chatTopPanel = 1;
+        //     }
+        // }
     },
     created () {
         var _this = this;
