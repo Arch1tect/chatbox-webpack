@@ -111,7 +111,7 @@ export default {
     storage: storage,
     tryLoadingProfileImg: function (obj, userId) {
         // TODO: implement bust local cache 
-        var src = chatboxConfig.s3Url+userId+'.jpg?v=';
+        var src = chatboxConfig.s3Url+userId+'.jpg';
         if (src in imageCache) {
             obj.profileImgSrc = src;
             return;
