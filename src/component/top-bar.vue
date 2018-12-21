@@ -7,7 +7,7 @@
                 <font-awesome-icon icon="comment-alt" class="fa fa-comment-alt"  v-bind:class="{ selected: state.view==1 }" />
                 <span v-show="state.display == 'mini' && config.commentsTotal > 0" class="total-num">{{config.commentsTotal}}</span>
             </span>
-            <span v-on:click='topOptionClicked(2, $event)' class="top-option" :title="$t('m.chatTab')" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live' v-show="state.display == 'full'">
+            <span v-on:click='topOptionClicked(2, $event)' class="top-option" :title="$t('m.chatTab')" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live'>
                 <font-awesome-icon icon="comments" class="fa fa-comments"  v-bind:class="{ selected: state.view==2 }" />
                 <span v-show="config.unreadLiveMsgTotal>0" class="unread-notification-dot"></span>
             </span>
