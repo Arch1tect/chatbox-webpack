@@ -295,7 +295,7 @@ var useDifferentStyleForPureEmoji = false;
 var LOG_MESSAGE_TIME_AFTER = 1*60*1000; // 1 min
 var typingUserDict = {};
 var disconnectTimer = null;
-
+var firstTimeAutoScroll = true; // Only auto scroll when maximize for first time
 export default {
     name: 'chat-body',
     data () {
@@ -666,6 +666,10 @@ export default {
         },
         'state.display': function (newView, prevView) {
             if (newView == 'full') {
+                if (firstTimeAutoScroll) {
+                    this.scrollToBottomLater();
+                    firstTimeAutoScroll = false;
+                }
                 if ( this.state.view == 2)
                     chatboxConfig.unreadLiveMsgTotal = 0;
             }
@@ -708,16 +712,16 @@ export default {
             });
         })
         // Listen to command from popup.js (extension only)
-        chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-            if (!request.chatboxMsg)
-                return;
-            var msg = request.chatboxMsg;
-            // Receive message sent from extension
-            if (msg == "open_chatbox") {
-                // TODO: maybe only auto scroll first time
-                _this.scrollToBottomLater();
-            }
-        });
+        // chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+        //     if (!request.chatboxMsg)
+        //         return;
+        //     var msg = request.chatboxMsg;
+        //     // Receive message sent from extension
+        //     if (msg == "open_chatbox") {
+        //         // TODO: maybe only auto scroll first time
+        //         _this.scrollToBottomLater();
+        //     }
+        // });
         // Check if page has changed url or title
         window.addEventListener("message", function(e){
             if (!e || !e.data) return
