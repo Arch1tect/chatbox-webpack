@@ -58,8 +58,13 @@ export default {
     },
     methods: {
         submit: function () {
+            // Strip html tags
+            var tmpDiv = document.createElement("div");
+            tmpDiv.innerHTML = this.comment;
+            var comment = tmpDiv.textContent || tmpDiv.innerText || "";
             // TODO: disable button and show loading when waiting for ajax to finish
-            if (this.comment === '') {
+            if (comment === '') {
+                this.comment = '';
                 this.$modal.hide('comment-modal');
                 return;
             }
@@ -67,7 +72,7 @@ export default {
             var payload = {
                 'user_id': chatboxConfig.userId,
                 'user_name': chatboxConfig.username,
-                'message': this.comment,
+                'message': comment,
                 'reply_to_user_id': this.replyToId,
                 'reply_to_user_name': this.replyToName
             }

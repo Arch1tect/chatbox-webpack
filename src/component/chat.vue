@@ -550,7 +550,7 @@ export default {
                 _this.addTypingUser(data.username);
             });
             chatboxSocket.registerCallback('stop typing', function (data) {
-                console.log('remove typing ' + data.username)
+                // console.log('remove typing ' + data.username)
                 _this.removeTypingUser(data.username);
             });
             // Whenever the server emits 'new message', update the chat body
