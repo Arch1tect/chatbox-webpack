@@ -324,6 +324,7 @@ export default {
         this.stickers = [
             "stickers/bunny/hi.gif",
             "stickers/bunny/yes.gif",
+            "stickers/bunny/ok.gif",
             "stickers/bunny/rubber_face.gif",
             "stickers/bunny/cheers.gif",
             "stickers/bunny/together.gif",
@@ -338,6 +339,12 @@ export default {
             "stickers/bunny/kiss.gif",
             "stickers/bunny/kiss_face.gif",
             "stickers/bunny/cute_baby.gif",
+            "stickers/bunny/cute.gif",
+            "stickers/bunny/excited.gif",
+            "stickers/bunny/good_night.gif",
+            "stickers/bunny/haha.gif",
+            "stickers/bunny/sheishei.gif",
+            "stickers/bunny/you_are_best.gif",
 
             "stickers/seal/beat.gif",
             "stickers/seal/cold.gif",
@@ -345,6 +352,10 @@ export default {
             "stickers/seal/hand_cold.gif",
             "stickers/seal/kiss.gif",
             "stickers/seal/miao.gif",
+            "stickers/seal/kiss_face.gif",
+            "stickers/seal/mad.gif",
+            "stickers/seal/come_sleep.gif",
+            "stickers/seal/happy.gif",
         ];
     },
     mounted () {

@@ -110,15 +110,11 @@ input.username:focus{
 }
 .socketchatbox-profileArea img {
     width: 100%;
-    /*margin-bottom: 10px;*/
-    /*min-height: 250px;*/
-    /*border: 5px solid white;*/
-    /*border-radius: 10px;*/
+    max-height: 200px;
+    object-fit: cover;
 }
 </style>
 <script>
-import Vue from 'vue'
-
 import chatboxUIState from '../ui-state.js'
 import chatboxConfig from '../config.js'
 import chatboxUtils from '../utils.js'
@@ -165,13 +161,21 @@ export default {
     },
     methods: {
         onFileChanged (event) {
+            var _this = this;
             var file = event.target.files[0];
+            this.imgFile = null;
             if (!file) {
-                this.imgFile = null;
                 return;
             }
+            if (file.size > 100*1024) {
+                Vue.notify({
+                    title: this.$t('m.avatarTooBig'),
+                    type: 'error'
+                });
+                return
+            }
+
             this.imgFile = new FormData();
-            var _this = this;
 
             // TODO: only allow 1 file
             $.each(event.target.files, function(key, value)
@@ -183,6 +187,7 @@ export default {
                 _this.profileImgSrc = e.target.result;
             };
             reader.readAsDataURL(file);
+
         },
         saveName () {
             if (this.username == this.chatbox.username) {
@@ -248,7 +253,7 @@ export default {
             var _this = this;
             $.ajax({
                 type: "POST",
-                url: chatboxConfig.apiUrl + "/user/change_profile_img/"+chatboxConfig.userId,
+                url: chatboxConfig.apiUrl + "/db/user/change_profile_img/"+chatboxConfig.userId,
                 data: _this.imgFile,
                 enctype: 'multipart/form-data',
                 processData: false,  // Important!

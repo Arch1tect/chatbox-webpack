@@ -3,7 +3,7 @@
 "use strict";
 
 var localSocketServer = false;
-var localInboxServer = false; // DB APIs
+var localInboxServer = true; // DB APIs
 var socketUrl = 'https://quotime.me'
 var apiUrl = socketUrl;
 
@@ -16,14 +16,14 @@ if (localInboxServer) {
 
 export default {
 	// testing: true,
-	version: '2.3.7',
+	version: '2.3.8',
 	detectLocation: true,
 	lang: 'en', // or zh
 	userId: null,
 	shareLocation: true,
 	livechatDanmu: true,
 	invitationDanmu: 'any_site', // never, same_site, any_site
-	samePageChat: false, // same page chat VS same site chat
+	samePageChat: true, // same page chat VS same site chat
 	username: null,
 	aboutMe: null,
 	socketUrl: socketUrl,
