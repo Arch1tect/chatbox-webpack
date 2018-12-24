@@ -714,18 +714,8 @@ export default {
                     chatboxConfig.livechatDanmu = configData['livechat_danmu'];
                 }
             });
-        })
-        // Listen to command from popup.js (extension only)
-        // chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-        //     if (!request.chatboxMsg)
-        //         return;
-        //     var msg = request.chatboxMsg;
-        //     // Receive message sent from extension
-        //     if (msg == "open_chatbox") {
-        //         // TODO: maybe only auto scroll first time
-        //         _this.scrollToBottomLater();
-        //     }
-        // });
+        });
+
         // Check if page has changed url or title
         window.addEventListener("message", function(e){
             if (!e || !e.data) return

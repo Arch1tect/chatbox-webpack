@@ -590,6 +590,21 @@ export default {
                 chatboxConfig.unreadDirectMsg = 1;
             }
             chatboxUtils.updateExtensionBadge();
+        },
+        init: function () {
+            if (!chatboxConfig.userId) {
+                console.log('[inbox] user id not loaded yet, wait');
+                var _this = this;
+                setTimeout(function () {
+                    _this.init();
+                })
+                return;
+            }
+            this.loadChatbotMsg();
+            if (chatboxConfig.testing)
+                this.loadTestData();
+            this.keepPollingMsg();
+            this.keepPollingNotification();
         }
     },
     watch: {
@@ -614,11 +629,7 @@ export default {
         // expose sendPM method so input component can access it
         chatboxUtils.sendPM = this.sendPM;
         chatboxUtils.goToMessage = this.goToMessage;
-        this.loadChatbotMsg();
-        if (chatboxConfig.testing)
-            this.loadTestData();
-        this.keepPollingMsg();
-        this.keepPollingNotification();
+        this.init();
     }
 }
 function sortByMsgId(a, b) {
