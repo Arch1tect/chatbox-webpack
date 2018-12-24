@@ -7,6 +7,7 @@
             <center>
                 <img v-bind:src="profileImgSrc" />
                 <div class="username">{{username}}</div>
+                <div class="user-id">ID: {{id}}</div>
                 <div class="socketchatbox-aboutme">{{aboutMe}}</div>
             </center>
         </div>
@@ -55,6 +56,7 @@ export default {
             profileImgSrc: '',
             aboutMe: '',
             userId: '',
+            id: '',
             joinDate: null,
             username: 'No name',
             prevView: 1
@@ -76,6 +78,7 @@ export default {
                     return;
                 }
                 var user = resp[0];
+                _this.id = user.id;
                 _this.username = user.name;
                 _this.aboutMe = user.about;
                 _this.joinDate = user.create_time;
