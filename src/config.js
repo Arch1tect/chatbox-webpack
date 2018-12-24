@@ -2,8 +2,8 @@
 // but also for passing variables between components
 "use strict";
 
-var localSocketServer = true;
-var localInboxServer = true; // DB APIs
+var localSocketServer = false;
+var localInboxServer = false; // DB APIs
 var socketUrl = 'https://quotime.me'
 var apiUrl = socketUrl;
 
@@ -25,7 +25,7 @@ export default {
 	shareLocation: true,
 	livechatDanmu: true,
 	invitationDanmu: 'any_site', // never, same_site, any_site
-	samePageChat: true, // same page chat VS same site chat
+	samePageChat: false, // same page chat VS same site chat
 	username: null,
 	aboutMe: '',
 	socketUrl: socketUrl,
