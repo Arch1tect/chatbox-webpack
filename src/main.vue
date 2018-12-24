@@ -39,6 +39,7 @@
 .notifications {
     bottom: 35px !important;
     width: 100% !important;
+    position: absolute;
 }
 .vue-notification {
     margin: 0px;

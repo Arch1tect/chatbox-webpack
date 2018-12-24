@@ -100,7 +100,7 @@
 .chat-typing {
     width: 100%;
     z-index: 1;
-    position: fixed;
+    position: absolute;
     color: white;
     text-align: center;
     /*bottom: 35px;*/
