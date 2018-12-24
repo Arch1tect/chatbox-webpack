@@ -407,6 +407,10 @@ export default {
                 this.updateLogTime();
                 data.loggingTime = true;
             }
+            // Strip html tags
+            var tmpDiv = document.createElement("div");
+            tmpDiv.innerHTML = data.message;
+            data.message = tmpDiv.textContent || tmpDiv.innerText || "";
         },
         processMsg: function (data) {
             this.preprocessMsg(data);
