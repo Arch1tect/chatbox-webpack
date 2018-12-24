@@ -416,7 +416,7 @@ export default {
             if (this.lastMsg && data.sender == this.lastMsg.sender)
                 data.fromSameUser = true;
 
-            chatboxUtils.tryLoadingProfileImg(data, data.sender);
+            chatboxUtils.tryLoadingProfileImg(data, data.sender, data.me);
             // Maybe move some of this logic to backend, it's messy here
             // Message is considered media type if
             // 1. text: image url

@@ -94,7 +94,7 @@ export default {
             var i = 0;
             for (; i < onlineUsers.length; i++) {
                 var user = onlineUsers[i];
-                chatboxUtils.tryLoadingProfileImg(user, user.userId);
+                chatboxUtils.tryLoadingProfileImg(user, user.userId, user.userId==chatboxConfig.userId);
             }
             this.onlineUsers = onlineUsers;
             chatboxSocket.userCount = this.onlineUsers.length;

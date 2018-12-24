@@ -232,12 +232,13 @@ export default {
                     var data = resp[index];
                     if (!data.name)
                         data.name = 'no name';
-                    chatboxUtils.tryLoadingProfileImg(data, data.user_id);
                     data.time = moment.utc(data.created_time).fromNow();
                     _this.lastCommentId = Math.max(_this.lastCommentId, data.id);
                     data.content = chatboxUtils.addClassToEmoji(data.content);
                     _this.messages.push(data);
-                    data.fromSelf = data.user_id == chatboxConfig.userId
+                    data.fromSelf = data.user_id == chatboxConfig.userId;
+                    chatboxUtils.tryLoadingProfileImg(data, data.user_id, data.fromSelf);
+
                     // chatboxUtils.queueDanmu(data, 'comment');
                 }
                 Vue.nextTick(function(){

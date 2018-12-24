@@ -224,7 +224,7 @@ export default {
                 selected: false,
                 unreadMsg: true
             };
-            chatboxUtils.tryLoadingProfileImg(friend, id);
+            chatboxUtils.tryLoadingProfileImg(friend, id, id==chatboxConfig.userId);
             return friend;
         },
         msgClick: function () {

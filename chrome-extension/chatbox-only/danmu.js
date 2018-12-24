@@ -78,6 +78,11 @@ function createDanmu(msg) {
         innerHtml = "<div class='invitation'>"+content+"</div>";
         onclickMsg.type = 'invitation';
     }
+    // Add sender avatar if there is
+    if (msg.profileImgSrc && msg.profileImgSrc != 'profile-empty.png') {
+        var avatarSpan = "<img class='danmu-avatar' draggable='false' src='" + msg.profileImgSrc+"' />";
+        innerHtml = avatarSpan + innerHtml;
+    }
     danmu.onclick = function (e) {
         if (!dragging)
             window.chatboxIFrame.contentWindow.postMessage(onclickMsg, "*");

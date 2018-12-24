@@ -120,10 +120,11 @@ export default {
             // Either realtime invitation from socket event
             // or bulk get from API poll
             Vue.set(this.invitations, msg.url, msg);
-            chatboxUtils.tryLoadingProfileImg(msg, msg.userId);
             if (msg.userId == chatboxConfig.userId) {
                 msg.me = true;
             }
+            chatboxUtils.tryLoadingProfileImg(msg, msg.userId, msg.me);
+
         },
         pollInvitations: function () {
             var _this = this;
