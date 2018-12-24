@@ -232,38 +232,12 @@ export default {
             this.state.display = 'hidden';
             chatboxUtils.updateIframeSize('close');
         },
-        registerUser () {
-            var _this = this;
-            var payload = {
-                'uuid': chatboxConfig.userId,
-                'name': chatboxConfig.username
-            }
-            $.post(chatboxConfig.apiUrl + "/db/user/change_name", payload, function(resp) {
-                Vue.notify({
-                  title: _this.$t('m.welcomeInstall'),
-                });
-            })
-        },
         loadConfigFromStorage () {
             console.log('Load config from storage');
             var _this = this;
             chatboxUtils.storage.get('chatbox_config', function (item) {
                 var configData = item['chatbox_config'] || {};
-                var needRegister = false;
-                if ('user_id' in configData) {
-                    chatboxConfig.userId = configData['user_id'];
-                } else {
-                    // 1st time open, also save user in DB
-                    chatboxConfig.userId = chatboxUtils.genGuid();
-                    configData['user_id'] = chatboxConfig.userId;
-                    needRegister = true;
-                }
-                if ('username' in configData) {
-                    chatboxConfig.username = configData['username'];
-                } else {
-                    chatboxConfig.username = 'u'+Math.floor(Math.random() * 1*1000*1000);
-                    configData['username'] = chatboxConfig.username;
-                }
+
                 if ('size' in configData) {
                     var size = configData['size'];
                     _this.state.width = parseInt(size['width']);
@@ -300,12 +274,7 @@ export default {
                     chatboxConfig.samePageChat = configData['same-page-chat'];
                 }
 
-
-                chatboxConfig.configLoaded = true;
                 chatboxUtils.storage.set('chatbox_config', configData);
-                if(needRegister) {
-                    _this.registerUser();
-                }
                 _this.decideChatboxDisplay();
                 chatboxUtils.loadComments();
             });

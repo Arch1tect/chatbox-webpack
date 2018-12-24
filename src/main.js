@@ -133,6 +133,7 @@ const messages = {
       loadCommentFailed: 'Failed to load comments',
       invitationSent: 'Invitation sent!',
       welcomeInstall: 'Welcome to use this extension!',
+      registerFailed: 'Failed to register, please refresh',
       welcomeFromBot: "Welcome! Thank you for using this extension and please feel free to send us feedback! ;)"
     }
   },
@@ -207,6 +208,7 @@ const messages = {
       loadMessageFailed: '读取信息失败',
       invitationSent: '邀请发送！',
       welcomeInstall: '欢迎使用这款插件!',
+      registerFailed: '注册失败，请刷新重试',
       welcomeFromBot: '欢迎使用这款插件! 请访问官方论坛给我们留言提建议！'
     }
   }

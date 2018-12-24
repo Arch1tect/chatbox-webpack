@@ -115,7 +115,7 @@ input.socketchatbox-inputMessage:disabled {
     right: 0px;
 }
 #socketchatbox-sticker-picker img {
-  width: 80px;
+  width: 70px;
   margin:5px;
   cursor: pointer;
   border-radius: 5px;

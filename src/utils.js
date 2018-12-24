@@ -109,9 +109,29 @@ export default {
         window.parent.postMessage(danmuMsg, "*");
     },
     storage: storage,
-    tryLoadingProfileImg: function (obj, userId) {
-        // TODO: implement bust local cache 
-        var src = chatboxConfig.s3Url+userId+'.jpg';
+    setBasicConfig: function (dict) {
+        // this is a short cut for specifically chatbox_config key
+        storage.get('chatbox_config', function (item) {
+            var configData = item['chatbox_config'] || {};
+            for (var key in dict) {
+                configData[key] = dict[key];
+            }
+            storage.set('chatbox_config', configData);
+        });
+    },
+    getBasicConfig: function (callback) {
+        storage.get('chatbox_config', function (item) {
+            var configData = item['chatbox_config'] || {};
+            callback(configData);
+        })
+    },
+    tryLoadingProfileImg: function (obj, userId, useS3) {
+
+        var domain = chatboxConfig.cdnUrl;
+        if (useS3) {
+            domain = chatboxConfig.s3Url;
+        }
+        var src = domain+userId+'.jpg';
         if (src in imageCache) {
             obj.profileImgSrc = imageCache[src];
             return;

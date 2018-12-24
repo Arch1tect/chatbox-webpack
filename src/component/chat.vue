@@ -626,7 +626,7 @@ export default {
             });
         },
         init: function () {
-            if (!chatboxConfig.configLoaded) {
+            if (!chatboxConfig.userId) {
                 var _this = this;
                 console.log('config not loaded yet');
                 setTimeout(function(){

@@ -16,6 +16,7 @@
 
                 
                 <input class="username" :placeholder="$t('m.displayName')" maxlength="10" type="text" v-model="username">
+                <div class="user-id">ID: {{chatbox.id}}</div>
                 <textarea v-model="aboutMe" :placeholder="$t('m.aboutMe')" class="socketchatbox-aboutme"></textarea>
             </center>
         </div>
@@ -74,6 +75,10 @@ button:disabled, button[disabled]{
     overflow-x: hidden;
 
 }
+.socketchatbox-profileArea .user-id {
+    color: gray;
+    margin: 15px;
+}
 .socketchatbox-aboutme {
     padding: 5px;
     width:80%;
@@ -92,7 +97,7 @@ button:disabled, button[disabled]{
 .socketchatbox-profileArea .username {
     margin: 0px;
     margin-top: 15px;
-    margin-bottom: 25px;
+    /*margin-bottom: 25px;*/
     padding: 5px;
     text-align: center;
     font-size: 15px;
@@ -134,6 +139,7 @@ export default {
             imgFile: null,
             aboutMe: '',
             username: 'No name',
+            id: '',
             savingName: false,
             savingImg: false,
             savingAboutMe: false
@@ -228,7 +234,6 @@ export default {
             }
             this.savingAboutMe = true;
             this.chatbox.aboutMe = this.aboutMe;
-            chatboxUtils.storage.set('about-me', this.aboutMe);
             var payload = {
                 'uuid': chatboxConfig.userId,
                 'aboutMe': this.aboutMe
@@ -237,6 +242,11 @@ export default {
             $.post(chatboxConfig.apiUrl + "/db/user/change_about_me", payload, function(resp) {
                 Vue.notify({
                   title: _this.$t('m.introductionUpdated'),
+                });
+                chatboxUtils.storage.get('chatbox_config', function (item) {
+                    var configData = item['chatbox_config'] || {};
+                    configData['about_me'] = _this.aboutMe;
+                    chatboxUtils.storage.set('chatbox_config', configData);
                 });
             }).fail(function () {
                 Vue.notify({
@@ -279,26 +289,114 @@ export default {
             this.saveProfileImg();
             this.saveAboutMe();
         },
-        init () {
-            // TODO: Had to write below duplicate code to ensure user id has been loaded from local storage
-            if (chatboxConfig.userId && chatboxConfig.username) {
+        loadUser () {
+            // TODO: use this for login from different device
+            var _this = this;
+            $.get(chatboxConfig.apiUrl + "/db/user/" + chatboxConfig.userId).done(function(resp) {
+                if (!resp.length) {
+                    Vue.notify({
+                        title: _this.$t('m.userNotFound'),
+                        type: 'error'
+                    });
+                    return;
+                }
+                var user = resp[0];
+                chatboxConfig.username = user.name;
+                chatboxConfig.aboutMe = user.about;
+                _this.aboutMe = user.about;
+                _this.username = user.name;
+                chatboxConfig.id = user.id;
+
+                chatboxUtils.setBasicConfig({
+                    username: user.name,
+                    id: user.id,
+                    about_me: user.about
+                });
+
+            }).fail(function() {
+                Vue.notify({
+                    title: _this.$t('m.userLoadFailed'),
+                    type: 'error'
+                });
+            }).always(function(){});
+
+        },
+
+        registerUser (localExist) {
+
+            console.log('Register user');
+            console.log('Local existing user: '+localExist);
+            if (!localExist) {
+                chatboxConfig.userId = chatboxUtils.genGuid();
+                chatboxConfig.password = chatboxUtils.genGuid();
+                chatboxConfig.username = 'u' + Math.floor(Math.random() * 1 * 1000 * 1000);
+                chatboxUtils.setBasicConfig({
+                    user_id: chatboxConfig.userId,
+                    username: chatboxConfig.username,
+                    password: chatboxConfig.password,
+                });
                 this.username = chatboxConfig.username;
-                chatboxUtils.tryLoadingProfileImg(this, chatboxConfig.userId);
-            } else {
-                var _this = this;
-                setTimeout(function(){
-                    _this.init();
-                }, 100);
             }
+
+            var _this = this;
+            var payload = {
+                'uuid': chatboxConfig.userId,
+                'name': chatboxConfig.username,
+                'password': chatboxConfig.password
+            }
+
+            $.post(chatboxConfig.apiUrl + "/db/user/register", payload, function(resp) {
+                Vue.notify({
+                    title: _this.$t('m.welcomeInstall'),
+                });
+                if (resp.id && resp.id > 0) {
+                    // Successful registration, save the id
+                    chatboxConfig.id = resp.id;
+                    chatboxUtils.setBasicConfig({
+                        id: chatboxConfig.id,
+                    });
+                }
+            }).fail(function() {
+                Vue.notify({
+                    title: _this.$t('m.registerFailed'),
+                    type: 'error'
+                });
+            }).always(function(){});
+        },
+        init () {
+            var _this = this;
+            chatboxUtils.getBasicConfig(function (configData) {
+                if ('id' in configData) {
+                    console.log('User has registered.');
+                    // id is returned from server, if client doesn't have it
+                    // then needs to register
+                    chatboxConfig.id = configData['id'];
+                    chatboxConfig.userId = configData['user_id'];
+                    chatboxConfig.username = configData['username'];
+                    chatboxConfig.aboutMe = configData['about_me'];
+                    _this.username = chatboxConfig.username;
+                    _this.aboutMe = chatboxConfig.aboutMe;
+                } else {
+                    if ('user_id' in configData) {
+                        // user created locally but failed to register previously
+                        chatboxConfig.userId = configData['user_id'];
+                        chatboxConfig.username = configData['username'];
+                        chatboxConfig.aboutMe = configData['about_me'];
+                        _this.username = chatboxConfig.username;
+                        _this.aboutMe = chatboxConfig.aboutMe;
+                        _this.registerUser(true);
+                    } else {
+                        _this.registerUser(false);
+                    }
+                }
+                // For user's own avatar, check s3 rather than cdn
+                chatboxUtils.tryLoadingProfileImg(_this, chatboxConfig.userId, true);
+
+            });
         }
     },
     created () {
         this.init();
-        var _this = this;
-        chatboxUtils.storage.get('about-me', function(item){
-            _this.aboutMe = item['about-me'];
-            chatboxConfig.aboutMe = _this.aboutMe;
-        })
     }
 }
 

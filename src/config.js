@@ -20,15 +20,18 @@ export default {
 	detectLocation: true,
 	lang: 'en', // or zh
 	userId: null,
+	password: null,
+	id: null,
 	shareLocation: true,
 	livechatDanmu: true,
 	invitationDanmu: 'any_site', // never, same_site, any_site
 	samePageChat: true, // same page chat VS same site chat
 	username: null,
-	aboutMe: null,
+	aboutMe: '',
 	socketUrl: socketUrl,
 	apiUrl : apiUrl,
-	s3Url: 'https://dnsofx4sf31ab.cloudfront.net/',
+	cdnUrl: 'https://dnsofx4sf31ab.cloudfront.net/',
+	s3Url: 'https://s3.amazonaws.com/chat.anywhere.user.img/',
 	chatbot : {
 		name: 'Chat Bot',
 		userId: 'chat-bot-id'
