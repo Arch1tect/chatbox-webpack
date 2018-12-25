@@ -64,6 +64,9 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 const messages = {
   en: {
     429: 'Slow down please',
+    e: {
+      inputTooLong: 'Please send no more than 150 words',
+    },
     m: {
       credit: 'Credit',
       checkinFailed: 'Failed to check in',
@@ -141,6 +144,9 @@ const messages = {
   },
   zh: {
     429: '请放慢速度',
+    e: {
+      inputTooLong: '请减少到150字以内',
+    },
     m: {
       credit: '积分',
       checkinFailed: '报道失败',
