@@ -500,6 +500,10 @@ export default {
                         username: data.username+''
                     }
                     messages.push(msg);
+                    if (messages.length > 30) {
+                        messages = messages.slice(-30);
+                    }
+
                     chatboxUtils.storage.set(roomId, JSON.stringify(messages));
                 }
             });
