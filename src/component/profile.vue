@@ -13,10 +13,8 @@
                       <input accept="image/*" type="file" @change="onFileChanged">
                     </div>
                 </div>
-
-                
                 <input class="username" :placeholder="$t('m.displayName')" maxlength="10" type="text" v-model="username">
-                <div class="user-id">ID: {{chatbox.id}}</div>
+                <div class="user-metadata"><span>ID: {{chatbox.id}}<span class="credit">{{$t('m.credit')}}: {{chatbox.credit}}</span></div>
                 <textarea v-model="aboutMe" :placeholder="$t('m.aboutMe')" class="socketchatbox-aboutme"></textarea>
             </center>
         </div>
@@ -75,8 +73,11 @@ button:disabled, button[disabled]{
     overflow-x: hidden;
 
 }
-.socketchatbox-profileArea .user-id {
+.socketchatbox-profileArea .user-metadata {
     color: gray;
+    margin: 15px;
+}
+.user-metadata .credit {
     margin: 15px;
 }
 .socketchatbox-aboutme {
@@ -290,7 +291,6 @@ export default {
             this.saveAboutMe();
         },
         loadUser () {
-            // TODO: use this for login from different device
             var _this = this;
             $.get(chatboxConfig.apiUrl + "/db/user/" + chatboxConfig.userId).done(function(resp) {
                 if (!resp.length) {
@@ -306,11 +306,12 @@ export default {
                 _this.aboutMe = user.about;
                 _this.username = user.name;
                 chatboxConfig.id = user.id;
-
+                chatboxConfig.credit = user.credit;
+                // Question: what needs to be saved locally, what not?
                 chatboxUtils.setBasicConfig({
                     username: user.name,
                     id: user.id,
-                    about_me: user.about
+                    about_me: user.about,
                 });
 
             }).fail(function() {
@@ -321,7 +322,10 @@ export default {
             }).always(function(){});
 
         },
+        checkin () {
+            // Check in every day to earn credit
 
+        },
         registerUser (localExist) {
 
             console.log('Register user');
@@ -394,6 +398,13 @@ export default {
 
             });
         }
+    },
+    watch: {
+        'state.view': function (newView, prevView) {
+            if (newView == 0) {
+                this.loadUser();
+            }
+        },
     },
     created () {
         this.init();

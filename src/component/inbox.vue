@@ -600,7 +600,6 @@ export default {
                 })
                 return;
             }
-            this.loadChatbotMsg();
             if (chatboxConfig.testing)
                 this.loadTestData();
             this.keepPollingMsg();
@@ -629,6 +628,7 @@ export default {
         // expose sendPM method so input component can access it
         chatboxUtils.sendPM = this.sendPM;
         chatboxUtils.goToMessage = this.goToMessage;
+        this.loadChatbotMsg();
         this.init();
     }
 }

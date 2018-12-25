@@ -2,8 +2,8 @@
 // but also for passing variables between components
 "use strict";
 
-var localSocketServer = false;
-var localInboxServer = false; // DB APIs
+var localSocketServer = true;
+var localInboxServer = true; // DB APIs
 var socketUrl = 'https://quotime.me'
 var apiUrl = socketUrl;
 
@@ -16,12 +16,13 @@ if (localInboxServer) {
 
 export default {
 	// testing: true,
-	version: '2.3.9',
+	version: '2.4.0',
 	detectLocation: true,
 	lang: 'en', // or zh
 	userId: null,
 	password: null,
 	id: null,
+	credit: 0,
 	shareLocation: true,
 	livechatDanmu: true,
 	invitationDanmu: 'any_site', // never, same_site, any_site

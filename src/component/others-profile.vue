@@ -7,7 +7,7 @@
             <center>
                 <img v-bind:src="profileImgSrc" />
                 <div class="username">{{username}}</div>
-                <div class="user-id">ID: {{id}}</div>
+                <div class="user-metadata"><span>ID: {{id}}</span></div>
                 <div class="socketchatbox-aboutme">{{aboutMe}}</div>
             </center>
         </div>
@@ -102,6 +102,7 @@ export default {
             this.state.view = -1;
             this.username = username;
             this.userId = userId;
+            this.id = '';
             this.aboutMe = '';
             this.title = this.$t('m.othersProfile', {username: username});
             chatboxUtils.tryLoadingProfileImg(this, userId);

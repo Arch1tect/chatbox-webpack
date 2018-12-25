@@ -65,6 +65,7 @@ const messages = {
   en: {
     429: 'Slow down please',
     m: {
+      credit: 'Credit',
       avatarTooBig: 'Image must be smaller than 100KB',
       redirecting: 'Redirecting you now...',
       commentTab: 'Comment',
@@ -140,6 +141,7 @@ const messages = {
   zh: {
     429: '请放慢速度',
     m: {
+      credit: '积分',
       avatarTooBig: '图片必须小于100KB',
       redirecting: '跳转中。。。',
       commentTab: '留言板',
