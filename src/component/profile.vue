@@ -291,6 +291,7 @@ export default {
             this.saveAboutMe();
         },
         loadUser () {
+            // called when user profile tab is open
             var _this = this;
             $.get(chatboxConfig.apiUrl + "/db/user/" + chatboxConfig.userId).done(function(resp) {
                 if (!resp.length) {
@@ -323,7 +324,42 @@ export default {
 
         },
         checkin () {
-            // Check in every day to earn credit
+            var _this = this;
+            chatboxUtils.getBasicConfig(function (configData) {
+                var now = Date.now();
+                var shouldCheck = false;
+                if ('last_checkin_time' in configData) {
+                    var delta = now - configData['last_checkin_time'];
+                    if (delta > 60*60*1000) {
+                        shouldCheck = true;
+                        // Check in every hour to earn credit
+                    }
+                } else {
+                    shouldCheck = true;
+                }
+                if (shouldCheck) {
+
+                    $.post(chatboxConfig.apiUrl + "/db/user/" + chatboxConfig.userId+'/checkin').done(function(resp) {
+                        chatboxUtils.setBasicConfig({last_checkin_time:now});
+                        if (resp.point) {
+                            Vue.notify({
+                                title: resp.point,
+                                type: 'success'
+                            });
+                            _this.credit += resp.point;
+                        }
+                    }).fail(function() {
+                        Vue.notify({
+                            title: _this.$t('m.checkinFailed'),
+                            type: 'error'
+                        });
+                    }).always(function(){});
+
+
+                }
+            });
+
+
 
         },
         registerUser (localExist) {
@@ -380,6 +416,7 @@ export default {
                     chatboxConfig.aboutMe = configData['about_me'];
                     _this.username = chatboxConfig.username;
                     _this.aboutMe = chatboxConfig.aboutMe;
+                    _this.checkin();
                 } else {
                     if ('user_id' in configData) {
                         // user created locally but failed to register previously

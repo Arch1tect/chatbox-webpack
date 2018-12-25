@@ -66,6 +66,7 @@ const messages = {
     429: 'Slow down please',
     m: {
       credit: 'Credit',
+      checkinFailed: 'Failed to check in',
       avatarTooBig: 'Image must be smaller than 100KB',
       redirecting: 'Redirecting you now...',
       commentTab: 'Comment',
@@ -142,6 +143,7 @@ const messages = {
     429: '请放慢速度',
     m: {
       credit: '积分',
+      checkinFailed: '报道失败',
       avatarTooBig: '图片必须小于100KB',
       redirecting: '跳转中。。。',
       commentTab: '留言板',
