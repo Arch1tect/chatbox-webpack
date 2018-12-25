@@ -71,12 +71,13 @@ export default {
             chatboxUtils.viewOthersProfile(this.state.view, user.userId, user.username);
         },
         setOnlineUsers: function (onlineUsers) {
-            var i = 0;
-            for (; i < onlineUsers.length; i++) {
-                var user = onlineUsers[i];
-                chatboxUtils.tryLoadingProfileImg(user, user.userId, user.userId==chatboxConfig.userId);
-            }
             this.onlineUsers = onlineUsers;
+            this.onlineUsers.forEach(function (user) {
+                user.profileImgSrc = 'profile-empty.png';
+                if (chatboxUIState.chatTopPanel == 1) {
+                    chatboxUtils.tryLoadingProfileImg(user, user.userId, user.userId==chatboxConfig.userId);
+                }
+            });
             chatboxSocket.userCount = this.onlineUsers.length;
             this.updateExtensionBadge();
         },
@@ -111,6 +112,15 @@ export default {
             });
         }
 
+    },
+    watch: {
+        'state.chatTopPanel': function (newView, prevView) {
+            if (newView == 1) {
+                this.onlineUsers.forEach(function (user) {
+                    chatboxUtils.tryLoadingProfileImg(user, user.userId, user.userId==chatboxConfig.userId);
+                });
+            }
+        },
     },
     created () {
         this.registerSocketEvents();

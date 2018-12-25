@@ -2,7 +2,7 @@
 // but also for passing variables between components
 "use strict";
 
-var localSocketServer = true;
+var localSocketServer = false;
 var localInboxServer = true; // DB APIs
 var socketUrl = 'https://quotime.me'
 var apiUrl = socketUrl;
