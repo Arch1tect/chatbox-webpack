@@ -329,42 +329,10 @@ export default {
         }
     },
     created () {
-        this.stickers = [
-            "stickers/bunny/hi.gif",
-            "stickers/bunny/yes.gif",
-            "stickers/bunny/ok.gif",
-            "stickers/bunny/rubber_face.gif",
-            "stickers/bunny/cheers.gif",
-            "stickers/bunny/together.gif",
-            "stickers/bunny/chase_butterfly.gif",
-            "stickers/bunny/heart.gif",
-            "stickers/bunny/happy_tear.gif",
-            "stickers/bunny/swim_in_tear.gif",
-            "stickers/bunny/rub_your_head.gif",
-            "stickers/bunny/no_way.gif",
-            "stickers/bunny/sad.gif",
-            "stickers/bunny/pro.gif",
-            "stickers/bunny/kiss.gif",
-            "stickers/bunny/kiss_face.gif",
-            "stickers/bunny/cute_baby.gif",
-            "stickers/bunny/cute.gif",
-            "stickers/bunny/excited.gif",
-            "stickers/bunny/good_night.gif",
-            "stickers/bunny/haha.gif",
-            "stickers/bunny/sheishei.gif",
-            "stickers/bunny/you_are_best.gif",
-
-            "stickers/seal/beat.gif",
-            "stickers/seal/cold.gif",
-            "stickers/seal/eat.gif",
-            "stickers/seal/hand_cold.gif",
-            "stickers/seal/kiss.gif",
-            "stickers/seal/miao.gif",
-            "stickers/seal/kiss_face.gif",
-            "stickers/seal/mad.gif",
-            "stickers/seal/come_sleep.gif",
-            "stickers/seal/happy.gif",
-        ];
+        var i = 1;
+        for (; i<49; i++) {
+            this.stickers.push("stickers/acfun/"+i+".gif");
+        }
     },
     mounted () {
         // emoji library is using v-if instead of v-show 
