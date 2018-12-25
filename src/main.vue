@@ -276,7 +276,6 @@ export default {
 
                 chatboxUtils.storage.set('chatbox_config', configData);
                 _this.decideChatboxDisplay();
-                chatboxUtils.loadComments();
             });
         },
         listenToExtension () {

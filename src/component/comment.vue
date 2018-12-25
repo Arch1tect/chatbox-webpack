@@ -152,7 +152,7 @@ export default {
             chatboxUtils: chatboxUtils,
             chatbox: chatboxConfig,
             lastCommentId: -1,
-            loading: true,
+            loading: false,
             messages: []
         }
     },
@@ -226,7 +226,7 @@ export default {
             var _this = this;
             $.get(chatbox.apiUrl + "/db/comments_with_votes/offset/" + this.lastCommentId + "/user_id/" + chatboxConfig.userId + "/url/" + chatbox.location).done(function(resp) {
                 chatboxConfig.commentsTotal += resp.length;
-                _this.sortComemnts(resp);
+                // _this.sortComemnts(resp);
                 var index = 0;
                 for (; index<resp.length; index++) {
                     var data = resp[index];
@@ -235,10 +235,9 @@ export default {
                     data.time = moment.utc(data.created_time).fromNow();
                     _this.lastCommentId = Math.max(_this.lastCommentId, data.id);
                     data.content = chatboxUtils.addClassToEmoji(data.content);
-                    _this.messages.push(data);
                     data.fromSelf = data.user_id == chatboxConfig.userId;
                     chatboxUtils.tryLoadingProfileImg(data, data.user_id, data.fromSelf);
-
+                    _this.messages.push(data);
                     // chatboxUtils.queueDanmu(data, 'comment');
                 }
                 Vue.nextTick(function(){
@@ -255,6 +254,13 @@ export default {
                 _this.loading = false;
             });
         }
+    },
+    watch: {
+        'state.view': function (newView, prevView) {
+            if (newView == 1) {
+                this.loadComments();
+            }
+        },
     },
     created () {
         // Make the method accessible from comment modal
