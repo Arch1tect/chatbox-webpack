@@ -321,25 +321,6 @@ export default {
                 }
             }
         },
-        sendInvitation: function () {
-            var _this = this;
-            if (!chatboxConfig.pageTitle||!chatboxSocket.isConnected()) {
-                // wait for page title from content.js
-                // wait for socket connection
-                console.log('no page title or not connected yet...');
-                setTimeout(function () {
-                    _this.sendInvitation();
-                }, 1000);
-                return;
-            }
-            chatboxSocket.getSocket().emit('invite', {
-                version: chatboxConfig.version,
-                pageTitle: chatboxConfig.pageTitle
-            });
-            Vue.notify({
-                title: this.$t('m.invitationSent'),
-            });
-        },
         toggleOnlineUsers: function (val) {
             if (this.state.chatTopPanel != val) {
                 this.state.chatTopPanel = val;
@@ -688,7 +669,6 @@ export default {
     },
     created () {
         var _this = this;
-        chatboxUtils.sendInvitation = this.sendInvitation;
         chatboxUtils.registerTabInvisibleCallbacks(function () {
             if (!chatboxSocket.isConnected()) return;
             disconnectTimer = setTimeout(function(){

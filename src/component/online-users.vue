@@ -1,7 +1,6 @@
 <template>
     <transition name="online-users-slide">
         <center v-if="state.chatTopPanel == 1 && socket.state.connected" class="socketchatbox-onlineusers">
-            <center class="invite-people-btn" :class="{alone: onlineUsers.length==1}" @click="sendInvitation()">{{$t('m.invite')}}</center>
             <!--
                 <center v-if="!config.samePageChat" class="same-page-chat-title" >{{$t('m.sameSiteChatTitle')}}</center>
             -->
@@ -28,7 +27,7 @@
     position: absolute;
     z-index: 1;
     /*padding-bottom: 5px;*/
-    /*padding-top: 5px;*/
+    padding-top: 3px;
     outline: 1px solid #d3d3d3;
 }
 .socketchatbox-onlineusers .onlineUser {
@@ -45,20 +44,8 @@
     box-shadow: 0 0 6px black;
     /*margin-bottom: 5px;*/
 }
-.invite-people-btn {
-    cursor: pointer;
-    color: gray;
-    margin: 5px;
-}
 .same-page-chat-title {
     margin: 5px;
-}
-.invite-people-btn.alone {
-    color: #06a5f1;
-}
-.invite-people-btn:hover {
-    color: #03A9F4;
-    text-decoration: underline;
 }
 
 </style>
@@ -82,13 +69,6 @@ export default {
     methods: {
         viewUser: function (user) {
             chatboxUtils.viewOthersProfile(this.state.view, user.userId, user.username);
-        },
-        sendInvitation: function () {
-            if (!chatboxConfig.samePageChat) {
-                chatboxConfig.samePageChat = true;
-                chatboxSocket.reconnect();
-            }
-            chatboxUtils.sendInvitation();
         },
         setOnlineUsers: function (onlineUsers) {
             var i = 0;

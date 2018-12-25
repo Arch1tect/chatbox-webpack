@@ -236,8 +236,7 @@ export default {
         loadConfigFromStorage () {
             console.log('Load config from storage');
             var _this = this;
-            chatboxUtils.storage.get('chatbox_config', function (item) {
-                var configData = item['chatbox_config'] || {};
+            chatboxUtils.getBasicConfig(function (configData) {
 
                 if ('size' in configData) {
                     var size = configData['size'];

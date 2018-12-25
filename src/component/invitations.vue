@@ -1,8 +1,8 @@
 <template>
     <transition name="slide">
         <div v-if="state.chatTopPanel == 2" class="socketchatbox-invites">
-            <center class='loading-invitations' v-show="loadingInvitations">{{$t('m.loading')}}</center>
-            <center v-show="Object.keys(invitations).length==0">{{$t('m.noInvitation')}}</center>
+            <center v-if="socket.state.connected" class="invite-people-btn-wrapper">{{$t('m.invite')}}&nbsp;<span :title="costStr(1)" @click="sendInvitation('site')">{{$t('m.sameSitePeople')}}</span>&nbsp;|&nbsp;<span :title="costStr(10)" @click="sendInvitation('all')">{{$t('m.everybody')}}</span></center>
+            <!--<center v-show="Object.keys(invitations).length==0">{{$t('m.noInvitation')}}</center>-->
             <div class="invite-row" :class="{'self-invitation': msg.userId == config.userId}" v-for="msg in invitations">
                 <img @click="viewUser(msg.userId, msg.username)" v-bind:title="msg.username" v-bind:src="msg.profileImgSrc" />
                 <span class="lobby-msg-content">{{$t('m.joinMe')}} <span class="page-title" @click="redirect(msg.url)" v-bind:title="msg.pageTitle"> {{msg.pageTitle}}</span>
@@ -12,6 +12,26 @@
     </transition>
 </template>
 <style>
+
+
+.invite-people-btn-wrapper {
+    color: gray;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.invite-people-btn-wrapper span {
+    cursor: pointer;
+    /*margin-left: 2px;*/
+    /*color: #03A9F4;*/
+    color: black;
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;
+}
+.invite-people-btn-wrapper span:hover {
+    text-decoration: underline;
+}
 .slide-leave-active,
 .slide-enter-active {
   transition: 1s;
@@ -29,7 +49,7 @@
     background: #fff;
     width: 100%;
     overflow-y: auto;
-    padding: 10px;
+    padding: 5px;
     max-height: 50%;
     position: absolute;
     z-index: 1;
@@ -81,18 +101,45 @@ import Vue from 'vue'
 import chatboxConfig from '../config.js'
 import chatboxUtils from '../utils.js'
 import chatboxSocket from '../socket.js'
-var POLL_INTERVAL = 20;
 export default {
     name: 'lobby',
     data () {
         return {
             config: chatboxConfig,
             state: chatboxUIState,
-            loadingInvitations: true,
+            socket: chatboxSocket,
             invitations: {}
         }
     },
     methods: {
+        sendInvitation: function (type) {
+            if (!chatboxConfig.samePageChat) {
+                chatboxConfig.samePageChat = true;
+                chatboxSocket.reconnect();
+            }
+            var _this = this;
+            if (!chatboxConfig.pageTitle||!chatboxSocket.isConnected()) {
+                // wait for page title from content.js
+                // wait for socket connection
+                console.log('no page title or not connected yet...');
+                setTimeout(function () {
+                    _this.sendInvitation(type);
+                }, 1000);
+                return;
+            }
+            chatboxSocket.getSocket().emit('invite', {
+                version: chatboxConfig.version,
+                pageTitle: chatboxConfig.pageTitle,
+                type: type
+            });
+            // TODO: check socket response
+            Vue.notify({
+                title: this.$t('m.invitationSent'),
+            });
+        },
+        costStr: function (x) {
+            return this.$t('m.cost') + ' ' +x+ ' ' + this.$t('m.credit');
+        },
         viewUser: function (userId, username) {
             chatboxUtils.viewOthersProfile(this.state.view, userId, username);
         },
@@ -126,23 +173,6 @@ export default {
             chatboxUtils.tryLoadingProfileImg(msg, msg.userId, msg.me);
 
         },
-        pollInvitations: function () {
-            var _this = this;
-            $.get(chatboxConfig.socketUrl + "/api/invitations", function(data) {
-                var invitationsNew = {}
-                data.forEach(function(msg) {
-                    var showDanmu = !(msg.url in _this.invitations);
-                    _this.processInvitation(msg);
-                    invitationsNew[msg.url] = msg;
-                    // TODO: invitation might already seen in other tab, use localStorage to sync between tabs?
-                    // if (showDanmu) _this.queueDanmu(msg);
-                })
-                _this.invitations = invitationsNew;
-            }).fail(function(){}).always(function(){
-                _this.loadingInvitations = false;
-            });
-
-        },
         queueDanmu: function (msg) {
             var allowDanmu = false;
             if (chatboxConfig.invitationDanmu == 'any_site') {
@@ -154,60 +184,51 @@ export default {
                 chatboxUtils.queueDanmu(msg, 'invitation');
             }
         },
-        keepPollingInvitations: function () {
-            var _this = this;
-            // Should poll from API if not connected to socket
-            // and tab is visible
-            setTimeout(function(){
-                var shouldPoll = chatboxConfig.tabVisible && !chatboxSocket.isConnected();
-                if (shouldPoll) {
-                    _this.pollInvitations();
-                }
-                _this.keepPollingInvitations();
-            }, POLL_INTERVAL*1000);
-        },
         loadTestData: function () {
             var msg = {
                 'userId': '1c5422f7-2164-b84d-59bc-180060392825',
                 'username': '杰伦',
                 'pageTitle': '双节棍MV | Youtube',
-                'url': chatboxConfig.location
+                'url': 'e'
             }
+            this.processInvitation(msg);
             chatboxUtils.queueDanmu(msg, 'invitation');
             msg = {
                 'userId': '1c5422f7-2164-b84d-59bc-180060392825',
                 'username': '发哥',
                 'pageTitle': '上海滩 | 优酷娱乐',
-                'url': chatboxConfig.location
+                'url': 'd'
             }
+            this.processInvitation(msg);
             chatboxUtils.queueDanmu(msg, 'invitation');
             msg = {
                 'userId': '1c5422f7-2164-b84d-59bc-180060392825',
                 'username': '肥猫',
                 'pageTitle': '哥布林杀手 | Bilibili',
-                'url': chatboxConfig.location
+                'url': 'c'
             }
+            this.processInvitation(msg);
             chatboxUtils.queueDanmu(msg, 'invitation');
             msg = {
                 'userId': '1c5422f7-2164-b84d-59bc-180060392825',
                 'username': 'David',
                 'pageTitle': '刀剑神域第三季第1集 | Bilibili',
-                'url': chatboxConfig.location
+                'url': 'b'
             }
+            this.processInvitation(msg);
             chatboxUtils.queueDanmu(msg, 'invitation');
             msg = {
-                'userId': '1c5422f7-2164-b84d-59bc-180060392825',
+                'userId': chatboxConfig.userId,
                 'username': '燕姿',
                 'pageTitle': '绿光 | Youtube',
-                'url': chatboxConfig.location
+                'url': 'a'
             }
+            this.processInvitation(msg);
             chatboxUtils.queueDanmu(msg, 'invitation');
         }
     },
     created () {
         this.registerInvitationCallback();
-        this.pollInvitations();
-        this.keepPollingInvitations();
 
         chatboxUtils.registerTabVisibleCallbacks(function(){
             chatboxUtils.storage.get('chatbox_config', function (item) {
@@ -218,7 +239,6 @@ export default {
                 }
             });
         })
-
 
         if (chatboxConfig.testing) this.loadTestData();
     }
