@@ -64,8 +64,7 @@ button:focus {
     border-top: none;
     position: fixed;
     bottom:0px;
-    font-family:Arial,Helvetica,sans-serif;
-    font-size:12px;
+    font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;    font-size:12px;
     line-height: 1;
     z-index: 2147483646;
     text-align: left;

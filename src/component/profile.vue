@@ -341,12 +341,8 @@ export default {
 
                     $.post(chatboxConfig.apiUrl + "/db/user/" + chatboxConfig.userId+'/checkin').done(function(resp) {
                         chatboxUtils.setBasicConfig({last_checkin_time:now});
-                        if (resp.point) {
-                            Vue.notify({
-                                title: resp.point,
-                                type: 'success'
-                            });
-                            _this.credit += resp.point;
+                        if (resp.credit_delta) {
+                            _this.processCreditChange(resp.credit_delta);
                         }
                     }).fail(function() {
                         Vue.notify({
@@ -354,12 +350,8 @@ export default {
                             type: 'error'
                         });
                     }).always(function(){});
-
-
                 }
             });
-
-
 
         },
         registerUser (localExist) {
@@ -403,7 +395,23 @@ export default {
                 });
             }).always(function(){});
         },
+        processCreditChange: function (delta) {
+            this.credit += delta;
+
+            if (delta > 0) delta = '+' +delta;
+            Vue.notify({
+                title: this.$t('m.credit') + ' ' + delta,
+                type: 'success'
+            });
+        },
+        registerCreditChangeSocketCallback: function () {
+            var _this = this;
+            chatboxSocket.registerCallback('credit_delta', function (delta) {
+                _this.processCreditChange(delta);
+            });
+        },
         init () {
+            this.registerCreditChangeSocketCallback();
             var _this = this;
             chatboxUtils.getBasicConfig(function (configData) {
                 if ('id' in configData) {

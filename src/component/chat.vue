@@ -568,6 +568,12 @@ export default {
                   type: 'error'
                 });
             });
+            chatboxSocket.registerCallback('admin message', function (msg) {
+                Vue.notify({
+                    title: msg,
+                    type: 'success'
+                });
+            });
         },
         addIntro: function () {
             var emptyLog = {isLog: true, message:''};

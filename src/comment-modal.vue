@@ -16,7 +16,7 @@
 .v--modal-box {
     padding: 20px;
     background-color: #eceff1;
-    font-family:Arial,Helvetica,sans-serif;
+    /*font-family:Arial,Helvetica,sans-serif;*/
     font-size:15px;
     max-width: 100%;
 }
@@ -76,6 +76,10 @@ export default {
                 'reply_to_user_id': this.replyToId,
                 'reply_to_user_name': this.replyToName
             }
+            Vue.notify({
+                title: _this.$t('m.submitting'),
+                type: 'warn'
+            });
             $.post(chatboxConfig.apiUrl + "/db/comments/v2/url/"+ chatboxConfig.location, payload, function(resp) {
                 _this.$modal.hide('comment-modal');
                 _this.comment = '';

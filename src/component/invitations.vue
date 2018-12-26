@@ -1,7 +1,7 @@
 <template>
     <transition name="slide">
         <div v-if="state.chatTopPanel == 2" class="socketchatbox-invites">
-            <center v-if="socket.state.connected" class="invite-people-btn-wrapper">{{$t('m.invite')}}&nbsp;<span :title="costStr(1)" @click="sendInvitation('site')">{{$t('m.sameSitePeople')}}</span>&nbsp;|&nbsp;<span :title="costStr(10)" @click="sendInvitation('all')">{{$t('m.everybody')}}</span></center>
+            <center v-if="socket.state.connected" class="invite-people-btn-wrapper">{{$t('m.invite')}}&nbsp;<span :title="costStr(1)" @click="sendInvitation('SAME_SITE_INVITE')">{{$t('m.sameSitePeople')}}</span>&nbsp;|&nbsp;<span :title="costStr(10)" @click="sendInvitation('GLOBAL_INVITE')">{{$t('m.everybody')}}</span></center>
             <!--<center v-show="Object.keys(invitations).length==0">{{$t('m.noInvitation')}}</center>-->
             <div class="invite-row" :class="{'self-invitation': msg.userId == config.userId}" v-for="msg in invitations">
                 <img @click="viewUser(msg.userId, msg.username)" v-bind:title="msg.username" v-bind:src="msg.profileImgSrc" />
@@ -132,9 +132,9 @@ export default {
                 pageTitle: chatboxConfig.pageTitle,
                 type: type
             });
-            // TODO: check socket response
             Vue.notify({
-                title: this.$t('m.invitationSent'),
+                title: _this.$t('m.sendingInvitation'),
+                type: 'warn'
             });
         },
         costStr: function (x) {
@@ -159,6 +159,12 @@ export default {
                 _this.processInvitation(msg);
                 _this.queueDanmu(msg);
             });
+            chatboxSocket.registerCallback('invitation_sent', function (data) {
+                Vue.notify({
+                    title: _this.$t('m.invitationSent'),
+                });
+            });
+            // server no longer send expire event since v2.4.0
             chatboxSocket.registerCallback('invitation expired', function (msg) {
                 Vue.delete(_this.invitations, msg.url);
             });

@@ -63,7 +63,9 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 // Ready translated locale messages
 const messages = {
   en: {
+    426: 'Please upgrade extension',
     429: 'Slow down please',
+    4001: 'Insufficient credits',
     e: {
       inputTooLong: 'Please send no more than 150 words',
     },
@@ -71,7 +73,7 @@ const messages = {
       cost: 'Cost',
       credit: 'Credit',
       checkinFailed: 'Failed to check in',
-      avatarTooBig: 'Image must be smaller than 100KB',
+      avatarTooBig: 'File must be smaller than 100KB',
       redirecting: 'Redirecting you now...',
       commentTab: 'Comment',
       chatTab: 'Live chat',
@@ -80,6 +82,7 @@ const messages = {
       close: 'Close',
       cancel: 'Cancel',
       submit: 'Submit!',
+      submitting: 'Submitting...',
       submitted: 'Submitted!',
       submitCommentFailed: 'Fail to leave comment!',
       connect: 'Join live chat!',
@@ -139,6 +142,7 @@ const messages = {
       newMessage: 'new message',
       loadMessageFailed: 'Failed to check new message',
       loadCommentFailed: 'Failed to load comments',
+      sendingInvitation: 'Sending invitation...',
       invitationSent: 'Invitation sent!',
       welcomeInstall: 'Welcome to use this extension!',
       registerFailed: 'Failed to register, please refresh',
@@ -146,7 +150,9 @@ const messages = {
     }
   },
   zh: {
+    426: '请更新插件',
     429: '请放慢速度',
+    4001: '积分不足',
     e: {
       inputTooLong: '请减少到150字以内',
     },
@@ -154,7 +160,7 @@ const messages = {
       cost: '消耗',
       credit: '积分',
       checkinFailed: '报道失败',
-      avatarTooBig: '图片必须小于100KB',
+      avatarTooBig: '文件必须小于100KB',
       redirecting: '跳转中。。。',
       commentTab: '留言板',
       chatTab: '在线聊天',
@@ -163,6 +169,7 @@ const messages = {
       close: '关闭',
       cancel: '取消',
       submit: '提交!',
+      submitting: '提交中...',
       submitted: '提交成功!',
       submitCommentFailed: '提交失败',
       connect: '连线！',
@@ -222,7 +229,8 @@ const messages = {
       newMessage: '条新消息',
       loadCommentFailed: '读取留言失败',
       loadMessageFailed: '读取信息失败',
-      invitationSent: '邀请发送！',
+      sendingInvitation: '邀请发送中...',
+      invitationSent: '邀请发送成功！',
       welcomeInstall: '欢迎使用这款插件!',
       registerFailed: '注册失败，请刷新重试',
       welcomeFromBot: '欢迎使用这款插件! 请访问官方论坛给我们留言提建议！'
