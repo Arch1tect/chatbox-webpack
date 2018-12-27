@@ -157,7 +157,9 @@ export default {
             var _this = this;
             chatboxSocket.registerCallback('invite', function (msg) {
                 _this.processInvitation(msg);
-                _this.queueDanmu(msg);
+                if (chatboxConfig.tabVisible) {
+                    _this.queueDanmu(msg);
+                }
             });
             chatboxSocket.registerCallback('invitation_sent', function (data) {
                 Vue.notify({

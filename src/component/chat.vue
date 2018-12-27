@@ -289,7 +289,7 @@ import chatboxSocket from '../socket.js'
 
 "use strict";
 const TYPING_STAY_TIME = 3*1000; // ms
-const DISCONNECT_DELAY_TIME = 10*60*1000; // 10 min
+const DISCONNECT_DELAY_TIME = 5*60*1000; // 10 min
 
 var useDifferentStyleForPureEmoji = false;
 var LOG_MESSAGE_TIME_AFTER = 1*60*1000; // 1 min
@@ -552,7 +552,7 @@ export default {
                     chatboxConfig.unreadLiveMsgTotal ++;
                 }
                 _this.processMsg(data);
-                if (chatboxConfig.livechatDanmu) {
+                if (chatboxConfig.livechatDanmu && chatboxConfig.tabVisible) {
                     chatboxUtils.queueDanmu(data, 'live');
                 }
                 _this.saveMsgToStorage(data);
