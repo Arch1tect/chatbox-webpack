@@ -338,9 +338,8 @@ export default {
                     shouldCheck = true;
                 }
                 if (shouldCheck) {
-
+                    chatboxUtils.setBasicConfig({last_checkin_time:now});
                     $.post(chatboxConfig.apiUrl + "/db/user/" + chatboxConfig.userId+'/checkin').done(function(resp) {
-                        chatboxUtils.setBasicConfig({last_checkin_time:now});
                         if (resp.credit_delta) {
                             _this.processCreditChange(resp.credit_delta);
                         }
