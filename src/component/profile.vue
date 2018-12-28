@@ -1,7 +1,7 @@
 <template>
     <div v-show="state.view==0">
         <div class="socketchatbox-page-title">
-            <span>{{title}}</span>
+            <span>{{$t('m.selfProfile')}}</span>
         </div>
         <div class="socketchatbox-profileArea">
             <center>
@@ -14,7 +14,16 @@
                     </div>
                 </div>
                 <input class="username" :placeholder="$t('m.displayName')" maxlength="10" type="text" v-model="username">
-                <div class="user-metadata"><span>ID: {{chatbox.id}}<span class="credit">{{$t('m.credit')}}: {{chatbox.credit}}</span></div>
+                <div class="user-metadata">
+                    <div>
+                        <span>ID: {{chatbox.id}}</span>
+                        <span>{{$t('m.credit')}}: {{chatbox.credit}}</span>
+                    </div>
+                    <div class="follower-stats">
+                        <span @click="utils.viewFollowers(true, followings, followers)">{{$t('m.followingCount')}}: <span class="count">{{followings.length}}</span></span>
+                        <span @click="utils.viewFollowers(false, followings, followers)">{{$t('m.followerCount')}}: <span class="count">{{followers.length}}</span></span>
+                    </div>
+                </div>
                 <textarea v-model="aboutMe" :placeholder="$t('m.aboutMe')" class="socketchatbox-aboutme"></textarea>
             </center>
         </div>
@@ -36,7 +45,19 @@
     cursor: pointer !important;
     font-size: large;
 }
-
+.follower-stats {
+    margin: 10px;
+}
+.follower-stats span{
+    cursor: pointer;
+}
+.follower-stats .count{
+    margin:0px;
+    color: #00a6ff;
+}
+.follower-stats span:hover {
+    text-decoration: underline;
+}
 .upload-profile-image-btn {
     border: none;
     width: 100%;
@@ -77,13 +98,14 @@ button:disabled, button[disabled]{
     color: gray;
     margin: 15px;
 }
-.user-metadata .credit {
+.user-metadata span {
     margin: 15px;
 }
 .socketchatbox-aboutme {
     padding: 5px;
     width:80%;
     min-height: 80px;
+    word-break: break-all;
     resize: none;
     background: none;
     border: 1px solid lightgray;
@@ -129,17 +151,19 @@ import chatboxSocket from '../socket.js'
 
 "use strict";
 
-var titleStr = 'Your profile';
 export default {
     name: 'profile-body',
     data () {
         return {
+            utils: chatboxUtils,
             state: chatboxUIState,
             chatbox: chatboxConfig,
             profileImgSrc: 'profile-empty.png',
             imgFile: null,
             aboutMe: '',
             username: 'No name',
+            followers: [],
+            followings: [],
             id: '',
             savingName: false,
             savingImg: false,
@@ -147,9 +171,6 @@ export default {
         }
     },
     computed: {
-        title: function () {
-            return this.$t('m.selfProfile');
-        },
         saveStr: function () {
             if (this.savingName || this.savingImg)
                 return this.$t('m.updating');
@@ -308,6 +329,8 @@ export default {
                 _this.username = user.name;
                 chatboxConfig.id = user.id;
                 chatboxConfig.credit = user.credit;
+                _this.followers = user.followers;
+                _this.followings = user.followings;
                 // Question: what needs to be saved locally, what not?
                 chatboxUtils.setBasicConfig({
                     username: user.name,
@@ -324,6 +347,7 @@ export default {
 
         },
         checkin () {
+            if (!chatboxConfig.tabVisible) return;
             var _this = this;
             chatboxUtils.getBasicConfig(function (configData) {
                 var now = Date.now();

@@ -388,11 +388,9 @@ export default {
                 this.updateLogTime();
                 data.loggingTime = true;
             }
-            // Strip html tags
-            var tmpDiv = document.createElement("div");
-            tmpDiv.innerHTML = data.message;
-            data.message = tmpDiv.textContent || tmpDiv.innerText || "";
-        },
+            // Strip html tags, not really needed, backend already strip
+            data.message = chatboxUtils.stripTags(data.message);
+            },
         processMsg: function (data) {
             this.preprocessMsg(data);
             if (data.sender == chatboxConfig.userId)
@@ -639,6 +637,7 @@ export default {
                 chatboxConfig.samePageChat = true;
                 liveChatEnabled = true;
             }
+            // TODO: load history only if chatbox visible
             this.loadChatHistory(); // after we know same page chat or not
             // this.addIntro();
             if (liveChatEnabled || chatboxConfig.liveChatEnabled) {

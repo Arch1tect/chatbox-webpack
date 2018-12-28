@@ -18,6 +18,7 @@ import profile from './component/profile.vue'
 import othersProfile from './component/others-profile.vue'
 import onlineUsers from './component/online-users.vue'
 import invitations from './component/invitations.vue'
+import followers from './component/followers.vue'
 
 Vue.component('top-bar', topBar);
 Vue.component('chat-body', chat);
@@ -25,6 +26,8 @@ Vue.component('inbox-body', inbox);
 Vue.component('comment-body', comment);
 Vue.component('profile-body', profile);
 Vue.component('others-profile', othersProfile);
+Vue.component('followers-body', followers);
+
 Vue.component('input-bar', inputBar);
 Vue.component('online-users', onlineUsers);
 Vue.component('invitations', invitations);
@@ -70,6 +73,12 @@ const messages = {
       inputTooLong: 'Please send no more than 150 words',
     },
     m: {
+      success: 'Success',
+      failed: 'Failed',
+      follow: 'Follow',
+      unfollow:'Unfollow',
+      followerCount: 'Followers',
+      followingCount: 'Following',
       cost: 'Cost',
       credit: 'Credit',
       checkinFailed: 'Failed to check in',
@@ -157,6 +166,12 @@ const messages = {
       inputTooLong: '请减少到150字以内',
     },
     m: {
+      success: '成功！',
+      failed:'失败',
+      follow: '关注',
+      unfollow:'取消关注',
+      followerCount: '关注者',
+      followingCount: '关注了',
       cost: '消耗',
       credit: '积分',
       checkinFailed: '报道失败',

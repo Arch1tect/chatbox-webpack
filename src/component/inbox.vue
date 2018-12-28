@@ -165,7 +165,7 @@ import chatboxUtils from '../utils.js'
 
 "use strict";
 var LOG_MESSAGE_TIME_AFTER = 5*60*1000 // 5 mins
-const POLL_INTERVAL = 60; // seconds
+const POLL_INTERVAL = 5*60; // seconds
 export default {
     name: 'inbox-body',
     data () {

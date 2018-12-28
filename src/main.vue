@@ -10,6 +10,7 @@
                 <inbox-body class="socketchatbox-body"></inbox-body>
                 <profile-body class="socketchatbox-body"></profile-body>
                 <others-profile class="socketchatbox-body"></others-profile>
+                <followers-body class="socketchatbox-body"></followers-body>
                 <notifications position="bottom"/>
                 <input-bar></input-bar>
             </div>
