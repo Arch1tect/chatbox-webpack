@@ -66,6 +66,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 // Ready translated locale messages
 const messages = {
   en: {
+    500: 'Failure',
     426: 'Please upgrade extension',
     429: 'Slow down please',
     4001: 'Insufficient credits',
@@ -77,6 +78,7 @@ const messages = {
       failed: 'Failed',
       follow: 'Follow',
       unfollow:'Unfollow',
+      followers: 'followers',
       followerCount: 'Followers',
       followingCount: 'Following',
       cost: 'Cost',
@@ -152,13 +154,15 @@ const messages = {
       loadMessageFailed: 'Failed to check new message',
       loadCommentFailed: 'Failed to load comments',
       sendingInvitation: 'Sending invitation...',
-      invitationSent: 'Invitation sent!',
+      invitationSent: 'Invitation sent',
+      numUserReceived: 'followers received',
       welcomeInstall: 'Welcome to use this extension!',
       registerFailed: 'Failed to register, please refresh',
       welcomeFromBot: "Welcome! Thank you for using this extension and please feel free to send us feedback! ;)"
     }
   },
   zh: {
+    500: '失败',
     426: '请更新插件',
     429: '请放慢速度',
     4001: '积分不足',
@@ -171,6 +175,7 @@ const messages = {
       follow: '关注',
       unfollow:'取消关注',
       followerCount: '关注者',
+      followers: '关注者',
       followingCount: '关注了',
       cost: '消耗',
       credit: '积分',
@@ -245,7 +250,8 @@ const messages = {
       loadCommentFailed: '读取留言失败',
       loadMessageFailed: '读取信息失败',
       sendingInvitation: '邀请发送中...',
-      invitationSent: '邀请发送成功！',
+      invitationSent: '邀请发送成功',
+      numUserReceived: '位关注者收到',
       welcomeInstall: '欢迎使用这款插件!',
       registerFailed: '注册失败，请刷新重试',
       welcomeFromBot: '欢迎使用这款插件! 请访问官方论坛给我们留言提建议！'

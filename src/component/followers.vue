@@ -9,7 +9,7 @@
             </span>
         </div>
         <center class="socketchatbox-followersArea">
-            <span v-if="showFollowing" class="follower-wrapper" v-for="user in followings" @click="utils.viewOthersProfile(4, user.user_id, user.name)">
+            <span v-if="showFollowing" class="follower-wrapper" v-for="user in followings" :key="user.user_id" @click="utils.viewOthersProfile(4, user.user_id, user.name)">
                 <img v-bind:src="user.profileImgSrc" />
                 <div>{{user.name}}</div>
             </span>
@@ -93,10 +93,30 @@
                 this.followers = followers;
                 this.showFollowing = showFollowing;
 
+            },
+            changeFollowing: function (follow, userId, name) {
+                // Used by others-profile.vue
+                var user = {
+                    user_id: userId,
+                    name: name
+                };
+                if (follow) {
+                    chatboxUtils.tryLoadingProfileImg(user, user.user_id, false);
+                    this.followings.push(user);
+                } else {
+                    var index = 0;
+                    for(; index < this.followings.length; index ++) {
+                        if (this.followings[index].user_id == userId)
+                            break;
+                    }
+                    this.$delete(this.followings, index);
+                }
+
             }
         },
         created () {
             chatboxUtils.viewFollowers = this.init;
+            chatboxUtils.changeFollowing = this.changeFollowing;
         }
     }
 

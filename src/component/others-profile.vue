@@ -140,6 +140,7 @@ export default {
                 } else {
                     _this.followerCount --;
                 }
+                chatboxUtils.changeFollowing(_this.isFollowing, _this.userId, _this.username);
                 Vue.notify({
                     title: _this.$t('m.success'),
                 });

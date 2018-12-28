@@ -329,8 +329,8 @@ export default {
                 _this.username = user.name;
                 chatboxConfig.id = user.id;
                 chatboxConfig.credit = user.credit;
-                _this.followers = user.followers;
-                _this.followings = user.followings;
+                _this.followers = user.followers || [];
+                _this.followings = user.followings || [];
                 // Question: what needs to be saved locally, what not?
                 chatboxUtils.setBasicConfig({
                     username: user.name,

@@ -1,7 +1,11 @@
 <template>
     <transition name="slide">
         <div v-if="state.chatTopPanel == 2" class="socketchatbox-invites">
-            <center v-if="socket.state.connected" class="invite-people-btn-wrapper">{{$t('m.invite')}}&nbsp;<span :title="costStr(1)" @click="sendInvitation('SAME_SITE_INVITE')">{{$t('m.sameSitePeople')}}</span>&nbsp;|&nbsp;<span :title="costStr(10)" @click="sendInvitation('GLOBAL_INVITE')">{{$t('m.everybody')}}</span></center>
+            <center v-if="socket.state.connected" class="invite-people-btn-wrapper">{{$t('m.invite')}}&nbsp;
+                <span :title="costStr(0)" @click="sendInvitation('FOLLOWER_INVITE')">{{$t('m.followers')}}</span>
+                |&nbsp;<span :title="costStr(1)" @click="sendInvitation('SAME_SITE_INVITE')">{{$t('m.sameSitePeople')}}</span>
+                |&nbsp;<span :title="costStr(10)" @click="sendInvitation('GLOBAL_INVITE')">{{$t('m.everybody')}}</span>
+            </center>
             <!--<center v-show="Object.keys(invitations).length==0">{{$t('m.noInvitation')}}</center>-->
             <div class="invite-row" :class="{'self-invitation': msg.userId == config.userId}" v-for="msg in invitations">
                 <img @click="viewUser(msg.userId, msg.username)" v-bind:title="msg.username" v-bind:src="msg.profileImgSrc" />
@@ -162,8 +166,13 @@ export default {
                 }
             });
             chatboxSocket.registerCallback('invitation_sent', function (data) {
+                var msg = _this.$t('m.invitationSent');
+                // Think: privacy issue?
+                if (data && data.receiverCount) {
+                    msg += ', ' + data.receiverCount + _this.$t('m.numUserReceived');
+                }
                 Vue.notify({
-                    title: _this.$t('m.invitationSent'),
+                    title: msg,
                 });
             });
             // server no longer send expire event since v2.4.0
