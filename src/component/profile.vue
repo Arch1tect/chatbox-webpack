@@ -159,6 +159,7 @@ export default {
             state: chatboxUIState,
             chatbox: chatboxConfig,
             profileImgSrc: 'profile-empty.png',
+            hasAvatar: false,
             imgFile: null,
             aboutMe: '',
             username: 'No name',
@@ -337,6 +338,9 @@ export default {
                     id: user.id,
                     about_me: user.about,
                 });
+                // For user's own avatar, check s3 rather than cdn
+                _this.hasAvatar = user.has_avatar;
+                chatboxUtils.tryLoadingProfileImg(_this, chatboxConfig.userId, true);
 
             }).fail(function() {
                 Vue.notify({
@@ -461,8 +465,6 @@ export default {
                         _this.registerUser(false);
                     }
                 }
-                // For user's own avatar, check s3 rather than cdn
-                chatboxUtils.tryLoadingProfileImg(_this, chatboxConfig.userId, true);
 
             });
         }

@@ -83,16 +83,22 @@
         methods: {
             init: function (showFollowing, followings, followers) {
                 this.state.view = 4;
+                var _this = this;
+                _this.showFollowing = showFollowing;
+
                 followers.forEach(function (user) {
                     chatboxUtils.tryLoadingProfileImg(user, user.user_id, false);
                 });
                 followings.forEach(function (user) {
                     chatboxUtils.tryLoadingProfileImg(user, user.user_id, false);
-
                 });
-                this.followings = followings;
-                this.followers = followers;
-                this.showFollowing = showFollowing;
+                setTimeout(function () {
+
+                        _this.followings = followings;
+                        _this.followers = followers;
+
+                }, 100)
+
 
             },
             changeFollowing: function (follow, userId, name) {

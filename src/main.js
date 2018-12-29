@@ -66,6 +66,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 // Ready translated locale messages
 const messages = {
   en: {
+    400: 'Forbidden',
     500: 'Failure',
     426: 'Please upgrade extension',
     429: 'Slow down please',
@@ -163,6 +164,7 @@ const messages = {
     }
   },
   zh: {
+    400: '禁止通行',
     500: '失败',
     426: '请更新插件',
     429: '请放慢速度',

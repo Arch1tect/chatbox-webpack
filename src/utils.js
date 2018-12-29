@@ -149,7 +149,6 @@ export default {
         })
     },
     tryLoadingProfileImg: function (obj, userId, useS3) {
-
         var domain = chatboxConfig.cdnUrl;
         if (useS3) {
             domain = chatboxConfig.s3Url;
@@ -160,6 +159,12 @@ export default {
             return;
         }
         obj.profileImgSrc = 'profile-empty.png';
+
+        if (!(obj.hasAvatar || obj.has_avatar)) {
+            // console.log(userId+' has no avatar');
+            return;
+        }
+
         $("<img/>").on('load', function() {
             obj.profileImgSrc = src;
             imageCache[src] = src;

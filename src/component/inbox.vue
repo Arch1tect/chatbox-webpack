@@ -164,7 +164,6 @@ import chatboxUtils from '../utils.js'
 
 
 "use strict";
-var initialized = false;
 var LOG_MESSAGE_TIME_AFTER = 5*60*1000 // 5 mins
 const POLL_INTERVAL = 5*60; // seconds
 export default {
@@ -194,6 +193,7 @@ export default {
                     receivername: "",
                     sender: chatboxConfig.chatbot.userId,
                     sendername: this.$t('m.chatbotName'),
+                    sender_avatar: true
                 },
                 {
                     create_time: "2018-07-22 20:07:09",
@@ -203,6 +203,7 @@ export default {
                     receivername: "",
                     sender: chatboxConfig.chatbot.userId,
                     sendername: this.$t('m.chatbotName'),
+                    sender_avatar: true
                 },
             ]
         }
@@ -214,7 +215,7 @@ export default {
         viewProfile: function () {
             chatboxUtils.viewOthersProfile(3, this.selectedFriend.userId, this.selectedFriend.name);
         },
-        buildFriendObj: function (id, inName) {
+        buildFriendObj: function (id, inName, hasAvatar) {
             var name = inName;
             if (!name)
                 name = 'no name';
@@ -223,7 +224,8 @@ export default {
                 profileImgSrc: '',
                 name: name,
                 selected: false,
-                unreadMsg: true
+                unreadMsg: true,
+                hasAvatar: hasAvatar
             };
             chatboxUtils.tryLoadingProfileImg(friend, id, id==chatboxConfig.userId);
             return friend;
@@ -291,10 +293,10 @@ export default {
             var friend = null;
             if (data.sender == chatboxConfig.userId) {
                 data.me = true;
-                friend = this.buildFriendObj(data.receiver, data.receivername);
+                friend = this.buildFriendObj(data.receiver, data.receivername, data.receiver_avatar);
                 friend.unreadMsg = false;
             } else {
-                friend = this.buildFriendObj(data.sender, data.sendername);
+                friend = this.buildFriendObj(data.sender, data.sendername, data.sender_avatar);
             }
             // Figure out if need to log time before pushing message itself
             var messageTime = moment.utc(data.create_time);
@@ -453,7 +455,7 @@ export default {
                     var _this = this;
                     setTimeout(function(){
                         _this.selectFriend(friend);
-                    }, 1000);
+                    }, 200);
                 }
             }
             return friend;
@@ -563,13 +565,13 @@ export default {
         scrollToBottom: function () {
             this.$refs.msgArea.scrollTop = this.$refs.msgArea.scrollHeight;
         },
-        goToMessage: function (userId, username) {
+        goToMessage: function (userId, username, hasAvatar) {
             this.state.view = 3;
             var friend = null;
             if (userId in this.friendDict) {
                 friend = this.friendDict[userId];
             } else {
-                friend = this.buildFriendObj(userId, username);
+                friend = this.buildFriendObj(userId, username, hasAvatar);
                 friend.unreadMsg = false;
                 this.addFriend(friend);
                 this.messageDict[userId] = [];
@@ -593,8 +595,15 @@ export default {
             chatboxUtils.updateExtensionBadge();
         },
         init: function () {
-            if (initialized) return;
-            initialized = true;
+            if (!chatboxConfig.userId) {
+                var _this = this;
+                setTimeout(function () {
+                    console.log('[inbox] user id not loaded yet, wait...');
+                    _this.init();
+                },1000);
+                return;
+            }
+
             if (chatboxConfig.testing)
                 this.loadTestData();
             this.keepPollingMsg();
@@ -612,17 +621,19 @@ export default {
                 _this.scrollToBottom();
             });
         },
-        'state.view': function (newView, prevView) {
-            if (newView == 3) {
-                this.init();
-            }
-        }
+        // this is too late, we want to check msg for user
+        // 'state.view': function (newView, prevView) {
+        //     if (newView == 3) {
+        //         this.init();
+        //     }
+        // }
     },
     created () {
         // expose sendPM method so input component can access it
         chatboxUtils.sendPM = this.sendPM;
         chatboxUtils.goToMessage = this.goToMessage;
         this.loadChatbotMsg();
+        this.init();
     }
 }
 function sortByMsgId(a, b) {

@@ -493,7 +493,8 @@ export default {
                         message: data.message+'',
                         sender: data.sender+'',
                         time: data.time,
-                        username: data.username+''
+                        username: data.username+'',
+                        hasAvatar: data.hasAvatar
                     }
                     messages.push(msg);
                     if (messages.length > 30) {

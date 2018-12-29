@@ -102,11 +102,13 @@ export default {
               // console.log('user joined');
               chatboxSocket.state.connected = true;
               _this.setOnlineUsers(data.onlineUsers);
+              // console.log(data);
 
             });
             chatboxSocket.registerCallback('user left', function (data) {
                 // console.log('user left');
                 _this.setOnlineUsers(data.onlineUsers);
+                // console.log(data);
             });
             chatboxSocket.registerCallback('name changed', function (data) {
                 _this.setOnlineUsers(data.onlineUsers);

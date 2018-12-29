@@ -88,7 +88,7 @@ export default {
     },
     methods: {
         message () {
-            chatboxUtils.goToMessage(this.userId, this.username);
+            chatboxUtils.goToMessage(this.userId, this.username, this.hasAvatar);
         },
         loadUserInfoFromDB () {
             var _this = this;
@@ -107,6 +107,8 @@ export default {
                 _this.joinDate = user.create_time;
                 _this.followerCount = user.followers.length;
                 _this.isFollowing = false;
+                _this.hasAvatar = user.has_avatar;
+                chatboxUtils.tryLoadingProfileImg(_this, _this.userId, false);
                 user.followers.forEach(function (follower) {
                     if (follower.user_id == chatboxConfig.userId) {
                         _this.isFollowing = true;
@@ -166,7 +168,6 @@ export default {
             this.followerCount = null;
             this.aboutMe = '';
             this.title = this.$t('m.othersProfile', {username: username});
-            chatboxUtils.tryLoadingProfileImg(this, userId);
             this.loadUserInfoFromDB();
         }
     },
