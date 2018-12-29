@@ -8,7 +8,7 @@
             </center>
             <!--<center v-show="Object.keys(invitations).length==0">{{$t('m.noInvitation')}}</center>-->
             <div class="invite-row" :class="{'self-invitation': msg.userId == config.userId}" v-for="msg in invitations">
-                <img @click="viewUser(msg.userId, msg.username)" v-bind:title="msg.username" v-bind:src="msg.profileImgSrc" />
+                <img @click="viewUser(msg.userId, msg.username, msg.hasAvatar)" v-bind:title="msg.username" v-bind:src="msg.profileImgSrc" />
                 <span class="lobby-msg-content">{{$t('m.joinMe')}} <span class="page-title" @click="redirect(msg.url)" v-bind:title="msg.pageTitle"> {{msg.pageTitle}}</span>
                 </span>
             </div>
@@ -144,8 +144,8 @@ export default {
         costStr: function (x) {
             return this.$t('m.cost') + ' ' +x+ ' ' + this.$t('m.credit');
         },
-        viewUser: function (userId, username) {
-            chatboxUtils.viewOthersProfile(this.state.view, userId, username);
+        viewUser: function (userId, username, hasAvatar) {
+            chatboxUtils.viewOthersProfile(this.state.view, userId, username, hasAvatar);
         },
         redirect: function (url) {
             var data = {};

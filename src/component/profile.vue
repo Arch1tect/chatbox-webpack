@@ -314,6 +314,8 @@ export default {
         },
         loadUser () {
             // called when user profile tab is open
+            if (this.hasAvatar) chatboxUtils.tryLoadingProfileImg(this, chatboxConfig.userId, true);
+
             var _this = this;
             $.get(chatboxConfig.apiUrl + "/db/user/" + chatboxConfig.userId).done(function(resp) {
                 if (!resp.length) {
@@ -337,6 +339,7 @@ export default {
                     username: user.name,
                     id: user.id,
                     about_me: user.about,
+                    has_avatar: user.has_avatar
                 });
                 // For user's own avatar, check s3 rather than cdn
                 _this.hasAvatar = user.has_avatar;
@@ -449,6 +452,7 @@ export default {
                     chatboxConfig.userId = configData['user_id'];
                     chatboxConfig.username = configData['username'];
                     chatboxConfig.aboutMe = configData['about_me'];
+                    _this.hasAvatar = configData['has_avatar'];
                     _this.username = chatboxConfig.username;
                     _this.aboutMe = chatboxConfig.aboutMe;
                     _this.checkin();

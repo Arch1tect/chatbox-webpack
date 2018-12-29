@@ -68,7 +68,7 @@ export default {
     },
     methods: {
         viewUser: function (user) {
-            chatboxUtils.viewOthersProfile(this.state.view, user.userId, user.username);
+            chatboxUtils.viewOthersProfile(this.state.view, user.userId, user.username, user.hasAvatar);
         },
         setOnlineUsers: function (onlineUsers) {
             onlineUsers.forEach(function (user) {

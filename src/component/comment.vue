@@ -188,7 +188,7 @@ export default {
             });
         },
         viewUser: function (msg) {
-          chatboxUtils.viewOthersProfile(1, msg.user_id, msg.name);
+          chatboxUtils.viewOthersProfile(1, msg.user_id, msg.name, msg.has_avatar);
         },
         scrollToBottom: function () {
             this.$refs.commentArea.scrollTop = this.$refs.commentArea.scrollHeight;

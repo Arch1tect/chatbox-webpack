@@ -213,7 +213,7 @@ export default {
             window.open('https://forum.urlchatbox.com', '_blank');
         },
         viewProfile: function () {
-            chatboxUtils.viewOthersProfile(3, this.selectedFriend.userId, this.selectedFriend.name);
+            chatboxUtils.viewOthersProfile(3, this.selectedFriend.userId, this.selectedFriend.name, this.selectedFriend.hasAvatar);
         },
         buildFriendObj: function (id, inName, hasAvatar) {
             var name = inName;

@@ -329,7 +329,7 @@ export default {
             }
         },
         viewUser: function (msg) {
-            chatboxUtils.viewOthersProfile(2, msg.sender, msg.username);
+            chatboxUtils.viewOthersProfile(2, msg.sender, msg.username, msg.hasAvatar);
         },
         viewImage: function (src) {
             chatboxUtils.openImageModal(src);

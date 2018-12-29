@@ -154,7 +154,7 @@ export default {
             }).always(function(){
             });
         },
-        viewOthersProfile (view, userId, username) {
+        viewOthersProfile (view, userId, username, hasAvatar) {
             // User may clicked on their own msg
             if (userId == chatboxConfig.userId) {
                 this.state.view = 0;
@@ -167,7 +167,11 @@ export default {
             this.id = '';
             this.followerCount = null;
             this.aboutMe = '';
-            this.profileImgSrc = 'profile-empty.png';
+            if (hasAvatar) {
+                chatboxUtils.tryLoadingProfileImg(this, userId, false)
+            } else {
+                this.profileImgSrc = 'profile-empty.png';
+            }
             this.title = this.$t('m.othersProfile', {username: username});
             this.loadUserInfoFromDB();
         }

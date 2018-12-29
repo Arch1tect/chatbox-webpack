@@ -9,11 +9,11 @@
             </span>
         </div>
         <center class="socketchatbox-followersArea">
-            <span v-if="showFollowing" class="follower-wrapper" v-for="user in followings" :key="user.user_id" @click="utils.viewOthersProfile(4, user.user_id, user.name)">
+            <span v-if="showFollowing" class="follower-wrapper" v-for="user in followings" :key="user.user_id" @click="utils.viewOthersProfile(4, user.user_id, user.name, user.has_avatar)">
                 <img v-bind:src="user.profileImgSrc" />
                 <div>{{user.name}}</div>
             </span>
-            <span v-if="!showFollowing" class="follower-wrapper" v-for="user in followers" @click="utils.viewOthersProfile(4, user.user_id, user.name)">
+            <span v-if="!showFollowing" class="follower-wrapper" v-for="user in followers" @click="utils.viewOthersProfile(4, user.user_id, user.name, user.has_avatar)">
                 <img v-bind:src="user.profileImgSrc" />
                 <div>{{user.name}}</div>
             </span>
