@@ -67,7 +67,7 @@ export default {
             state: chatboxUIState,
             chatbox: chatboxConfig,
             title: titleStr,
-            profileImgSrc: '',
+            profileImgSrc: 'profile-empty.png',
             aboutMe: '',
             userId: '',
             id: '',
@@ -167,6 +167,7 @@ export default {
             this.id = '';
             this.followerCount = null;
             this.aboutMe = '';
+            this.profileImgSrc = 'profile-empty.png';
             this.title = this.$t('m.othersProfile', {username: username});
             this.loadUserInfoFromDB();
         }
