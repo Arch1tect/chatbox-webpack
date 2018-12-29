@@ -163,6 +163,7 @@ export default {
             this.username = username;
             this.userId = userId;
             this.id = '';
+            this.followerCount = null;
             this.aboutMe = '';
             this.title = this.$t('m.othersProfile', {username: username});
             chatboxUtils.tryLoadingProfileImg(this, userId);

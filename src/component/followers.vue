@@ -35,6 +35,7 @@
 .follower-wrapper {
     display: inline-block;
     text-align: center;
+    margin: 5px;
 }
 .follower-wrapper img {
     width: 50px;

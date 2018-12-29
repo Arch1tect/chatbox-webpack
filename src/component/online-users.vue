@@ -71,13 +71,14 @@ export default {
             chatboxUtils.viewOthersProfile(this.state.view, user.userId, user.username);
         },
         setOnlineUsers: function (onlineUsers) {
-            this.onlineUsers = onlineUsers;
-            this.onlineUsers.forEach(function (user) {
+            onlineUsers.forEach(function (user) {
                 user.profileImgSrc = 'profile-empty.png';
                 if (chatboxUIState.chatTopPanel == 1) {
                     chatboxUtils.tryLoadingProfileImg(user, user.userId, user.userId==chatboxConfig.userId);
                 }
             });
+            this.onlineUsers = onlineUsers;
+
             chatboxSocket.userCount = this.onlineUsers.length;
             this.updateExtensionBadge();
         },

@@ -164,6 +164,7 @@ import chatboxUtils from '../utils.js'
 
 
 "use strict";
+var initialized = false;
 var LOG_MESSAGE_TIME_AFTER = 5*60*1000 // 5 mins
 const POLL_INTERVAL = 5*60; // seconds
 export default {
@@ -592,14 +593,8 @@ export default {
             chatboxUtils.updateExtensionBadge();
         },
         init: function () {
-            if (!chatboxConfig.userId) {
-                console.log('[inbox] user id not loaded yet, wait');
-                var _this = this;
-                setTimeout(function () {
-                    _this.init();
-                })
-                return;
-            }
+            if (initialized) return;
+            initialized = true;
             if (chatboxConfig.testing)
                 this.loadTestData();
             this.keepPollingMsg();
@@ -617,19 +612,17 @@ export default {
                 _this.scrollToBottom();
             });
         },
-        // // comment out, still show the dot until all msg read
-        // 'state.view': function (newView, prevView) {
-        //     if (newView == 3) {
-        //         chatboxConfig.unreadDirectMsg = 0;
-        //     }
-        // }
+        'state.view': function (newView, prevView) {
+            if (newView == 3) {
+                this.init();
+            }
+        }
     },
     created () {
         // expose sendPM method so input component can access it
         chatboxUtils.sendPM = this.sendPM;
         chatboxUtils.goToMessage = this.goToMessage;
         this.loadChatbotMsg();
-        this.init();
     }
 }
 function sortByMsgId(a, b) {

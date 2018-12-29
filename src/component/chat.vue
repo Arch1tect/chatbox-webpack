@@ -388,8 +388,6 @@ export default {
                 this.updateLogTime();
                 data.loggingTime = true;
             }
-            // Strip html tags, not really needed, backend already strip
-            data.message = chatboxUtils.stripTags(data.message);
             },
         processMsg: function (data) {
             this.preprocessMsg(data);
@@ -621,7 +619,7 @@ export default {
         init: function () {
             if (!chatboxConfig.userId) {
                 var _this = this;
-                console.log('config not loaded yet');
+                console.log('[chat] userId not loaded yet');
                 setTimeout(function(){
                     _this.init();
                 }, 1000);
@@ -638,6 +636,7 @@ export default {
                 liveChatEnabled = true;
             }
             // TODO: load history only if chatbox visible
+            // This is tricky, we don't want to load it after receiving any live chat msg
             this.loadChatHistory(); // after we know same page chat or not
             // this.addIntro();
             if (liveChatEnabled || chatboxConfig.liveChatEnabled) {

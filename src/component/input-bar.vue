@@ -299,9 +299,9 @@ export default {
         sendFile: function (e) {
             // Live chat only
             var data = e.target.files[0];
-            if (data.size > 100*1024) {
+            if (data.size > 1024*1024) {
                 Vue.notify({
-                    title: this.$t('m.avatarTooBig'),
+                    title: this.$t('m.fileTooBig')+ ' 1MB',
                     type: 'error'
                 });
                 return
