@@ -11,17 +11,23 @@
         <center class="socketchatbox-followersArea">
             <span v-if="showFollowing" class="follower-wrapper" v-for="user in followings" :key="user.user_id" @click="utils.viewOthersProfile(4, user.user_id, user.name, user.has_avatar)">
                 <img v-bind:src="user.profileImgSrc" />
-                <div>{{user.name}}</div>
+                <div class="follower-name">{{user.name}}</div>
             </span>
             <span v-if="!showFollowing" class="follower-wrapper" v-for="user in followers" @click="utils.viewOthersProfile(4, user.user_id, user.name, user.has_avatar)">
                 <img v-bind:src="user.profileImgSrc" />
-                <div>{{user.name}}</div>
+                <div class="follower-name">{{user.name}}</div>
             </span>
         </center>
         <div class="follower-footer"></div>
     </div>
 </template>
 <style>
+    .follower-name {
+        max-width: 50px;
+        word-break: keep-all;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 .site-page-chat-toggle.blue .selected {
     background: rgb(0, 153, 255);
 }
