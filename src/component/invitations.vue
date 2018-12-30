@@ -169,7 +169,7 @@ export default {
                 var msg = _this.$t('m.invitationSent');
                 // Think: privacy issue?
                 if (data && data.receiverCount) {
-                    msg += ', ' + data.receiverCount + _this.$t('m.numUserReceived');
+                    msg += ', ' + data.receiverCount +' '+ _this.$t('m.numUserReceived');
                 }
                 Vue.notify({
                     title: msg,
