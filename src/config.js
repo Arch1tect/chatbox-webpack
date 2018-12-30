@@ -16,7 +16,7 @@ if (localInboxServer) {
 
 export default {
 	// testing: true,
-	version: '2.5.2',
+	version: '2.5.3',
 	detectLocation: true,
 	lang: 'en', // or zh
 	userId: null,
