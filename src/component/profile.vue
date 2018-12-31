@@ -196,9 +196,9 @@ export default {
             if (!file) {
                 return;
             }
-            if (file.size > 100*1024) {
+            if (file.size > 1024*1024) {
                 Vue.notify({
-                    title: this.$t('m.avatarTooBig'),
+                    title: this.$t('m.avatarTooBig')+ ' 1MB',
                     type: 'error'
                 });
                 return

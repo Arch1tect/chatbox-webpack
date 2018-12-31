@@ -187,7 +187,8 @@ export default {
         },
         resizing (e) {
             if (this.prevX !== -1) {
-                // e.preventDefault();
+                e.preventDefault();
+                e.stopPropagation();
                 var dx = e.screenX - this.prevX;
                 var dy = e.screenY - this.prevY;
                 this.state.height -= dy;

@@ -24,8 +24,8 @@
 <style>
     .follower-name {
         max-width: 50px;
-        word-break: keep-all;
         overflow: hidden;
+        white-space: nowrap;
         text-overflow: ellipsis;
     }
 .site-page-chat-toggle.blue .selected {
