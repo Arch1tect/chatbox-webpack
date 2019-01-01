@@ -193,7 +193,16 @@ function receiveMsgFromChatboxFrame (e) {
 }
 window.onmouseup = function (e) {
     if (draggingElement) {
-        draggingElement.animation.play();
+        if (draggingElement.animation) {
+            draggingElement.animation.play();
+        } else {
+            // this is user count bubble
+            chrome.storage.local.set({'count_bubble_position': {
+                    top: draggingElement.style.top,
+                    left: draggingElement.style.left
+                }
+            });
+        }
         draggingElement = null;
         e.preventDefault();
         e.stopPropagation();

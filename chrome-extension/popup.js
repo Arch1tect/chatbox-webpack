@@ -5,7 +5,8 @@ var chatboxOpenState = false;
 // visible strings
 var openBoxStr= 'Open';
 var closeBoxStr = 'Close';
-var defaultDisplayModeStr = 'Default display mode';
+var displaySamePageUserCount = 'Show same page user number';
+var defaultDisplayModeStr = 'Default display mode for chat box';
 var fullStr = 'Full';
 var miniStr = 'Mini';
 var hiddenStr = 'Hidden';
@@ -25,6 +26,7 @@ var lng = window.navigator.userLanguage || window.navigator.language;
 if (lng.indexOf('zh')>-1) {
     openBoxStr = '打开';
     closeBoxStr = '关闭';
+    displaySamePageUserCount = '显示同页用户数';
     defaultDisplayModeStr = '聊天盒默认显示模式';
     fullStr = '正常显示';
     miniStr ='最小化';
@@ -178,6 +180,7 @@ function toggleWhitelistOptions (enable) {
 }
 document.addEventListener('DOMContentLoaded', function () {
     $('button.open-chatbox').text(openBoxStr);
+    $('.same-page-count').text(displaySamePageUserCount);
     $('.display-mode').text(defaultDisplayModeStr);
     $('label .full').text(fullStr);
     $('label .mini').text(miniStr);
@@ -204,6 +207,13 @@ document.addEventListener('DOMContentLoaded', function () {
             var checkbox = "input[name=default_display][value="+configDataFromStorage['display']+"]";
             $(checkbox).prop("checked",true);
         }
+        if ('show_same_page_user_count' in configDataFromStorage) {
+            var val = configDataFromStorage['show_same_page_user_count'];
+            if (val) val = 'yes';
+            else val = 'no';
+            var checkbox = "input[name=show_same_page_user_count][value="+val+"]";
+            $(checkbox).prop("checked",true);
+        }
         if ('invitation_danmu' in configDataFromStorage) {
             var checkbox = "input[name=invitation_danmu][value="+configDataFromStorage['invitation_danmu']+"]";
             $(checkbox).prop("checked",true);
@@ -225,6 +235,12 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             toggleWhitelistOptions(false);
         }
+    });
+    $('input:radio[name="show_same_page_user_count"]').change(function() {
+        var val = $(this).val();
+        if (val == 'yes') val = true;
+        else val = false;
+        saveConfig('show_same_page_user_count', val);
     });
     $('input:radio[name="default_display"]').change(function() {
         var val = $(this).val();

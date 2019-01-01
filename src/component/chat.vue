@@ -40,10 +40,30 @@
             </div>
         </div>
         <div v-show="typing" class="chat-typing">{{typing}}</div>
+        <div v-show="countDown>0" class="redirection-confirmation">
+            <p>{{$t('m.foundSamePage', {countDown:countDown})}}</p>
+            <p><span class="stubborn-btn" @click="iamStubborn">{{$t('m.stayHere')}}</span></p>
+        </div>
         <div @click="toggleConnection" v-show="state.view == 2 && !config.liveChatEnabled" class="input-bar-mask">{{$t("m.connect")}}</div>
     </div>
 </template>
 <style>
+    .stubborn-btn {
+
+        color: #6d6d6d;
+        background: #efefef;
+        padding: 8px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border: 1px solid #dedede;
+        border-radius: 3px;
+
+
+    }
+    .stubborn-btn:hover {
+        background: white;
+        cursor: pointer;
+    }
 .fa-users {
     /*margin-left: 10px;*/
     /*margin-right: 5px;*/
@@ -110,6 +130,20 @@
     padding-top: 5px;
     padding-bottom: 5px;
     background: #0189feba;
+}
+.redirection-confirmation {
+    width: 100%;
+    z-index: 5001;
+    position: absolute;
+    color: black;
+    text-align: center;
+    bottom: 35px;
+    /*top: 60px;*/
+    line-height: 18px;
+    padding: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background: yellow;
 }
 .socketchatbox-chatArea {
     /*background: #eafaff;*/
@@ -292,7 +326,8 @@ const TYPING_STAY_TIME = 3*1000; // ms
 const DISCONNECT_DELAY_TIME = 5*60*1000; // 10 min
 
 var useDifferentStyleForPureEmoji = false;
-var LOG_MESSAGE_TIME_AFTER = 1*60*1000; // 1 min
+const LOG_MESSAGE_TIME_AFTER = 1*60*1000; // 1 min
+const COUNT_DOWN = 10;
 var typingUserDict = {};
 var disconnectTimer = null;
 var firstTimeAutoScroll = true; // Only auto scroll when maximize for first time
@@ -305,10 +340,28 @@ export default {
             config: chatboxConfig,
             messages: [],
             lastMsg: {},
-            typing: null
+            typing: null,
+            countDown: 0,
+
         }
     },
     methods: {
+        iamStubborn: function () {
+            this.countDown = 0;
+            chatboxSocket.getSocket().emit('iamStubborn');
+            chatboxConfig.stubborn = true;
+        },
+        countDownRedirection: function () {
+            var _this = this;
+            setTimeout(function () {
+                _this.countDown --;
+                if (_this.countDown == 0) {
+                    _this.toggleSamePageChat(true);
+                } else {
+                    _this.countDownRedirection();
+                }
+            }, 1000);
+        },
         toggleSamePageChat: function (val) {
             if (chatboxConfig.samePageChat != val) {
                 chatboxConfig.samePageChat = val;
@@ -319,6 +372,10 @@ export default {
                     });
                     this.socket.reconnect();
                 }
+            }
+            if (!val) {
+                // if user manually change it to same site chat, they are stubborn
+                this.iamStubborn();
             }
         },
         toggleOnlineUsers: function (val) {
@@ -518,11 +575,24 @@ export default {
                     username: chatboxConfig.username,
                     userId: chatboxConfig.userId,
                     roomId: roomId,
+                    url: chatboxConfig.location, // added field in v2.6.0
                     shareLocation: chatboxConfig.shareLocation,
                     version: chatboxConfig.version,
                     lang: chatboxConfig.lang,
                     pageTitle: chatboxConfig.pageTitle
                 });
+            });
+            chatboxSocket.registerCallback('found same page', function (data) {
+                console.log('found same page');
+                if (chatboxConfig.samePageChat) return;
+                if (_this.countDown != 0) return; // already counting down
+                if (_this.state.display == 'full') {
+                    _this.countDown = COUNT_DOWN;
+                } else {
+                    // faster but not instant, if instant, there's bug reporting online users
+                    _this.countDown = 1;
+                }
+                _this.countDownRedirection();
             });
             chatboxSocket.registerCallback('disconnect', function (data) {
                 chatboxSocket.state.connected = false;
@@ -715,8 +785,9 @@ export default {
                     console.log('Location changed from ' + chatboxConfig.location+
                         ' to '+ url);
                     chatboxConfig.location = url;
-                    if (chatboxConfig.samePageChat && chatboxSocket.isConnected) {
-                        // Add a message about chat room change?
+                    if (!chatboxConfig.stubborn && chatboxSocket.isConnected) {
+                        // TODO: Add confirmation about chat room change
+                        // user can decide to be stubborn
                         chatboxSocket.reconnect();
                     }
                 }

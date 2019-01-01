@@ -160,6 +160,16 @@ export default {
                 chatboxConfig.tabVisible = true;
                 chatboxUtils.runTabVisibleCallbacks();
             }
+
+            // TODO: maybe change to checking focus to fix the problem of
+            // multiple windows, code below
+            // window.addEventListener('focus', function() {
+            //     document.title = 'focused';
+            // });
+            //
+            // window.addEventListener('blur', function() {
+            //     document.title = 'not focused';
+            // });
         },
         resizeStart (e) {
             this.prevX = e.screenX;
@@ -249,7 +259,7 @@ export default {
                 }
                 if ('left' in configData) {
                     chatboxUIState.left = parseInt(configData['left']);
-                    console.log(chatboxUIState.left);
+                    // console.log(chatboxUIState.left);
                     window.parent.postMessage({state: 'moving', dx: chatboxUIState.left}, "*");
                 }
                 if ('livechat_danmu' in configData) {

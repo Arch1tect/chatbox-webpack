@@ -81,6 +81,9 @@ export default {
 
             chatboxSocket.userCount = this.onlineUsers.length;
             this.updateExtensionBadge();
+
+            window.parent.postMessage({userCount: this.onlineUsers.length, samePage: chatboxConfig.samePageChat}, "*");
+
         },
         updateExtensionBadge: function () {
             if (!this.config.tabVisible) return;

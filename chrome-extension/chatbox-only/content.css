@@ -17,6 +17,33 @@
     display: block;
     margin-bottom: 0px;
 }
+.same-page-count {
+    background: #0089ff;
+    position: fixed;
+    /*border: 1px solid #e2e2e2;*/
+    color: #fafbfb;
+    border-radius: 100%;
+    height: 30px;
+    line-height: 30px;
+    width: 30px;
+    right: 10px;
+    z-index: 2147483647;
+    text-align: center;
+    bottom: 5px;
+    cursor: pointer;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    opacity: 0;
+
+
+    /*
+      Introduced in IE 10.
+      See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+    */
+    -ms-user-select: none;
+    user-select: none;
+}
 .danmuWrapper {
     /*display: none;*/
 }

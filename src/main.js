@@ -75,6 +75,8 @@ const messages = {
       inputTooLong: 'Please send no more than 150 words',
     },
     m: {
+      foundSamePage:'Found other users on the same page, joining same page chat in {countDown} seconds...',
+      stayHere: 'Stay here',
       success: 'Success',
       failed: 'Failed',
       follow: 'Follow',
@@ -173,6 +175,8 @@ const messages = {
       inputTooLong: '请减少到150字以内',
     },
     m: {
+      foundSamePage:'发现同网页用户, {countDown}秒后进入同网页聊天。。。',
+      stayHere: '留在全站聊天室',
       success: '成功！',
       failed:'失败',
       follow: '关注',

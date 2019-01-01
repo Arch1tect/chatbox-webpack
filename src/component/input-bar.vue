@@ -336,8 +336,12 @@ export default {
         }
     },
     created () {
-        var i = 1;
+        var i = 20;
         for (; i<49; i++) {
+            this.stickers.push("stickers/acfun/"+i+".gif");
+        }
+        i = 0;
+        for (; i<20; i++) {
             this.stickers.push("stickers/acfun/"+i+".gif");
         }
     },

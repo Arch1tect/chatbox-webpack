@@ -10,7 +10,11 @@ var runningExtension = false;
 if (typeof(chrome) !== 'undefined' && chrome.extension) {
     runningExtension = true;
 }
-
+var userCountTitle = 'users on same page';
+var lng = window.navigator.userLanguage || window.navigator.language;
+if (lng.indexOf('zh')>-1) {
+    userCountTitle = '同网页的人数';
+}
 function createChatboxIframe() {
     // check if there is already chatbox created
     if (document.getElementById(CHATBOX_ELEMENT_ID)) {
@@ -121,6 +125,45 @@ function fitChatboxIframe (msg) {
 // use chrome.runtime.onMessage.addListener
 window.addEventListener("message", resizeIFrameToFitContent, false);
 
+function fade(element) {
+    if (element.style.opacity < 0.5) return;
+    var op = 1;  // initial opacity
+    var timer = setInterval(function () {
+        if (op <= 0.1){
+            clearInterval(timer);
+            // element.style.display = 'none';
+            element.style.opacity = 0;
+            return;
+        }
+        element.style.opacity = op;
+        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+        op -= op * 0.1;
+    }, 50);
+}
+function unfade(element) {
+    if (element.style.opacity > 0.5) return;
+    var op = 0.1;  // initial opacity
+    // element.style.display = 'block';
+    var timer = setInterval(function () {
+        if (op >= 1){
+            clearInterval(timer);
+        }
+        element.style.opacity = op;
+        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+        op += op * 0.1;
+    }, 10);
+}
+window.addEventListener("message", function (e) {
+    if (!e || !e.data || !e.data.userCount )
+        return;
+    if (e.data.samePage && e.data.userCount > 1 ) {
+        samePageUserCountDiv.innerText = e.data.userCount;
+        unfade(samePageUserCountDiv)
+    } else
+        fade(samePageUserCountDiv)
+
+}, false);
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (!request.chatboxMsg)
         return;
@@ -164,6 +207,11 @@ chrome.storage.local.get('chatbox_config', function(item){
     }
     if (configData['display'] && configData['display'] !== 'hidden') {
         shouldCreateIframe = true;
+    }
+    if ('show_same_page_user_count' in configData) {
+        if (!configData['show_same_page_user_count']) {
+            samePageUserCountDiv.style.display = 'none';
+        }
     }
     // Below is commented out because invitations are only loaded
     // via socket now, allowing invitation in damu doesn't affect whether we
@@ -259,3 +307,37 @@ if (typeof document.addEventListener === "undefined" || tabHidden === undefined)
   // Handle page visibility change   
   document.addEventListener(visibilityChange, handleTabVisibilityChange, false);
 }
+
+
+var samePageUserCountDiv = document.createElement("div");
+samePageUserCountDiv.innerText = '?';
+samePageUserCountDiv.title = userCountTitle;
+samePageUserCountDiv.className = 'same-page-count';
+document.body.insertBefore(samePageUserCountDiv, document.body.firstChild);
+samePageUserCountDiv.onmousedown = function (e) {
+    draggingElement = samePageUserCountDiv;
+    dragging = false;
+    dragX = e.clientX;
+    dragY = e.clientY;
+};
+samePageUserCountDiv.onclick = function (e) {
+    window.chatboxIFrame.contentWindow.postMessage({
+        openChatbox: true,
+        type: 'chat'
+    }, "*");
+}
+
+chrome.storage.local.get('count_bubble_position', function(item){
+    var prevPos = item['count_bubble_position'];
+    if (prevPos) {
+
+        if (parseInt(prevPos.left) > window.innerWidth - 50) prevPos.left = (window.innerWidth - 50)+'px';
+        if (parseInt(prevPos.top) > window.innerHeight - 50) prevPos.top = (window.innerHeight - 50)+'px';
+
+        samePageUserCountDiv.style.top = prevPos.top;
+        samePageUserCountDiv.style.left = prevPos.left;
+    }
+
+});
+
+
