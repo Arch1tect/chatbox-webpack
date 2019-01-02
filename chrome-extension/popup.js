@@ -5,7 +5,7 @@ var chatboxOpenState = false;
 // visible strings
 var openBoxStr= 'Open';
 var closeBoxStr = 'Close';
-var displaySamePageUserCount = 'Show same page user number';
+var displaySamePageUserCount = 'Show same page/site user number';
 var defaultDisplayModeStr = 'Default display mode for chat box';
 var fullStr = 'Full';
 var miniStr = 'Mini';
@@ -26,7 +26,7 @@ var lng = window.navigator.userLanguage || window.navigator.language;
 if (lng.indexOf('zh')>-1) {
     openBoxStr = '打开';
     closeBoxStr = '关闭';
-    displaySamePageUserCount = '显示同页用户数';
+    displaySamePageUserCount = '显示同页/同站用户数';
     defaultDisplayModeStr = '聊天盒默认显示模式';
     fullStr = '正常显示';
     miniStr ='最小化';

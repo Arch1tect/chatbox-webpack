@@ -138,8 +138,8 @@ input.username:focus{
 }
 .socketchatbox-profileArea img {
     width: 100%;
-    max-height: 200px;
-    object-fit: cover;
+    /*max-height: 200px;*/
+    /*object-fit: cover;*/
 }
 </style>
 <script>

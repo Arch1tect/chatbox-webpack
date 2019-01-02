@@ -10,10 +10,12 @@ var runningExtension = false;
 if (typeof(chrome) !== 'undefined' && chrome.extension) {
     runningExtension = true;
 }
-var userCountTitle = 'users on same page';
+var samePageTitleStr = 'number of users on exact same page';
+var sameSiteTitleStr = 'no others on same page, number of users on same website';
 var lng = window.navigator.userLanguage || window.navigator.language;
 if (lng.indexOf('zh')>-1) {
-    userCountTitle = '同网页的人数';
+    samePageTitleStr = '浏览当前网页的人数';
+    sameSiteTitleStr = '当前网页没有其他用户，显示浏览当前网站的人数';
 }
 function createChatboxIframe() {
     // check if there is already chatbox created
@@ -156,11 +158,18 @@ function unfade(element) {
 window.addEventListener("message", function (e) {
     if (!e || !e.data || !e.data.userCount )
         return;
-    if (e.data.samePage && e.data.userCount > 1 ) {
-        samePageUserCountDiv.innerText = e.data.userCount;
-        unfade(samePageUserCountDiv)
-    } else
-        fade(samePageUserCountDiv)
+    // if (e.data.samePage && e.data.userCount > 1 ) {
+    samePageUserCountDiv.innerText = e.data.userCount;
+    if (e.data.samePage) {
+        samePageUserCountDiv.className = 'user-count-bubble same-page';
+        samePageUserCountDiv.title = samePageTitleStr;
+    } else {
+        samePageUserCountDiv.className = 'user-count-bubble same-site';
+        samePageUserCountDiv.title = sameSiteTitleStr;
+    }
+    unfade(samePageUserCountDiv)
+    // }
+    // fade(samePageUserCountDiv)
 
 }, false);
 
@@ -311,8 +320,8 @@ if (typeof document.addEventListener === "undefined" || tabHidden === undefined)
 
 var samePageUserCountDiv = document.createElement("div");
 samePageUserCountDiv.innerText = '?';
-samePageUserCountDiv.title = userCountTitle;
-samePageUserCountDiv.className = 'same-page-count';
+samePageUserCountDiv.title = samePageTitleStr;
+samePageUserCountDiv.className = 'user-count-bubble';
 document.body.insertBefore(samePageUserCountDiv, document.body.firstChild);
 samePageUserCountDiv.onmousedown = function (e) {
     draggingElement = samePageUserCountDiv;
@@ -325,7 +334,11 @@ samePageUserCountDiv.onclick = function (e) {
         openChatbox: true,
         type: 'chat'
     }, "*");
-}
+};
+
+// samePageUserCountDiv.onmouseenter = function (e) {
+//     samePageUserCountDiv.innerText = samePageUserCountDiv.title + samePageUserCountDiv.innerText;
+// }
 
 chrome.storage.local.get('count_bubble_position', function(item){
     var prevPos = item['count_bubble_position'];
