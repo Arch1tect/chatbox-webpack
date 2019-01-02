@@ -35,7 +35,7 @@
   border-top: 1px solid lightgray;
   float: left;
   border-radius: 0;
-  /*background: white;*/
+  background: white;
   /*color: white;*/
   font-weight: 400;
 }
