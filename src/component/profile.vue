@@ -286,7 +286,7 @@ export default {
             var _this = this;
             $.ajax({
                 type: "POST",
-                url: chatboxConfig.apiUrl + "/db/user/change_profile_img/"+chatboxConfig.userId,
+                url: chatboxConfig.apiUrl + "/db/user/change_profile_img_v2/"+chatboxConfig.userId,
                 data: _this.imgFile,
                 enctype: 'multipart/form-data',
                 processData: false,  // Important!

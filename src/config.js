@@ -16,7 +16,7 @@ if (localInboxServer) {
 
 export default {
 	// testing: true,
-	version: '2.6.1',
+	version: '2.6.2',
 	detectLocation: true,
 	lang: 'en', // or zh
 	userId: null,
@@ -32,7 +32,8 @@ export default {
 	socketUrl: socketUrl,
 	apiUrl : apiUrl,
 	cdnUrl: 'https://dnsofx4sf31ab.cloudfront.net/',
-	s3Url: 'https://s3.amazonaws.com/chat.anywhere.user.img/',
+	s3Url: 'https://dnsofx4sf31ab.cloudfront.net/',
+	// s3Url: 'https://s3.amazonaws.com/chat.anywhere.user.img/',
 	chatbot : {
 		name: 'Chat Bot',
 		userId: 'chat-bot-id'

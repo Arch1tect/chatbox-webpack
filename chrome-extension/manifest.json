@@ -2,7 +2,7 @@
   "name": "Chat Anywhere",
   "short_name": "Chat Anywhere",
   "description": "Leave comments or live chat on any web page!",
-  "version": "2.6.1",
+  "version": "2.6.2",
   "permissions": ["activeTab", "storage", "unlimitedStorage"],
   "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
