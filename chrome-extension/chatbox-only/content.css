@@ -48,12 +48,12 @@
     /*display: none;*/
 }
 img.danmu-avatar {
-    height: 30px;
-    width: 30px;
+    height: 35px;
+    width: 35px;
     border-radius: 100%;
     object-fit: cover;
     position: absolute;
-    left: -33px;
+    left: -38px;
 }
 .danmu {
     position: fixed;
@@ -105,7 +105,7 @@ span.invitation-url:hover {
 }
 
 .danmu img{
-    max-height: 50px;
+    max-height: 100px;
     -webkit-user-select: none;
     -khtml-user-select: none;
     -moz-user-select: none;

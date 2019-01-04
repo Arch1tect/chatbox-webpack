@@ -206,7 +206,7 @@
   margin-bottom: 15px;
 }
 .socketchatbox-messageBody img{
-  max-width: 50%;
+  max-width: 120px;
   border-radius: 5px;
 }
 .socketchatbox-message video{

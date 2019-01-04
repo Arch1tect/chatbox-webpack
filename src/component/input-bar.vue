@@ -2,6 +2,12 @@
     <div id="chatbox-input" v-show="state.view == 2 || state.view==3" class = "socketchatbox-inputMessage-div">
         <div v-if="showStickers" id="socketchatbox-sticker-picker">
             <img v-for="sticker in stickers" v-on:click="sendSticker" v-bind:src="sticker" />
+            <a href="https://www.weibo.com/u/1736856114" target="_blank" style="
+                margin-right: 30px;
+                margin-top: 65px;
+                float: right;
+                color: rgb(255, 87, 34);
+            ">欢乐兔</a>
         </div>
 
         <emoji-picker v-bind:style="{ visibility: emojiPickerVisibility }" ref="emojiComponent" @emoji="addEmoji" :search="emojiSearch">
@@ -109,14 +115,16 @@ input.socketchatbox-inputMessage:disabled {
     height: 350px;
     width: 390px;
     padding: 5px;
+    padding-left:0px;
+    padding-right:0px;
     max-height: calc(100% - 65px);
     max-width: 100%;
-    background: white;
+    background: #ececec;
     right: 0px;
 }
 #socketchatbox-sticker-picker img {
-  width: 70px;
-  margin:5px;
+  width: 80px;
+  margin:3px;
   cursor: pointer;
   border-radius: 5px;
 }
@@ -336,13 +344,9 @@ export default {
         }
     },
     created () {
-        var i = 20;
-        for (; i<49; i++) {
-            this.stickers.push("stickers/acfun/"+i+".gif");
-        }
-        i = 0;
-        for (; i<20; i++) {
-            this.stickers.push("stickers/acfun/"+i+".gif");
+        var i = 1;
+        for (; i<95; i++) {
+            this.stickers.push("stickers/happy_bun/"+i+".gif");
         }
     },
     mounted () {

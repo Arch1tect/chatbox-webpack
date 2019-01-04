@@ -300,8 +300,13 @@ export default {
                 console.log(msg);
                 // Receive message sent from extension
                 if (msg == "open_chatbox") {
-                    _this.showChatboxFull();
-                    sendResponse({msg: "shown"});
+                    if (_this.state.display == 'full') {
+                        _this.hideChatbox();
+                        sendResponse({msg: "closed"});
+                    } else {
+                        _this.showChatboxFull();
+                        sendResponse({msg: "shown"});
+                    }
                 }
                 if (msg == "connect_chatbox") {
                     // deprecated, shouldn't be called
@@ -365,7 +370,11 @@ export default {
         window.addEventListener("message", function(e) {
             // danmu clicked
             if(e && e.data && e.data.openChatbox) {
-                _this.showChatboxFull();
+                if (_this.state.display == 'full') {
+                    _this.showChatboxMini();
+                } else {
+                    _this.showChatboxFull();
+                }
             }
         }, false);
 

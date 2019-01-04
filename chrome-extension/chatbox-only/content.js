@@ -331,8 +331,7 @@ samePageUserCountDiv.onmousedown = function (e) {
 };
 samePageUserCountDiv.onclick = function (e) {
     window.chatboxIFrame.contentWindow.postMessage({
-        openChatbox: true,
-        type: 'chat'
+        openChatbox: true
     }, "*");
 };
 
