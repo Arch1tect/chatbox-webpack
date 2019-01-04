@@ -4,7 +4,7 @@
             <img v-for="sticker in stickers" v-on:click="sendSticker" v-bind:src="sticker" />
             <a href="https://www.weibo.com/u/1736856114" target="_blank" style="
                 margin-right: 30px;
-                margin-top: 65px;
+                margin-top: 70px;
                 float: right;
                 color: rgb(255, 87, 34);
             ">欢乐兔</a>
@@ -114,12 +114,12 @@ input.socketchatbox-inputMessage:disabled {
     overflow-y: overlay;
     height: 350px;
     width: 390px;
-    padding: 5px;
+    padding: 10px;
     padding-left:0px;
     padding-right:0px;
     max-height: calc(100% - 65px);
     max-width: 100%;
-    background: #ececec;
+    background: #eff1f5;
     right: 0px;
 }
 #socketchatbox-sticker-picker img {
