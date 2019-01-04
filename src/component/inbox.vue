@@ -639,7 +639,7 @@ export default {
 function sortByMsgId(a, b) {
     return a.id > b.id ? -1 : 1;
 }
-var welcomeBunnyGif = "stickers/bunny/hi.gif";
+var welcomeBunnyGif = "stickers/happy_bun/1.gif";
 var testData = [
     {
         create_time: "2018-07-08 07:36:15",
