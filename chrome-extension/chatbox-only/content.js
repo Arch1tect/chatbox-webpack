@@ -330,6 +330,7 @@ samePageUserCountDiv.onmousedown = function (e) {
     dragY = e.clientY;
 };
 samePageUserCountDiv.onclick = function (e) {
+    if (dragging) return;
     window.chatboxIFrame.contentWindow.postMessage({
         openChatbox: true
     }, "*");
