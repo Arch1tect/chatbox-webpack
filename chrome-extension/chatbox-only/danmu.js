@@ -212,7 +212,7 @@ window.onmousemove = function (e) {
     if (!draggingElement) return;
     var dx = e.clientX - dragX;
     var dy = e.clientY - dragY;
-    if (dx > 3 || dx < -3|| dragging) {
+    if (dx > 2 || dx < -2|| dragging) {
         dragging = true;
         dragX = e.clientX;
         dragY = e.clientY;

@@ -34,7 +34,7 @@ Vue.component('invitations', invitations);
 
 // fontawesome start
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faBullhorn, faBroadcastTower, faUsers, faPowerOff, faCommentAlt, faReply, faThumbsUp, faThumbsDown, faFlag, faArrowAltCircleLeft, faLongArrowAltLeft, faUser, faUserCircle, faSyncAlt, faSmile, faLaughWink, faComments, faPaperclip, faInbox, faPen, faTimes, faWindowClose } from '@fortawesome/free-solid-svg-icons'
+import { faWindowMinimize, faBullhorn, faBroadcastTower, faUsers, faPowerOff, faCommentAlt, faReply, faThumbsUp, faThumbsDown, faFlag, faArrowAltCircleLeft, faLongArrowAltLeft, faUser, faUserCircle, faSyncAlt, faSmile, faLaughWink, faComments, faPaperclip, faInbox, faPen, faTimes, faWindowClose } from '@fortawesome/free-solid-svg-icons'
 // import { faHandshake } from '@fortawesome/free-regular-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 library.add(faArrowAltCircleLeft)
@@ -59,6 +59,7 @@ library.add(faThumbsUp)
 library.add(faThumbsDown)
 library.add(faCommentAlt)
 library.add(faPowerOff)
+library.add(faWindowMinimize)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 // fontawesome end
 
@@ -75,6 +76,7 @@ const messages = {
       inputTooLong: 'Please send no more than 150 words',
     },
     m: {
+      minimize: 'Minimize',
       foundSamePage:'Found other users on the same page, joining same page chat in {countDown} seconds...',
       stayHere: 'Stay here',
       success: 'Success',
@@ -175,6 +177,7 @@ const messages = {
       inputTooLong: '请减少到150字以内',
     },
     m: {
+      minimize: '最小化',
       foundSamePage:'发现同网页用户, {countDown}秒后进入同网页聊天。。。',
       stayHere: '留在全站聊天室',
       success: '成功！',

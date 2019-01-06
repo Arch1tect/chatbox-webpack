@@ -53,8 +53,12 @@
 button:focus {
     outline: none;
 }
+.float-left {
+    float: left;
+}
+
 .float-right {
-  float: right;
+    float: right;
 }
 .svg-inline--fa:active {
   background: lightgray;
