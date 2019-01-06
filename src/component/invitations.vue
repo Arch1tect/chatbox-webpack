@@ -1,10 +1,90 @@
+<style>
+    .invite-people-btn-wrapper {
+        color: gray;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .invite-people-btn-wrapper span {
+        cursor: pointer;
+        /*margin-left: 2px;*/
+        /*color: #03A9F4;*/
+        color: black;
+        -webkit-user-select: none;  /* Chrome all / Safari all */
+        -moz-user-select: none;     /* Firefox all */
+        -ms-user-select: none;      /* IE 10+ */
+        user-select: none;
+    }
+    .invite-people-btn-wrapper span:hover {
+        text-decoration: underline;
+    }
+    .slide-leave-active,
+    .slide-enter-active {
+        transition: 1s;
+    }
+    .slide-enter {
+        transform: translate(-100%, 0);
+    }
+    .slide-leave-to {
+        transform: translate(-100%, 0);
+    }
+    .self-invitation {
+        background: yellow;
+    }
+    .socketchatbox-invites {
+        background: #fff;
+        width: 100%;
+        overflow-y: auto;
+        padding: 5px;
+        max-height: 50%;
+        position: absolute;
+        z-index: 1;
+        outline: 1px solid #d3d3d3;
+    }
+    .loading-invitations {
+        margin-bottom: 10px;
+    }
+    .invite-row {
+        padding: 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .socketchatbox-invites img {
+        cursor: pointer;
+        width: 20px;
+        height: 20px;
+        object-fit: cover;
+        float: left;
+        border-radius: 100%;
+        box-shadow: 0 0 6px black;
+        margin-right: 10px;
+    }
+    .lobby-msg-content {
+        /*cursor: pointer;*/
+        line-height: 20px;
+    }
+    /*.lobby-msg-content:hover {
+        color: #03A9F4;
+    }*/
+
+    .invite-row a, .invite-row a:visited{
+        /*text-decoration: none;*/
+        color: #03A9F4;
+    }
+
+    .invite-row .page-title {
+        cursor: pointer;
+        margin-left: 2px;
+        color: #03A9F4;
+    }
+</style>
 <template>
     <transition name="slide">
         <div v-if="state.chatTopPanel == 2" class="socketchatbox-invites">
             <center v-if="socket.state.connected" class="invite-people-btn-wrapper">{{$t('m.invite')}}&nbsp;
                 <span :title="costStr(0)" @click="sendInvitation('FOLLOWER_INVITE')">{{$t('m.followers')}}</span>
-                |&nbsp;<span :title="costStr(1)" @click="sendInvitation('SAME_SITE_INVITE')">{{$t('m.sameSitePeople')}}</span>
-                |&nbsp;<span :title="costStr(10)" @click="sendInvitation('GLOBAL_INVITE')">{{$t('m.everybody')}}</span>
+                |&nbsp;<span :title="costStr('SAME_SITE_INVITE')" @click="sendInvitation('SAME_SITE_INVITE')">{{$t('m.sameSitePeople')}}</span>
+                |&nbsp;<span :title="costStr('GLOBAL_INVITE')" @click="sendInvitation('GLOBAL_INVITE')">{{$t('m.everybody')}}</span>
             </center>
             <!--<center v-show="Object.keys(invitations).length==0">{{$t('m.noInvitation')}}</center>-->
             <div class="invite-row" :class="{'self-invitation': msg.userId == config.userId}" v-for="msg in invitations">
@@ -15,96 +95,13 @@
         </div>
     </transition>
 </template>
-<style>
-
-
-.invite-people-btn-wrapper {
-    color: gray;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-.invite-people-btn-wrapper span {
-    cursor: pointer;
-    /*margin-left: 2px;*/
-    /*color: #03A9F4;*/
-    color: black;
-    -webkit-user-select: none;  /* Chrome all / Safari all */
-    -moz-user-select: none;     /* Firefox all */
-    -ms-user-select: none;      /* IE 10+ */
-    user-select: none;
-}
-.invite-people-btn-wrapper span:hover {
-    text-decoration: underline;
-}
-.slide-leave-active,
-.slide-enter-active {
-  transition: 1s;
-}
-.slide-enter {
-  transform: translate(-100%, 0);
-}
-.slide-leave-to {
-  transform: translate(-100%, 0);
-}
-.self-invitation {
-    background: yellow;
-}
-.socketchatbox-invites {
-    background: #fff;
-    width: 100%;
-    overflow-y: auto;
-    padding: 5px;
-    max-height: 50%;
-    position: absolute;
-    z-index: 1;
-    outline: 1px solid #d3d3d3;
-}
-.loading-invitations {
-    margin-bottom: 10px;
-}
-.invite-row {
-    padding: 3px;
-    white-space: nowrap; 
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.socketchatbox-invites img {
-    cursor: pointer;
-    width: 20px;
-    height: 20px;
-    object-fit: cover;
-    float: left;
-    border-radius: 100%;
-    box-shadow: 0 0 6px black;
-    margin-right: 10px;
-}
-.lobby-msg-content {
-    /*cursor: pointer;*/
-    line-height: 20px;
-}
-/*.lobby-msg-content:hover {
-    color: #03A9F4;
-}*/
-
-.invite-row a, .invite-row a:visited{
-    /*text-decoration: none;*/
-    color: #03A9F4;
-}
-
-.invite-row .page-title {
-    cursor: pointer;
-    margin-left: 2px;
-    color: #03A9F4;
-}
-
-
-</style>
 <script>
 import Vue from 'vue'
 
 import chatboxConfig from '../config.js'
 import chatboxUtils from '../utils.js'
 import chatboxSocket from '../socket.js'
+var pointRules = {};
 export default {
     name: 'lobby',
     data () {
@@ -142,7 +139,9 @@ export default {
             });
         },
         costStr: function (x) {
-            return this.$t('m.cost') + ' ' +x+ ' ' + this.$t('m.credit');
+            if (x in pointRules)
+                return this.$t('m.cost') + ' ' +(-pointRules[x])+ ' ' + this.$t('m.credit');
+            return '';
         },
         viewUser: function (userId, username, hasAvatar) {
             chatboxUtils.viewOthersProfile(this.state.view, userId, username, hasAvatar);
@@ -255,7 +254,35 @@ export default {
                     chatboxConfig.invitationDanmu = configData['invitation_danmu'];
                 }
             });
-        })
+        });
+        chatboxUtils.storage.get('point_rules', function (item) {
+            var shouldFetchRules = true;
+            var now = Date.now();
+            if ('point_rules' in item) {
+                var rules = item['point_rules'];
+                var delta = now - rules['update_time'];
+                if (delta < 60*60*1000) {
+                    shouldFetchRules = false;
+                    console.log('[invite] fetched rules recently');
+                    //todo set points
+                    pointRules = rules['rules'];
+                }
+            }
+            if (shouldFetchRules) {
+                console.log('[invite] should fetch rules');
+                var rulesData = {
+                    rules: null,
+                    update_time: now
+                };
+                chatboxUtils.storage.set('point_rules', rulesData);
+                $.get(chatboxConfig.apiUrl + "/db/credit/rules").done(function (resp) {
+                    console.log(resp);
+                    pointRules = resp;
+                    rulesData['rules'] = resp;
+                    chatboxUtils.storage.set('point_rules', rulesData);
+                }).fail(function() {}).always(function (){});
+            }
+        });
 
         if (chatboxConfig.testing) this.loadTestData();
     }
