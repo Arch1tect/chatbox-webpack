@@ -139,7 +139,7 @@ export default {
             });
         },
         costStr: function (x) {
-            if (x in pointRules)
+            if (pointRules && (x in pointRules))
                 return this.$t('m.cost') + ' ' +(-pointRules[x])+ ' ' + this.$t('m.credit');
             return '';
         },
