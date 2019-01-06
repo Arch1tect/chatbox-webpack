@@ -1,3 +1,268 @@
+<style>
+    .stubborn-btn {
+        color: #6d6d6d;
+        background: #efefef;
+        padding: 8px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border: 1px solid #dedede;
+        border-radius: 3px;
+    }
+    .stubborn-btn:hover {
+        background: white;
+        cursor: pointer;
+    }
+    .stubborn-btn.ok {
+        background: #2196F3;
+        color: white;
+        margin-right: 10px;
+    }
+    .fa-users {
+        /*margin-left: 10px;*/
+        /*margin-right: 5px;*/
+    }
+    .site-page-chat-toggle {
+        display: inline-table;
+        margin-left: 10px;
+        color: white;
+        cursor: pointer;
+    }
+    .toggle-switch {
+        padding: 3px 7px;
+        background: #d3d3d3;
+    }
+    .toggle-switch.left-switch {
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+
+    }
+    .toggle-switch.right-switch {
+        /*border-left: ;*/
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+    .toggle-switch.selected {
+        background: rgba(0,0,0,.75);
+    }
+    #socketchatbox-live-status .fa {
+        color: white;
+    }
+    .online-users-btn:hover {
+        color: black;
+    }
+    .online-users-btn:hover .fa{
+        color: black;
+    }
+    #socketchatbox-live-status {
+        cursor: pointer;
+        line-height: 15px;
+        background: lightgray;
+        padding: 3px 7px;
+        color: #fff;
+        border-radius: 5px;
+    }
+    #socketchatbox-live-status:hover .fa.fa-power-off{
+        color: #00ff32;
+    }
+    #socketchatbox-live-status.connected {
+        background: #0089FF;
+    }
+    #socketchatbox-live-status.connected:hover .fa.fa-power-off{
+        color: red;
+    }
+    .chat-typing {
+        width: 100%;
+        z-index: 1;
+        position: absolute;
+        color: white;
+        text-align: center;
+        /*bottom: 35px;*/
+        top: 60px;
+        line-height: 18px;
+        padding: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        background: #0189feba;
+    }
+    .redirection-confirmation {
+        width: 100%;
+        z-index: 5001;
+        position: absolute;
+        color: black;
+        text-align: center;
+        bottom: 35px;
+        /*top: 60px;*/
+        line-height: 18px;
+        padding: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        background: yellow;
+    }
+    .socketchatbox-chatArea {
+        /*background: #eafaff;*/
+        width: 100%;
+        height: calc(100% - 30px);
+        overflow-y: auto; /*only show scroll bar when needs to*/
+        padding-right: 10px;
+        padding-left: 10px;
+        padding-top: 30px;
+    }
+    .message-name {
+        color: gray;
+        margin-left: 10px;
+        float: left;
+    }
+    .socketchatbox-message-me .message-name {
+        margin-left: 0px;
+        margin-right: 10px;
+        float: right;
+    }
+    .socketchatbox-messagetime {
+        color: gray;
+    }
+    .inline-emoji {
+        font-size: 18px;
+        bottom: -3px;
+        position: relative;
+    }
+    .socketchatbox-messages {
+        padding: 0;
+    }
+    /*.socketchatbox-msg-username {
+      display: table-cell;
+    }*/
+    .user-avatar {
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 100%;
+        /*border-radius: 5px;*/
+        /*border: 1px solid gray;*/
+        box-shadow: 0 0 6px black;
+    }
+    .socketchatbox-message-me .user-avatar {
+        float: right;
+    }
+    .user-avatar-placeholder {
+        width: 40px;
+        height: 5px;
+        float: left;
+    }
+    .socketchatbox-message-me .user-avatar-placeholder {
+        float: right;
+    }
+
+    .socketchatbox-message {
+        width: 100%;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+    .socketchatbox-messageBody img{
+        max-width: 120px;
+        border-radius: 5px;
+    }
+    .socketchatbox-message video{
+        max-width: 100%;
+    }
+    .socketchatbox-log {
+        color: #9E9E9E;
+        font-size: 11px;
+        margin-top: 10px;
+        margin-bottom: 5px;
+        padding: 0px;
+        text-align: center;
+    }
+    .socketchatbox-messageBody {
+        max-width: calc(100% - 100px);
+        /*min-width: 48px;*/
+        float: left;
+        margin-top: 5px;
+        margin-left: 10px;
+        background-color: #FFFFFF;
+        border-radius: 5px;
+        box-shadow: 0 0 6px #B2B2B2;
+        display: inline-block;
+        padding: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        position: relative;
+        vertical-align: top;
+        line-height: 18px;
+        font-size: 12px;
+        word-wrap: break-word;
+    }
+    .merge-above {
+        margin-top: -15px;
+    }
+    .socketchatbox-message-me img {
+        float: right;
+    }
+    .socketchatbox-message-me .socketchatbox-messageBody {
+        float: right;
+        background: #BBFF00;
+        margin-right: 10px;
+    }
+    .socketchatbox-messageBody.emoji-only {
+        font-size:xx-large;
+        background:none;
+        box-shadow:none;
+        padding: 0px;
+    }
+    .socketchatbox-messageBody.image-or-video {
+        background:none;
+        box-shadow:none;
+        padding: 0px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .input-bar-mask {
+        height: 35px;
+        width: 100%;
+        background: #ffffff;
+        text-align: center;
+        line-height: 35px;
+        position: absolute;
+        border-top: 1px solid lightgray;
+    }
+    .input-bar-mask:hover {
+        background: #2196F3;
+        cursor: pointer;
+        color: white;
+    }
+    .invitations {
+        position: absolute;
+        left: 10px;
+        text-decoration: underline;
+    }
+    .invitations {
+        color: lightgray;
+        cursor: pointer;
+    }
+    .invitations:hover {
+        color: black;
+    }
+    .invitations.active {
+        color: black;
+    }
+    .send-invitation-btn {
+        position: absolute;
+        left: 70px;
+        color: lightgray;
+    }
+    .send-invitation-btn.active {
+        color: orange;
+    }
+    .online-users-btn {
+        cursor: pointer;
+        color: lightgray;
+        position: absolute;
+        right: 10px;
+    }
+    .online-users-btn.active{
+        color: black;
+    }
+</style>
 <template>
     <div v-show="state.view==2">
         <div id="socketchatbox-chatroom-title" class="socketchatbox-page-title">
@@ -41,275 +306,16 @@
         </div>
         <div v-show="typing" class="chat-typing">{{typing}}</div>
         <div v-show="countDown>0" class="redirection-confirmation">
-            <p>{{$t('m.foundSamePage', {countDown:countDown})}}</p>
-            <p><span class="stubborn-btn" @click="iamStubborn">{{$t('m.stayHere')}}</span></p>
+            <p>{{promptMsg}}</p>
+            <p>
+                <span class="stubborn-btn ok" @click="agreeToPrompt">{{$t('m.goAhead')}}</span>
+                <span class="stubborn-btn" @click="stayHere">{{$t('m.stayHere')}}</span>
+            </p>
         </div>
         <div @click="toggleConnection" v-show="state.view == 2 && !config.liveChatEnabled" class="input-bar-mask">{{$t("m.connect")}}</div>
     </div>
 </template>
-<style>
-    .stubborn-btn {
 
-        color: #6d6d6d;
-        background: #efefef;
-        padding: 8px;
-        padding-top: 5px;
-        padding-bottom: 5px;
-        border: 1px solid #dedede;
-        border-radius: 3px;
-
-
-    }
-    .stubborn-btn:hover {
-        background: white;
-        cursor: pointer;
-    }
-.fa-users {
-    /*margin-left: 10px;*/
-    /*margin-right: 5px;*/
-}
-.site-page-chat-toggle {
-    display: inline-table;
-    margin-left: 10px;
-    color: white;
-    cursor: pointer;
-}
-.toggle-switch {
-    padding: 3px 7px;
-    background: #d3d3d3;
-}
-.toggle-switch.left-switch {
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-
-}
-.toggle-switch.right-switch {
-    /*border-left: ;*/
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
-.toggle-switch.selected {
-    background: rgba(0,0,0,.75);
-}
-#socketchatbox-live-status .fa {
-    color: white;
-}
-.online-users-btn:hover {
-    color: black;
-}
-.online-users-btn:hover .fa{
-    color: black;
-}
-#socketchatbox-live-status {
-    cursor: pointer;
-    line-height: 15px;
-    background: lightgray;
-    padding: 3px 7px;
-    color: #fff;
-    border-radius: 5px;
-}
-#socketchatbox-live-status:hover .fa.fa-power-off{
-    color: #00ff32;
-}
-#socketchatbox-live-status.connected {
-    background: #0089FF;
-}
-#socketchatbox-live-status.connected:hover .fa.fa-power-off{
-    color: red;
-}
-.chat-typing {
-    width: 100%;
-    z-index: 1;
-    position: absolute;
-    color: white;
-    text-align: center;
-    /*bottom: 35px;*/
-    top: 60px;
-    line-height: 18px;
-    padding: 10px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    background: #0189feba;
-}
-.redirection-confirmation {
-    width: 100%;
-    z-index: 5001;
-    position: absolute;
-    color: black;
-    text-align: center;
-    bottom: 35px;
-    /*top: 60px;*/
-    line-height: 18px;
-    padding: 10px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    background: yellow;
-}
-.socketchatbox-chatArea {
-    /*background: #eafaff;*/
-  width: 100%;
-  height: calc(100% - 30px);
-  overflow-y: auto; /*only show scroll bar when needs to*/
-  padding-right: 10px;
-  padding-left: 10px;
-  padding-top: 30px;
-}
-.message-name {
-    color: gray;
-    margin-left: 10px;
-    float: left;
-}
-.socketchatbox-message-me .message-name {
-    margin-left: 0px;
-    margin-right: 10px;
-    float: right;
-}
-.socketchatbox-messagetime {
-  color: gray;
-}
-.inline-emoji {
-  font-size: 18px;
-  bottom: -3px;
-  position: relative;
-}
-.socketchatbox-messages {
-  padding: 0;
-}
-/*.socketchatbox-msg-username {
-  display: table-cell;
-}*/
-.user-avatar {
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-    object-fit: cover;
-    border-radius: 100%;
-    /*border-radius: 5px;*/
-    /*border: 1px solid gray;*/
-    box-shadow: 0 0 6px black;
-}
-.socketchatbox-message-me .user-avatar {
-  float: right;
-}
-.user-avatar-placeholder {
-    width: 40px;
-    height: 5px;
-    float: left;
-}
-.socketchatbox-message-me .user-avatar-placeholder {
-    float: right;
-}
-
-.socketchatbox-message {
-  width: 100%;
-  display: inline-block;
-  margin-bottom: 15px;
-}
-.socketchatbox-messageBody img{
-  max-width: 120px;
-  border-radius: 5px;
-}
-.socketchatbox-message video{
-  max-width: 100%;
-}
-.socketchatbox-log {
-  color: #9E9E9E;
-  font-size: 11px;
-  margin-top: 10px;
-  margin-bottom: 5px;
-  padding: 0px;
-  text-align: center;
-}
-.socketchatbox-messageBody {
-  max-width: calc(100% - 100px);
-  /*min-width: 48px;*/
-  float: left;
-  margin-top: 5px;
-  margin-left: 10px;
-  background-color: #FFFFFF;
-  border-radius: 5px;
-  box-shadow: 0 0 6px #B2B2B2;
-  display: inline-block;
-  padding: 10px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  position: relative;
-  vertical-align: top;
-  line-height: 18px;
-  font-size: 12px;
-  word-wrap: break-word;
-}
-.merge-above {
-  margin-top: -15px;
-}
-.socketchatbox-message-me img {
-    float: right;
-}
-.socketchatbox-message-me .socketchatbox-messageBody {
-    float: right;
-    background: #BBFF00;
-    margin-right: 10px;
-}
-.socketchatbox-messageBody.emoji-only {
-  font-size:xx-large;
-  background:none;
-  box-shadow:none;
-  padding: 0px;
-}
-.socketchatbox-messageBody.image-or-video {
-  background:none;
-  box-shadow:none;
-  padding: 0px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-.input-bar-mask {
-    height: 35px;
-    width: 100%;
-    background: #ffffff;
-    text-align: center;
-    line-height: 35px;
-    position: absolute;
-    border-top: 1px solid lightgray;
-}
-.input-bar-mask:hover {
-  background: #2196F3;
-  cursor: pointer;
-  color: white;
-}
-.invitations {
-    position: absolute;
-    left: 10px;
-    text-decoration: underline;
-}
-.invitations {
-    color: lightgray;
-    cursor: pointer;
-}
-.invitations:hover {
-    color: black;
-}
-.invitations.active {
-    color: black;
-}
-.send-invitation-btn {
-    position: absolute;
-    left: 70px;
-    color: lightgray;
-}
-.send-invitation-btn.active {
-    color: orange;
-}
-.online-users-btn {
-    cursor: pointer;
-    color: lightgray;
-    position: absolute;
-    right: 10px;
-}
-.online-users-btn.active{
-    color: black;
-}
-</style>
 
 <script>
 import * as moment from 'moment';
@@ -331,6 +337,7 @@ const COUNT_DOWN = 10;
 var typingUserDict = {};
 var disconnectTimer = null;
 var firstTimeAutoScroll = true; // Only auto scroll when maximize for first time
+var countDownTimer = null;
 export default {
     name: 'chat-body',
     data () {
@@ -342,25 +349,51 @@ export default {
             lastMsg: {},
             typing: null,
             countDown: 0,
-
+            countDownType: 'SITE_TO_PAGE',
+        }
+    },
+    computed: {
+        promptMsg: function () {
+            if (this.countDownType == 'SITE_TO_PAGE') {
+                return this.$t('m.foundSamePage', {countDown:this.countDown});
+            }
+            return this.$t('m.urlChanged', {countDown:this.countDown});
         }
     },
     methods: {
-        iamStubborn: function () {
+        agreeToPrompt: function () {
+            this.countDownTimeUp();
+        },
+        stayHere: function () {
             this.countDown = 0;
-            chatboxSocket.getSocket().emit('iamStubborn');
-            chatboxConfig.stubborn = true;
+            if (countDownTimer) clearTimeout(countDownTimer);
+            if (this.countDownType == 'SITE_TO_PAGE') {
+                chatboxSocket.getSocket().emit('iamStubborn');
+                chatboxConfig.stubborn = true;
+            }
+        },
+        countDownTimeUp: function () {
+            this.countDown = 0;
+            if (this.countDownType == 'URL_CHANGE') {
+                // already having same page chat but url change
+                chatboxSocket.reconnect();
+            } else {
+                // same site chat -> same page chat
+                this.toggleSamePageChat(true);
+            }
         },
         countDownRedirection: function () {
-            var _this = this;
-            setTimeout(function () {
-                _this.countDown --;
-                if (_this.countDown == 0) {
-                    _this.toggleSamePageChat(true);
-                } else {
+            if (this.countDown == 0) {
+                this.countDownTimeUp();
+            } else {
+                this.countDown --; // place here so we don't get -1 second
+                var _this = this;
+                if (countDownTimer) clearTimeout(countDownTimer);
+                countDownTimer = setTimeout(function () {
                     _this.countDownRedirection();
-                }
-            }, 1000);
+                }, 1000);
+            }
+
         },
         toggleSamePageChat: function (val) {
             if (chatboxConfig.samePageChat != val) {
@@ -373,9 +406,16 @@ export default {
                     this.socket.reconnect();
                 }
             }
+            if (val && this.countDown > 0 && this.countDownType == 'SITE_TO_PAGE') {
+                this.countDown = 0;
+                clearTimeout(countDownTimer);
+            }
             if (!val) {
                 // if user manually change it to same site chat, they are stubborn
-                this.iamStubborn();
+                // stubborn in terms of having site chat, not stubborn about
+                // page url change prompt
+                this.stayHere();
+
             }
         },
         toggleOnlineUsers: function (val) {
@@ -586,6 +626,7 @@ export default {
                 console.log('found same page');
                 if (chatboxConfig.samePageChat) return;
                 if (_this.countDown != 0) return; // already counting down
+                _this.countDownType = 'SITE_TO_PAGE';
                 if (_this.state.display == 'full') {
                     _this.countDown = COUNT_DOWN;
                 } else {
@@ -738,13 +779,16 @@ export default {
                     chatboxConfig.unreadLiveMsgTotal = 0;
             }
         },
-        // 'socket.state.connected': function (newState, prevState) {
-        //     // once connected, show users in the same room
-        //     // This is blocking view, deprecated
-        //     if (newState) {
-        //         this.state.chatTopPanel = 1;
-        //     }
-        // }
+        'socket.state.connected': function (newState, prevState) {
+            // once connected, show users in the same room
+            // This is blocking view, deprecated
+            // if (newState) {
+            //     this.state.chatTopPanel = 1;
+            // }
+            if (!newState) {
+                window.parent.postMessage({userCount: -1, samePage: false}, "*");
+            }
+        }
     },
     created () {
         var _this = this;
@@ -785,10 +829,28 @@ export default {
                     console.log('Location changed from ' + chatboxConfig.location+
                         ' to '+ url);
                     chatboxConfig.location = url;
-                    if (!chatboxConfig.stubborn && chatboxSocket.isConnected) {
-                        // TODO: Add confirmation about chat room change
-                        // user can decide to be stubborn
-                        chatboxSocket.reconnect();
+                    // Different scenarios:
+                    // 1. user is connected to site chat, no need to reconnect
+                    // just report the new url
+                    // 2. user is connected to page chat, count down to get confirmation
+                    // to join new same page chat room
+                    // 3. user is stubborn, no prompt, no need to report new url
+
+                    if (chatboxSocket.isConnected) {
+                        if (chatboxConfig.samePageChat) {
+
+                            if (_this.countDown != 0) return; // already counting down
+                            if (_this.state.display == 'full') {
+                                _this.countDown = COUNT_DOWN;
+                            } else {
+                                // faster but not instant, if instant, there's bug reporting online users
+                                _this.countDown = 1;
+                            }
+                            _this.countDownType = 'URL_CHANGE';
+                            _this.countDownRedirection();
+                        } else {
+                            chatboxSocket.getSocket().emit('url changed', {url: url});
+                        }
                     }
                 }
             }

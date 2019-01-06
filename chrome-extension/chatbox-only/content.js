@@ -158,7 +158,7 @@ function unfade(element) {
 window.addEventListener("message", function (e) {
     if (!e || !e.data || !e.data.userCount )
         return;
-    // if (e.data.samePage && e.data.userCount > 1 ) {
+
     samePageUserCountDiv.innerText = e.data.userCount;
     if (e.data.samePage) {
         samePageUserCountDiv.className = 'user-count-bubble same-page';
@@ -167,9 +167,13 @@ window.addEventListener("message", function (e) {
         samePageUserCountDiv.className = 'user-count-bubble same-site';
         samePageUserCountDiv.title = sameSiteTitleStr;
     }
-    unfade(samePageUserCountDiv)
-    // }
-    // fade(samePageUserCountDiv)
+    if (e.data.userCount == -1) {
+        samePageUserCountDiv.innerText = '';
+        fade(samePageUserCountDiv);
+    } else {
+        unfade(samePageUserCountDiv);
+    }
+
 
 }, false);
 
