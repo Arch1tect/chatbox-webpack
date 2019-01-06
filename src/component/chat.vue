@@ -730,7 +730,7 @@ export default {
         },
         'state.display': function (newView, prevView) {
             if (newView == 'full') {
-                if (firstTimeAutoScroll) {
+                if (firstTimeAutoScroll || chatboxConfig.unreadLiveMsgTotal) {
                     this.scrollToBottomLater();
                     firstTimeAutoScroll = false;
                 }
