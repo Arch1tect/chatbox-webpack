@@ -46,6 +46,7 @@
 }
 .top-option {
     display: inline-block;
+    cursor: pointer;
 }
 .socketchatbox-resize {
   top:0px;
@@ -117,7 +118,7 @@
 #socketchatbox-top {
   min-width: 180px;
     border-top: 1px solid;
-  cursor: pointer;
+  cursor: move;
   height: 30px;
   overflow: hidden;
   background: rgba(0, 0, 0, 0.75);
