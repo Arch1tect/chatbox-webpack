@@ -76,13 +76,13 @@
         position: absolute;
         color: white;
         text-align: center;
-        /*bottom: 35px;*/
-        top: 60px;
+        bottom: 35px;
+        /*top: 60px;*/
         line-height: 18px;
         padding: 10px;
         padding-top: 5px;
         padding-bottom: 5px;
-        background: #0189feba;
+        background: rgba(0, 153, 255, 0.8);
     }
     .redirection-confirmation {
         width: 100%;
@@ -106,6 +106,7 @@
         padding-right: 10px;
         padding-left: 10px;
         padding-top: 30px;
+        padding-bottom: 30px;
     }
     .message-name {
         color: gray;
