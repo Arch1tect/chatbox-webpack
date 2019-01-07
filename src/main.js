@@ -76,6 +76,8 @@ const messages = {
       inputTooLong: 'Please send no more than 150 words',
     },
     m: {
+      changeNameTo: 'changed name to',
+      chatHistoryAbove: 'Above is chat history',
       minimize: 'Minimize',
       urlChanged: 'Url has changed, joining new page chat in {countDown} seconds...',
       foundSamePage:'Found other users on the same page, joining same page chat in {countDown} seconds...',
@@ -179,6 +181,8 @@ const messages = {
       inputTooLong: '请减少到150字以内',
     },
     m: {
+      changeNameTo: '改名为',
+      chatHistoryAbove: '以上为聊天记录',
       minimize: '最小化',
       urlChanged: '网页url地址改变, {countDown}秒后进入新聊天室。。。',
       foundSamePage:'发现同网页用户, {countDown}秒后进入同网页聊天。。。',

@@ -169,6 +169,7 @@
     .socketchatbox-log {
         color: #9E9E9E;
         font-size: 11px;
+        line-height: 20px;
         margin-top: 10px;
         margin-bottom: 5px;
         padding: 0px;
@@ -643,7 +644,7 @@ export default {
             chatboxSocket.registerCallback('name changed', function (data) {
                 var log = {
                     isLog: true,
-                    message: data.oldName+' changed name to '+data.username
+                    message: data.oldName+' '+_this.$t('m.changeNameTo')+' '+data.username
                 };
                 _this.messages.push(log);
                 _this.scrollToBottomLater();
@@ -726,6 +727,13 @@ export default {
                     var i = 0;
                     for (; i< messages.length; i++)
                         _this.processMsg(messages[i]);
+
+
+                    var log = {
+                        isLog: true,
+                        message: _this.$t('m.chatHistoryAbove')
+                    };
+                    _this.messages.push(log);
                 }
             });
         },
