@@ -6,7 +6,7 @@ var lng = window.navigator.userLanguage || window.navigator.language;
 if (lng.indexOf('zh')>-1) {
     invitationStr = ' 邀请大家去 '
 }
-const ROW_NUM = 12;
+const ROW_NUM = 8;
 var messages = []; // keep list of active danmu
 var waitlist = [];
 var danmuWrapper = document.createElement("div");
@@ -50,7 +50,7 @@ function createDanmu(msg) {
     messages.push(msg);
     var danmu  = document.createElement("div");
     msg.el = danmu;
-    danmu.className = 'danmu';
+    danmu.className = 'chatbox-danmu';
     var innerHtml = "";
     if (msg.me) {
         danmu.className += ' self';
@@ -88,7 +88,7 @@ function createDanmu(msg) {
             window.chatboxIFrame.contentWindow.postMessage(onclickMsg, "*");
     }
     danmu.innerHTML = innerHtml;
-    danmu.style.top = 30 + msg.row*40 + 'px';
+    danmu.style.top = 30 + msg.row*100 + 'px';
     var startX = window.innerWidth + 'px';
     var time = 20;
     // TODO: figure out good algorithm...

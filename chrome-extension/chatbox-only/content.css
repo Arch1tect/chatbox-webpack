@@ -55,7 +55,7 @@ img.danmu-avatar {
     position: absolute;
     left: -38px;
 }
-.danmu {
+.chatbox-danmu {
     position: fixed;
     color: white;
     cursor: pointer;
@@ -66,7 +66,7 @@ img.danmu-avatar {
     font-family: Arial,Helvetica,sans-serif;
     font-size: 15px;
 }
-.danmu .danmu-text {
+.chatbox-danmu .danmu-text {
     border: 1px solid rgba(0, 182, 255, 1);
     box-shadow: 7px 7px 3px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
@@ -80,7 +80,7 @@ img.danmu-avatar {
     -o-user-select: none;
     user-select: none;
 }
-.danmu .invitation {
+.chatbox-danmu .invitation {
     border: 1px solid lightgray;
     color: #0089ff;
     color: black;
@@ -91,7 +91,7 @@ img.danmu-avatar {
     padding-bottom: 5px;
     padding-top: 5px;
 }
-.danmu.self .invitation, .danmu.self .danmu-text{
+.chatbox-danmu.self .invitation, .chatbox-danmu.self .danmu-text{
     background: #bf0;
     border: 1px solid lightgray;
     color: black;
@@ -104,7 +104,7 @@ span.invitation-url:hover {
     text-decoration: underline;
 }
 
-.danmu img{
+.chatbox-danmu img{
     max-height: 100px;
     -webkit-user-select: none;
     -khtml-user-select: none;
