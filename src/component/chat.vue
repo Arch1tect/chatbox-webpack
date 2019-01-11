@@ -525,13 +525,24 @@ export default {
             this.messages.push(data);
             this.lastMsg = data;
             var _this = this;
-            Vue.nextTick(function(){
-                _this.scrollToBottom();
-            });
-            if (data.renderType == 'media') {
-                // Media takes time to load
-                this.scrollToBottomLater();
+
+            var newMsgNotVisible = false;
+            if (_this.state.view != 2 || _this.state.display != 'full') {
+                newMsgNotVisible = true;
             }
+            if (this.$refs.chatArea.scrollHeight - this.$refs.chatArea.scrollTop - this.$refs.chatArea.offsetHeight < 50) {
+                Vue.nextTick(function() {
+                    _this.scrollToBottom();
+                });
+                if (data.renderType == 'media') {
+                    // Media takes time to load
+                    this.scrollToBottomLater();
+                }
+            } else {
+                newMsgNotVisible = true;
+            }
+            if (newMsgNotVisible) chatboxConfig.unreadLiveMsgTotal ++;
+
         },
         // Add typing user, auto remove after centain amount of time
         // TODO: use user id not name
@@ -658,9 +669,6 @@ export default {
             });
             // Whenever the server emits 'new message', update the chat body
             chatboxSocket.registerCallback('new message', function (data) {
-                if (_this.state.view != 2 || _this.state.display != 'full') {
-                    chatboxConfig.unreadLiveMsgTotal ++;
-                }
                 _this.processMsg(data);
                 if (chatboxConfig.livechatDanmu && chatboxConfig.tabVisible) {
                     chatboxUtils.queueDanmu(data, 'live');
@@ -798,6 +806,14 @@ export default {
                 window.parent.postMessage({userCount: -1, samePage: false}, "*");
             }
         }
+    },
+    mounted () {
+        var _this = this;
+        $(this.$refs.chatArea).scroll(function(){
+            if (_this.$refs.chatArea.scrollHeight - _this.$refs.chatArea.scrollTop - _this.$refs.chatArea.offsetHeight < 50) {
+                chatboxConfig.unreadLiveMsgTotal = 0;
+            }
+        });
     },
     created () {
         var _this = this;

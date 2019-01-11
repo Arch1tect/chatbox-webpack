@@ -77,7 +77,7 @@ const messages = {
     },
     m: {
       changeNameTo: 'changed name to',
-      chatHistoryAbove: 'Above is chat history',
+      chatHistoryAbove: 'Chat history above',
       minimize: 'Minimize',
       urlChanged: 'Url has changed, joining new page chat in {countDown} seconds...',
       foundSamePage:'Found other users on the same page, joining same page chat in {countDown} seconds...',
