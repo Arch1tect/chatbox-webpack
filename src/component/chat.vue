@@ -530,7 +530,8 @@ export default {
             if (_this.state.view != 2 || _this.state.display != 'full') {
                 newMsgNotVisible = true;
             }
-            if (this.$refs.chatArea.scrollHeight - this.$refs.chatArea.scrollTop - this.$refs.chatArea.offsetHeight < 50) {
+            if (this.hasScrolledToBottom()) {
+
                 Vue.nextTick(function() {
                     _this.scrollToBottom();
                 });
@@ -745,6 +746,9 @@ export default {
                 }
             });
         },
+        hasScrolledToBottom: function () {
+            return this.$refs.chatArea.scrollHeight - this.$refs.chatArea.scrollTop - this.$refs.chatArea.offsetHeight < 50
+        },
         init: function () {
             if (!chatboxConfig.userId) {
                 var _this = this;
@@ -783,7 +787,9 @@ export default {
     watch: {
         'state.view': function (newView, prevView) {
             if (newView == 2) {
-                chatboxConfig.unreadLiveMsgTotal = 0;
+                if (this.hasScrolledToBottom()) {
+                    chatboxConfig.unreadLiveMsgTotal = 0;
+                }
             }
         },
         'state.display': function (newView, prevView) {
@@ -792,8 +798,11 @@ export default {
                     this.scrollToBottomLater();
                     firstTimeAutoScroll = false;
                 }
-                if ( this.state.view == 2)
-                    chatboxConfig.unreadLiveMsgTotal = 0;
+                if ( this.state.view == 2) {
+                    if (this.hasScrolledToBottom()) {
+                        chatboxConfig.unreadLiveMsgTotal = 0;
+                    }
+                }
             }
         },
         'socket.state.connected': function (newState, prevState) {
@@ -821,7 +830,7 @@ export default {
             if (!chatboxSocket.isConnected()) return;
             disconnectTimer = setTimeout(function(){
                 chatboxSocket.disconnect();
-                console.log('Disconnected socket after invisble for a long time');
+                console.log('Disconnected socket after invisible for a long time');
             }, DISCONNECT_DELAY_TIME)
         });
         chatboxUtils.registerTabVisibleCallbacks(function () {

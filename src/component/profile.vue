@@ -320,7 +320,7 @@ export default {
             $.get(chatboxConfig.apiUrl + "/db/user/" + chatboxConfig.userId).done(function(resp) {
                 if (!resp.length) {
                     Vue.notify({
-                        title: _this.$t('m.userNotFound'),
+                        title: _this.$t('e.userNotFound'),
                         type: 'error'
                     });
                     return;
@@ -353,6 +353,34 @@ export default {
             }).always(function(){});
 
         },
+        login () {
+            var _this = this;
+            // login only when local token is denied
+            // user manually trigger login
+            var payload = {
+                'id': chatboxConfig.id,
+                'password': chatboxConfig.password
+            };
+            $.post(chatboxConfig.apiUrl + '/db/user/login', payload).done(function(resp) {
+                if (resp.token) {
+                    chatboxUtils.setBasicConfig({token:resp.token});
+                }
+            }).fail(function(xhr, status, error) {
+                var msg =  _this.$t('e.loginFailed');
+                if (xhr.status == 404) {
+                    msg = _this.$t('e.userNotFound');
+                }
+                if (xhr.status == 401) {
+                    msg = _this.$t('e.wrongPassword');
+                }
+                Vue.notify({
+                    title: msg,
+                    type: 'error'
+                });
+                // TODO: delete local token
+                chatboxConfig.token = null;
+            }).always(function(){});
+        },
         checkin () {
             if (!chatboxConfig.tabVisible) return;
             var _this = this;
@@ -370,6 +398,7 @@ export default {
                 }
                 if (shouldCheck) {
                     chatboxUtils.setBasicConfig({last_checkin_time:now});
+                    // TODO: include token
                     $.post(chatboxConfig.apiUrl + "/db/user/" + chatboxConfig.userId+'/checkin').done(function(resp) {
                         if (resp.credit_delta) {
                             _this.processCreditChange(resp.credit_delta);
@@ -386,8 +415,8 @@ export default {
         },
         registerUser (localExist) {
 
-            console.log('Register user');
-            console.log('Local existing user: '+localExist);
+            console.log('[profile] Register user');
+            console.log('[profile] Local existing user: '+localExist);
             if (!localExist) {
                 chatboxConfig.userId = chatboxUtils.genGuid();
                 chatboxConfig.password = chatboxUtils.genGuid();
@@ -405,7 +434,7 @@ export default {
                 'uuid': chatboxConfig.userId,
                 'name': chatboxConfig.username,
                 'password': chatboxConfig.password
-            }
+            };
 
             $.post(chatboxConfig.apiUrl + "/db/user/register", payload, function(resp) {
                 Vue.notify({
@@ -417,6 +446,7 @@ export default {
                     chatboxUtils.setBasicConfig({
                         id: chatboxConfig.id,
                     });
+                    _this.login();
                 }
             }).fail(function() {
                 Vue.notify({
@@ -445,17 +475,28 @@ export default {
             var _this = this;
             chatboxUtils.getBasicConfig(function (configData) {
                 if ('id' in configData) {
-                    console.log('User has registered.');
+                    console.log('[profile] User has registered.');
                     // id is returned from server, if client doesn't have it
                     // then needs to register
                     chatboxConfig.id = configData['id'];
                     chatboxConfig.userId = configData['user_id'];
                     chatboxConfig.username = configData['username'];
                     chatboxConfig.aboutMe = configData['about_me'];
+                    chatboxConfig.password = configData['password'];
                     _this.hasAvatar = configData['has_avatar'];
                     _this.username = chatboxConfig.username;
                     _this.aboutMe = chatboxConfig.aboutMe;
-                    _this.checkin();
+
+                    // check if there is token
+                    if ('token' in configData && configData['token']) {
+                        console.log('[profile] found token in local storage');
+                        chatboxConfig.token = configData['token'];
+                        _this.checkin();
+
+                    }else {
+                        _this.login();
+                    }
+
                 } else {
                     if ('user_id' in configData) {
                         // user created locally but failed to register previously

@@ -3,20 +3,20 @@
 "use strict";
 
 var localSocketServer = false;
-var localInboxServer = false; // DB APIs
+var localAPI = true; // DB APIs
 var socketUrl = 'https://quotime.me'
 var apiUrl = socketUrl;
 
 if (localSocketServer){
 	socketUrl = 'http://localhost:8088';
 }
-if (localInboxServer) {
+if (localAPI) {
 	apiUrl = 'http://localhost:9000';
 }
 
 export default {
 	// testing: true,
-	version: '2.6.9',
+	version: '2.7.0',
 	detectLocation: true,
 	lang: 'en', // or zh
 	userId: null,

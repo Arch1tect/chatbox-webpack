@@ -357,7 +357,7 @@ export default {
         keepPollingMsg: function () {
             var pollInterval = POLL_INTERVAL;
             var _this = this;
-            if (this.firstTimeLoadMsg || (chatboxConfig.tabVisible && this.state.display !== "hidden")) {
+            if (chatboxConfig.token && (this.firstTimeLoadMsg || (chatboxConfig.tabVisible && this.state.display !== "hidden"))) {
                 this.firstTimeLoadMsg = false;
                 chatboxUtils.storage.get('chatbox-inbox', function(item) {
                     if (item && item['chatbox-inbox']) {
@@ -379,7 +379,10 @@ export default {
         },
         keepPollingNotification: function () {
             var _this = this;
-            if (this.firstTimeLoadNotification || (chatboxConfig.tabVisible && this.state.display !== "hidden")) {
+            // This is pulling from db on page load, could be too frequent for server
+            // TODO: keep track of last check time and only call after time has passed
+            // long enough like the checkin logic
+            if (chatboxConfig.token && (this.firstTimeLoadNotification || (chatboxConfig.tabVisible && this.state.display !== "hidden"))) {
                 this.firstTimeLoadNotification = false;
                 chatboxUtils.storage.get('chatbox-notification',function(item) {
                     if (item && item['chatbox-notification']) {

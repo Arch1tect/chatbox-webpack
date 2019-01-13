@@ -95,7 +95,7 @@ export default {
             $.get(chatbox.apiUrl + "/db/user/" + this.userId).done(function(resp) {
                 if (!resp.length) {
                     Vue.notify({
-                        title: _this.$t('m.userNotFound'),
+                        title: _this.$t('e.userNotFound'),
                         type: 'error'
                     });
                     return;

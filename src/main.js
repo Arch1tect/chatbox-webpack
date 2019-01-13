@@ -74,6 +74,9 @@ const messages = {
     4001: 'Insufficient credits',
     e: {
       inputTooLong: 'Please send no more than 150 words',
+      loginFailed: 'Login failed',
+      userNotFound: 'User not found',
+      wrongPassword: 'Wrong password'
     },
     m: {
       changeNameTo: 'changed name to',
@@ -134,7 +137,6 @@ const messages = {
       startConversation: 'Start the conversation now!',
       conversationWith: 'Conversation with',
       conversationWithAfter: '',
-      userNotFound: 'User not found',
       userLoadFailed: 'Failed to load profile',
       update: 'Update',
       updating: 'Updating...',
@@ -179,6 +181,9 @@ const messages = {
     4001: '积分不足',
     e: {
       inputTooLong: '请减少到150字以内',
+      loginFailed: '登录失败',
+      userNotFound: '找不到该用户',
+      wrongPassword: '密码错误'
     },
     m: {
       changeNameTo: '改名为',
@@ -239,7 +244,6 @@ const messages = {
       startConversation: '开始私聊吧！',
       conversationWith: '和',
       conversationWithAfter: '的对话',
-      userNotFound: '找不到该用户',
       userLoadFailed: '无法读取用户信息',
       update: '更新',
       updating: '更新中。。。',
