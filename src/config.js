@@ -22,6 +22,7 @@ export default {
 	userId: null,
 	password: null,
 	id: null,
+	token: null,
 	credit: null,
 	shareLocation: true,
 	livechatDanmu: true,

@@ -551,11 +551,12 @@ export default {
                         title: noty,
                     });
                 }
-            }).fail(function() {
-                if (reportStatus) {
+            }).fail(function (xhr, status, error) {
+                var msg =  _this.$t('m.loadMessageFailed');
+                if (xhr.status !== 401) {
                     Vue.notify({
-                      title: _this.$t('m.loadMessageFailed'),
-                      type: 'error'
+                        title: msg,
+                        type: 'error'
                     });
                 }
             }).always(function(){

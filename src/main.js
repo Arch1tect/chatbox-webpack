@@ -76,9 +76,18 @@ const messages = {
       inputTooLong: 'Please send no more than 150 words',
       loginFailed: 'Login failed',
       userNotFound: 'User not found',
-      wrongPassword: 'Wrong password'
+      wrongPassword: 'Wrong password',
+      wrongToken: 'Session expired, please login again'
     },
     m: {
+      userNumId: 'User ID',
+      password: 'Password',
+      login: 'Login',
+      loggingIn: 'Logging in...',
+      loginSuccess: 'Login success',
+      logoutSuccess: 'Log out success',
+      logoutFailed: 'Log out failed',
+      logout: 'Log out',
       changeNameTo: 'changed name to',
       chatHistoryAbove: 'Chat history above',
       minimize: 'Minimize',
@@ -183,9 +192,17 @@ const messages = {
       inputTooLong: '请减少到150字以内',
       loginFailed: '登录失败',
       userNotFound: '找不到该用户',
-      wrongPassword: '密码错误'
+      wrongPassword: '密码错误',
+      wrongToken: '请重新登录'
     },
     m: {
+      userNumId: '用户ID',
+      login: '登录',
+      loggingIn: '登录中。。。',
+      loginSuccess: '登录成功！',
+      logoutSuccess: '登出成功！',
+      logoutFailed: '登出失败',
+      logout: '登出',
       changeNameTo: '改名为',
       chatHistoryAbove: '以上为聊天记录',
       minimize: '最小化',

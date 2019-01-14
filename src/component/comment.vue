@@ -180,11 +180,14 @@ export default {
             }
             var _this = this;
             $.post(chatboxConfig.apiUrl + "/db/comment/"+ msg.id+"/vote", payload, function(resp) {
-            }).fail(function(){
-                Vue.notify({
-                  title: _this.$t('m.voteFailed'),
-                  type: 'error'
-                });
+            }).fail(function (xhr, status, error) {
+                var msg =  _this.$t('m.voteFailed');
+                if (xhr.status !== 401) {
+                    Vue.notify({
+                        title: msg,
+                        type: 'error'
+                    });
+                }
             });
         },
         viewUser: function (msg) {
@@ -248,11 +251,14 @@ export default {
                 // }
                 if (callback)
                     callback(resp);
-            }).fail(function() {
-                Vue.notify({
-                  title: _this.$t('m.loadCommentFailed'),
-                  type: 'error'
-                });
+            }).fail(function (xhr, status, error) {
+                var msg =  _this.$t('m.loadCommentFailed');
+                if (xhr.status !== 401) {
+                    Vue.notify({
+                        title: msg,
+                        type: 'error'
+                    });
+                }
             }).always(function(){
                 _this.loading = false;
             });

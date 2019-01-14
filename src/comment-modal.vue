@@ -87,11 +87,14 @@ export default {
                 Vue.notify({
                   title: _this.$t('m.submitted'),
                 });
-            }).fail(function(){
-                Vue.notify({
-                  title: _this.$t('m.submitCommentFailed'),
-                  type: 'error'
-                });
+            }).fail(function (xhr, status, error) {
+                var msg =  _this.$t('m.submitCommentFailed');
+                if (xhr.status !== 401) {
+                    Vue.notify({
+                        title: msg,
+                        type: 'error'
+                    });
+                }
             });
         },
         autoFocus: function () {

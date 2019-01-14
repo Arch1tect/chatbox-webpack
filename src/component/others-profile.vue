@@ -115,12 +115,14 @@ export default {
                     }
                 })
                 _this.title = _this.$t('m.othersProfile', {username: user.name});
-
-            }).fail(function() {
-                Vue.notify({
-                    title: _this.$t('m.userLoadFailed'),
-                    type: 'error'
-                });
+            }).fail(function (xhr, status, error) {
+                var msg =  _this.$t('m.userLoadFailed');
+                if (xhr.status !== 401) {
+                    Vue.notify({
+                        title: msg,
+                        type: 'error'
+                    });
+                }
             }).always(function(){
             });
         },
@@ -146,11 +148,14 @@ export default {
                 Vue.notify({
                     title: _this.$t('m.success'),
                 });
-            }).fail(function() {
-                Vue.notify({
-                    title: _this.$t('m.failed'),
-                    type: 'error'
-                });
+            }).fail(function (xhr, status, error) {
+                var msg =  _this.$t('m.failed');
+                if (xhr.status !== 401) {
+                    Vue.notify({
+                        title: msg,
+                        type: 'error'
+                    });
+                }
             }).always(function(){
             });
         },

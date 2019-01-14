@@ -1,10 +1,132 @@
+<style>
+    .img-upload-file-wrapper:hover .upload-profile-image-btn-wrapper {
+        visibility: visible;
+    }
+    .upload-profile-image-btn-wrapper {
+        visibility: hidden;
+        position: relative;
+        margin-top: -52px;
+        cursor: pointer !important;
+        font-size: large;
+    }
+    .follower-stats {
+        margin: 10px;
+    }
+    .follower-stats span{
+        cursor: pointer;
+    }
+    .follower-stats .count{
+        margin:0px;
+        color: #00a6ff;
+    }
+    .follower-stats span:hover {
+        text-decoration: underline;
+    }
+    .upload-profile-image-btn {
+        border: none;
+        width: 100%;
+        height: 50px;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        font-size: large;
+    }
+    .upload-profile-image-btn-wrapper:hover .upload-profile-image-btn{
+        background: rgba(0, 0, 0, 0.75);
+    }
+
+    .upload-profile-image-btn-wrapper input[type=file] {
+        position: absolute;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        opacity: 0;
+    }
+    button:disabled, button[disabled]{
+        background-color: lightgray !important;
+        color: black !important;
+        cursor: not-allowed !important;
+    }
+    .socketchatbox-profileArea {
+        width: 100%;
+        height: calc(100% - 30px);
+        /*padding-top: 20px;*/
+        /*background: #3bbeff;*/
+        /*background: white;*/
+        overflow-y: auto;
+        overflow-x: hidden;
+
+    }
+    .socketchatbox-profileArea .user-metadata {
+        color: gray;
+        margin: 15px;
+    }
+    .user-metadata span {
+        margin: 15px;
+    }
+    .socketchatbox-aboutme {
+        padding: 5px;
+        width:80%;
+        min-height: 80px;
+        word-break: break-all;
+        resize: none;
+        background: none;
+        border: 1px solid lightgray;
+        border-radius: 5px;
+        margin-bottom: 30px;
+        text-align: left;
+        line-height: 1.5;
+    }
+    .socketchatbox-aboutme:focus {
+        outline: none;
+    }
+    .socketchatbox-profileArea .username {
+        margin: 0px;
+        margin-top: 15px;
+        /*margin-bottom: 25px;*/
+        padding: 5px;
+        text-align: center;
+        font-size: 15px;
+        width: 150px;
+        border: none;
+        border-bottom: 1px solid lightgray;
+    }
+    input.username {
+        background: none;
+        /* border-radius: 3px; */
+        display: block;
+    }
+    input.username:focus{
+        outline: none;
+    }
+    .socketchatbox-profileArea img {
+        width: 100%;
+        /*max-height: 200px;*/
+        /*object-fit: cover;*/
+    }
+    .login-forms-wrapper {
+        width: 200px;
+        margin:auto;
+    }
+    .login-forms-wrapper input {
+        margin-top: 5px;
+        width: 100%;
+        line-height: 20px;
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid #d1d5da;
+        display: block;
+    }
+</style>
 <template>
     <div v-show="state.view==0">
         <div class="socketchatbox-page-title">
-            <span>{{$t('m.selfProfile')}}</span>
+            <span v-if="chatbox.token">{{$t('m.selfProfile')}}</span>
+            <span v-if="!chatbox.token">{{$t('m.login')}}</span>
         </div>
         <div class="socketchatbox-profileArea">
-            <center>
+            <center v-if="chatbox.token">
                 <div class="img-upload-file-wrapper">
                     <img v-bind:src="profileImgSrc" onerror="this.onerror=null;this.src='profile-empty.png';" />
 
@@ -26,122 +148,34 @@
                 </div>
                 <textarea v-model="aboutMe" :placeholder="$t('m.aboutMe')" class="socketchatbox-aboutme"></textarea>
             </center>
+            <div v-if="!chatbox.token">
+                <br/><br/><br/>
+                <div class="login-forms-wrapper">
+                    <span>{{$t('m.userNumId')}}</span>
+                    <input maxlength="15" type="number" v-model="userNumId">
+                    <br/>
+                    <span>{{$t('m.password')}}</span>
+                    <input maxlength="50" type="text" v-model="password">
+                </div>
+
+            </div>
         </div>
 
-    <button :disabled="!canSave" @click="save" class="socketchatbox-bottom-btn-wrapper">
-        <span>{{saveStr}}</span>
-    </button>
+        <button v-if="chatbox.token" :disabled="!canSave" @click="save" class="socketchatbox-bottom-btn-wrapper half">
+            <span>{{saveStr}}</span>
+        </button>
+
+        <button v-if="chatbox.token" @click="logout" class="socketchatbox-bottom-btn-wrapper half right-half red">
+            <span>{{$t('m.logout')}}</span>
+        </button>
+
+        <button v-if="!chatbox.token" @click="login" class="socketchatbox-bottom-btn-wrapper">
+            <span>{{$t('m.login')}}</span>
+        </button>
 
     </div>
 </template>
-<style>
-.img-upload-file-wrapper:hover .upload-profile-image-btn-wrapper {
-    visibility: visible;
-}
-.upload-profile-image-btn-wrapper {
-    visibility: hidden;
-    position: relative;
-    margin-top: -52px;
-    cursor: pointer !important;
-    font-size: large;
-}
-.follower-stats {
-    margin: 10px;
-}
-.follower-stats span{
-    cursor: pointer;
-}
-.follower-stats .count{
-    margin:0px;
-    color: #00a6ff;
-}
-.follower-stats span:hover {
-    text-decoration: underline;
-}
-.upload-profile-image-btn {
-    border: none;
-    width: 100%;
-    height: 50px;
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    font-size: large;
-}
-.upload-profile-image-btn-wrapper:hover .upload-profile-image-btn{
-    background: rgba(0, 0, 0, 0.75);
-}
 
-.upload-profile-image-btn-wrapper input[type=file] {
-    position: absolute;
-    cursor: pointer;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    opacity: 0;
-}
-button:disabled, button[disabled]{
-  background-color: lightgray !important;
-  color: black !important;
-  cursor: not-allowed !important;
-}
-.socketchatbox-profileArea {
-    width: 100%;
-    height: calc(100% - 30px);
-    /*padding-top: 20px;*/
-    /*background: #3bbeff;*/
-    /*background: white;*/
-    overflow-y: auto;
-    overflow-x: hidden;
-
-}
-.socketchatbox-profileArea .user-metadata {
-    color: gray;
-    margin: 15px;
-}
-.user-metadata span {
-    margin: 15px;
-}
-.socketchatbox-aboutme {
-    padding: 5px;
-    width:80%;
-    min-height: 80px;
-    word-break: break-all;
-    resize: none;
-    background: none;
-    border: 1px solid lightgray;
-    border-radius: 5px;
-    margin-bottom: 30px;
-    text-align: left;
-    line-height: 1.5;
-}
-.socketchatbox-aboutme:focus {
-    outline: none;
-}
-.socketchatbox-profileArea .username {
-    margin: 0px;
-    margin-top: 15px;
-    /*margin-bottom: 25px;*/
-    padding: 5px;
-    text-align: center;
-    font-size: 15px;
-    width: 150px;
-    border: none;
-    border-bottom: 1px solid lightgray;
-}
-input.username {
-    background: none;
-    /* border-radius: 3px; */
-    display: block;
-}
-input.username:focus{
-    outline: none;
-}
-.socketchatbox-profileArea img {
-    width: 100%;
-    /*max-height: 200px;*/
-    /*object-fit: cover;*/
-}
-</style>
 <script>
 import chatboxUIState from '../ui-state.js'
 import chatboxConfig from '../config.js'
@@ -168,7 +202,9 @@ export default {
             id: '',
             savingName: false,
             savingImg: false,
-            savingAboutMe: false
+            savingAboutMe: false,
+            userNumId: '',
+            password: ''
         }
     },
     computed: {
@@ -226,6 +262,7 @@ export default {
 
             var payload = {
                 'uuid': chatboxConfig.userId,
+                'token': chatboxConfig.token,
                 'name': this.username
             }
             var _this = this;
@@ -242,11 +279,19 @@ export default {
                 if (chatboxSocket.state.connected) {
                     chatboxSocket.getSocket().emit('change name', {username: _this.username});
                 }
-            }).fail(function () {
-                Vue.notify({
-                  title: _this.$t('m.nameUpdateFailed'),
-                  type: 'error'
-                });
+            }).fail(function (xhr, status, error) {
+                var msg =  _this.$t('m.nameUpdateFailed');
+                if (xhr.status == 404) {
+                    msg = _this.$t('e.userNotFound');
+                }
+                if (xhr.status !== 401) {
+                    Vue.notify({
+                        title: msg,
+                        type: 'error'
+                    });
+                }
+
+
             }).always(function(){
                 _this.savingName = false;
             });
@@ -271,11 +316,17 @@ export default {
                     configData['about_me'] = _this.aboutMe;
                     chatboxUtils.storage.set('chatbox_config', configData);
                 });
-            }).fail(function () {
-                Vue.notify({
-                  title: _this.$t('m.introductionUpdateFailed'),
-                  type: 'error'
-                });
+            }).fail(function (xhr, status, error) {
+                var msg =  _this.$t('m.introductionUpdateFailed');
+                if (xhr.status == 404) {
+                    msg = _this.$t('e.userNotFound');
+                }
+                if (xhr.status !== 401) {
+                    Vue.notify({
+                        title: msg,
+                        type: 'error'
+                    });
+                }
             }).always(function(){
                 _this.savingAboutMe = false;
             });
@@ -298,11 +349,14 @@ export default {
                 Vue.notify({
                   title: _this.$t('m.profileImageUpdated'),
                 });
-            }).fail(function () {
-                Vue.notify({
-                  title: _this.$t('m.profileImageUpdateFailed'),
-                  type: 'error'
-                });
+            }).fail(function (xhr, status, error) {
+                var msg =  _this.$t('m.profileImageUpdateFailed');
+                if (xhr.status !== 401) {
+                    Vue.notify({
+                        title: msg,
+                        type: 'error'
+                    });
+                }
             }).always(function(){
                 _this.savingImg = false;
             });
@@ -345,24 +399,53 @@ export default {
                 _this.hasAvatar = user.has_avatar;
                 chatboxUtils.tryLoadingProfileImg(_this, chatboxConfig.userId, true);
 
-            }).fail(function() {
-                Vue.notify({
-                    title: _this.$t('m.userLoadFailed'),
-                    type: 'error'
-                });
+            }).fail(function (xhr, status, error) {
+                var msg =  _this.$t('m.userLoadFailed');
+                if (xhr.status !== 401) {
+                    Vue.notify({
+                        title: msg,
+                        type: 'error'
+                    });
+                }
             }).always(function(){});
 
         },
+        logout () {
+            var _this = this;
+            $.post(chatboxConfig.apiUrl + '/db/user/logout').done(function(resp) {
+                Vue.notify({
+                    title: _this.$t('m.logoutSuccess')
+                });
+                chatboxUtils.setBasicConfig({token:null});
+                chatboxConfig.token = null;
+            }).fail(function(xhr, status, error) {
+                var msg =  _this.$t('e.logoutFailed');
+                if (xhr.status !== 401) {
+                    Vue.notify({
+                        title: msg,
+                        type: 'error'
+                    });
+                }
+            }).always(function(){});
+        },
         login () {
+            Vue.notify({
+                title: this.$t('m.loggingIn'),
+                type: 'warn'
+            });
             var _this = this;
             // login only when local token is denied
             // user manually trigger login
             var payload = {
-                'id': chatboxConfig.id,
-                'password': chatboxConfig.password
+                'id': this.userNumId,
+                'password': this.password
             };
             $.post(chatboxConfig.apiUrl + '/db/user/login', payload).done(function(resp) {
                 if (resp.token) {
+                    Vue.notify({
+                        title: _this.$t('m.loginSuccess')
+                    });
+                    chatboxConfig.token = resp.token;
                     chatboxUtils.setBasicConfig({token:resp.token});
                 }
             }).fail(function(xhr, status, error) {
@@ -370,14 +453,14 @@ export default {
                 if (xhr.status == 404) {
                     msg = _this.$t('e.userNotFound');
                 }
-                if (xhr.status == 401) {
+                if (xhr.status == 400) {
                     msg = _this.$t('e.wrongPassword');
                 }
                 Vue.notify({
                     title: msg,
                     type: 'error'
                 });
-                // TODO: delete local token
+                chatboxUtils.setBasicConfig({token:null});
                 chatboxConfig.token = null;
             }).always(function(){});
         },
@@ -398,16 +481,18 @@ export default {
                 }
                 if (shouldCheck) {
                     chatboxUtils.setBasicConfig({last_checkin_time:now});
-                    // TODO: include token
                     $.post(chatboxConfig.apiUrl + "/db/user/" + chatboxConfig.userId+'/checkin').done(function(resp) {
                         if (resp.credit_delta) {
                             _this.processCreditChange(resp.credit_delta);
                         }
-                    }).fail(function() {
-                        Vue.notify({
-                            title: _this.$t('m.checkinFailed'),
-                            type: 'error'
-                        });
+                    }).fail(function (xhr, status, error) {
+                        var msg =  _this.$t('m.checkinFailed');
+                        if (xhr.status !== 401) {
+                            Vue.notify({
+                                title: msg,
+                                type: 'error'
+                            });
+                        }
                     }).always(function(){});
                 }
             });
@@ -419,12 +504,12 @@ export default {
             console.log('[profile] Local existing user: '+localExist);
             if (!localExist) {
                 chatboxConfig.userId = chatboxUtils.genGuid();
-                chatboxConfig.password = chatboxUtils.genGuid();
+                this.password = chatboxUtils.genPassword();
                 chatboxConfig.username = 'u' + Math.floor(Math.random() * 1 * 1000 * 1000);
                 chatboxUtils.setBasicConfig({
                     user_id: chatboxConfig.userId,
                     username: chatboxConfig.username,
-                    password: chatboxConfig.password,
+                    password: this.password,
                 });
                 this.username = chatboxConfig.username;
             }
@@ -433,7 +518,7 @@ export default {
             var payload = {
                 'uuid': chatboxConfig.userId,
                 'name': chatboxConfig.username,
-                'password': chatboxConfig.password
+                'password': this.password
             };
 
             $.post(chatboxConfig.apiUrl + "/db/user/register", payload, function(resp) {
@@ -446,6 +531,7 @@ export default {
                     chatboxUtils.setBasicConfig({
                         id: chatboxConfig.id,
                     });
+                    _this.userNumId = resp.id;
                     _this.login();
                 }
             }).fail(function() {
@@ -471,8 +557,20 @@ export default {
             });
         },
         init () {
-            this.registerCreditChangeSocketCallback();
             var _this = this;
+            $.ajaxSetup({
+                error: function (x, status, error) {
+                    if (x.status == 401) {
+                        chatboxConfig.token = null;
+                        chatboxUtils.setBasicConfig({token:null});
+                        Vue.notify({
+                            title: _this.$t('e.wrongToken'),
+                            type: 'error'
+                        });
+                    }
+                }
+            });
+            this.registerCreditChangeSocketCallback();
             chatboxUtils.getBasicConfig(function (configData) {
                 if ('id' in configData) {
                     console.log('[profile] User has registered.');
@@ -482,17 +580,16 @@ export default {
                     chatboxConfig.userId = configData['user_id'];
                     chatboxConfig.username = configData['username'];
                     chatboxConfig.aboutMe = configData['about_me'];
-                    chatboxConfig.password = configData['password'];
                     _this.hasAvatar = configData['has_avatar'];
                     _this.username = chatboxConfig.username;
                     _this.aboutMe = chatboxConfig.aboutMe;
-
+                    _this.userNumId = chatboxConfig.id;
+                    _this.password = configData['password'];
                     // check if there is token
                     if ('token' in configData && configData['token']) {
                         console.log('[profile] found token in local storage');
                         chatboxConfig.token = configData['token'];
                         _this.checkin();
-
                     }else {
                         _this.login();
                     }
@@ -505,6 +602,7 @@ export default {
                         chatboxConfig.aboutMe = configData['about_me'];
                         _this.username = chatboxConfig.username;
                         _this.aboutMe = chatboxConfig.aboutMe;
+                        _this.password = configData['password'];
                         _this.registerUser(true);
                     } else {
                         _this.registerUser(false);
@@ -516,7 +614,7 @@ export default {
     },
     watch: {
         'state.view': function (newView, prevView) {
-            if (newView == 0) {
+            if (newView == 0 && chatboxConfig.token) {
                 this.loadUser();
             }
         },
