@@ -155,7 +155,7 @@
                     <input maxlength="15" type="number" v-model="userNumId">
                     <br/>
                     <span>{{$t('m.password')}}</span>
-                    <input maxlength="50" type="text" v-model="password">
+                    <input maxlength="50" type="password" v-model="password">
                 </div>
 
             </div>
@@ -556,6 +556,31 @@ export default {
                 _this.processCreditChange(delta);
             });
         },
+        tempFunctionToMigrateUserBefore270: function () {
+            console.log(this.password.length);
+            if (this.password.length > 25) {
+                console.log('[profile] user was created prior to 2.7.0, register again');
+                var password = chatboxUtils.genPassword();
+                chatboxUtils.setBasicConfig({password:this.password});
+                $.post(chatboxConfig.apiUrl + "/db/user/register", payload, function(resp) {
+                    Vue.notify({
+                        title: _this.$t('m.welcomeInstall'),
+                    });
+                    if (resp.id && resp.id > 0) {
+                        // Successful registration, save the id
+                        chatboxConfig.id = resp.id;
+                        chatboxUtils.setBasicConfig({
+                            id: chatboxConfig.id,
+                        });
+                        _this.userNumId = resp.id;
+                        _this.login();
+                    }
+                })
+
+
+
+            }
+        },
         init () {
             var _this = this;
             $.ajaxSetup({
@@ -585,6 +610,9 @@ export default {
                     _this.aboutMe = chatboxConfig.aboutMe;
                     _this.userNumId = chatboxConfig.id;
                     _this.password = configData['password'];
+                    _this.tempFunctionToMigrateUserBefore270();
+
+
                     // check if there is token
                     if ('token' in configData && configData['token']) {
                         console.log('[profile] found token in local storage');

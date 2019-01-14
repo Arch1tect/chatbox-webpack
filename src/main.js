@@ -196,7 +196,8 @@ const messages = {
       wrongToken: '请重新登录'
     },
     m: {
-      userNumId: '用户ID',
+      userNumId: '账号',
+      password: '密码',
       login: '登录',
       loggingIn: '登录中。。。',
       loginSuccess: '登录成功！',

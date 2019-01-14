@@ -20,7 +20,6 @@ export default {
 	detectLocation: true,
 	lang: 'en', // or zh
 	userId: null,
-	password: null,
 	id: null,
 	token: null,
 	credit: null,
