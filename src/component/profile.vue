@@ -557,27 +557,22 @@ export default {
             });
         },
         tempFunctionToMigrateUserBefore270: function () {
-            console.log(this.password.length);
+            console.log('password length '+this.password.length);
+            var _this = this;
             if (this.password.length > 25) {
                 console.log('[profile] user was created prior to 2.7.0, register again');
                 var password = chatboxUtils.genPassword();
-                chatboxUtils.setBasicConfig({password:this.password});
-                $.post(chatboxConfig.apiUrl + "/db/user/register", payload, function(resp) {
-                    Vue.notify({
-                        title: _this.$t('m.welcomeInstall'),
-                    });
-                    if (resp.id && resp.id > 0) {
-                        // Successful registration, save the id
-                        chatboxConfig.id = resp.id;
-                        chatboxUtils.setBasicConfig({
-                            id: chatboxConfig.id,
-                        });
-                        _this.userNumId = resp.id;
-                        _this.login();
-                    }
+                var payload = {
+                    'uuid': chatboxConfig.userId,
+                    'id': chatboxConfig.id,
+                    'password': password
+                };
+                $.post(chatboxConfig.apiUrl + "/db/user/auth_migrate", payload, function(resp) {
+                    _this.password = password;
+                    chatboxUtils.setBasicConfig({password:password});
+                    console.log('auth migration success');
+                    _this.login();
                 })
-
-
 
             }
         },
