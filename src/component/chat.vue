@@ -633,7 +633,8 @@ export default {
                     shareLocation: chatboxConfig.shareLocation,
                     version: chatboxConfig.version,
                     lang: chatboxConfig.lang,
-                    pageTitle: chatboxConfig.pageTitle
+                    pageTitle: chatboxConfig.pageTitle,
+                    token: chatboxConfig.token
                 });
             });
             chatboxSocket.registerCallback('found same page', function (data) {
@@ -748,43 +749,29 @@ export default {
         },
         hasScrolledToBottom: function () {
             return this.$refs.chatArea.scrollHeight - this.$refs.chatArea.scrollTop - this.$refs.chatArea.offsetHeight < 50
-        },
-        init: function () {
-            if (!chatboxConfig.userId) {
-                var _this = this;
-                console.log('[chat] userId not loaded yet');
-                setTimeout(function(){
-                    _this.init();
-                }, 1000);
-                return;
-            }
-            this.registerSocketEvents();
-            if (chatboxConfig.testing)
-                this.loadTestData();
-            this.keepUpdatingLogTime();
-
-            var liveChatEnabled = false;
-            if (chatboxConfig.redirected) {
-                chatboxConfig.samePageChat = true;
-                liveChatEnabled = true;
-            }
-            // TODO: load history only if chatbox visible
-            // This is tricky, we don't want to load it after receiving any live chat msg
-            this.loadChatHistory(); // after we know same page chat or not
-            // this.addIntro();
-            if (liveChatEnabled || chatboxConfig.liveChatEnabled) {
-                this.startConnection();
-            } else {
-                chatboxUtils.storage.get('whitelist', function (item) {
-                    var whitelist = item['whitelist'];
-                    if (whitelist && chatboxConfig.domain in whitelist) {
-                        _this.startConnection();
-                    }
-                });
-            }
         }
     },
     watch: {
+        'config.token': function (newToken, prevToken) {
+            if (newToken && !chatboxSocket.isConnected()) {
+                var liveChatEnabled = false;
+                if (chatboxConfig.redirected) {
+                    chatboxConfig.samePageChat = true;
+                    liveChatEnabled = true;
+                }
+                if (liveChatEnabled || chatboxConfig.liveChatEnabled) {
+                    this.startConnection();
+                } else {
+                    chatboxUtils.storage.get('whitelist', function (item) {
+                        var whitelist = item['whitelist'];
+                        if (whitelist && chatboxConfig.domain in whitelist) {
+                            _this.startConnection();
+                        }
+                    });
+                }
+            }
+            // TODO: if token changed to null, disconnect?
+        },
         'state.view': function (newView, prevView) {
             if (newView == 2) {
                 if (this.hasScrolledToBottom()) {
@@ -901,7 +888,13 @@ export default {
 
         }, false);
 
-        this.init();
+        this.registerSocketEvents();
+        if (chatboxConfig.testing)
+            this.loadTestData();
+        this.keepUpdatingLogTime();
+        // TODO: load history only if chatbox visible
+        // This is tricky, we don't want to load it after receiving any live chat msg
+        this.loadChatHistory(); // after we know same page chat or not
 
     }
 }

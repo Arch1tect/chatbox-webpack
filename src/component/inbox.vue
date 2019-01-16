@@ -173,6 +173,7 @@ export default {
             firstTimeLoadNotification: true,
             firstTimeLoadMsg: true,
             state: chatboxUIState,
+            chatbox: chatboxConfig,
             loading: false,
             messageDict: {},
             friendDict: {},
@@ -599,6 +600,8 @@ export default {
             chatboxUtils.updateExtensionBadge();
         },
         init: function () {
+            // TODO: change this to be triggered by
+            // login token or something else
             if (!chatboxConfig.userId) {
                 var _this = this;
                 setTimeout(function () {
@@ -615,6 +618,9 @@ export default {
         }
     },
     watch: {
+        'chatbox.token': function (newToken, prevToken) {
+            // TODO
+        },
         selectedFriend: function (newSelected, prevSelected) {
             this.selectedConversation = this.messageDict[newSelected.userId];
             chatboxConfig.directMsgEnabled = newSelected != this.chatbotFriend
