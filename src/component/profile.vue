@@ -334,6 +334,7 @@ export default {
                         title: msg,
                         type: 'error'
                     });
+                    chatboxUIState.view = 0;
                 }
 
 

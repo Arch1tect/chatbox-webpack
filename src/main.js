@@ -68,6 +68,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 const messages = {
   en: {
     400: 'Forbidden',
+    401: 'Please login again',
     500: 'Failure',
     426: 'Please upgrade extension',
     429: 'Slow down please',
@@ -190,6 +191,7 @@ const messages = {
   },
   zh: {
     400: '禁止通行',
+    401: '请重新登录',
     500: '失败',
     426: '请更新插件',
     429: '请放慢速度',
