@@ -9,6 +9,7 @@
                 <div class="username">{{username}}</div>
                 <div class="user-metadata"><span>ID: {{id}}</span><span class="follow">{{$t('m.followerCount')}}: {{followerCount}}</span></div>
                 <div class="socketchatbox-aboutme">{{aboutMe}}</div>
+                <br/><br/><br/>
             </center>
         </div>
         <button @click="toggleFollow" class="socketchatbox-bottom-btn-wrapper half" v-bind:class="{red: isFollowing}">

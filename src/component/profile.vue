@@ -342,9 +342,11 @@ export default {
             });
         },
         saveNewPassword () {
-            // if (this.newPassword == this.password) {
-            //     return;
-            // }
+            var passwordUpdated = this.newPassword !='' && this.newPassword == this.confirmNewPassword;
+
+            if (!passwordUpdated) {
+                return;
+            }
             this.savingData = true;
             var payload = {
                 'password': this.newPassword
@@ -520,14 +522,22 @@ export default {
                         title: _this.$t('m.loginSuccess')
                     });
                     chatboxConfig.token = resp.token;
-                    chatboxConfig.userId = resp.uuid;
                     chatboxUtils.setBasicConfig({
                         token:resp.token,
                         user_id: resp.uuid,
                         id: _this.userNumId,
                         password: _this.password
                     });
-                    _this.loadUser();
+                    if (resp.uuid !== chatboxConfig.userId) {
+                        chatboxConfig.userId = resp.uuid;
+                        _this.loadUser();
+                        // login a different account
+                        console.log('login a different account');
+                        // clear local inbox data
+                        chatboxUtils.storage.set('chatbox-inbox', null);
+                        chatboxUtils.storage.set('already-read-friends', null);
+                    }
+
                 }
             }).fail(function(xhr, status, error) {
                 var msg =  _this.$t('e.loginFailed');
@@ -703,6 +713,8 @@ export default {
             });
         },
         loadDataFromStorage (configData) {
+            if (!configData) return; // when clearing local storage
+
             chatboxConfig.id = configData['id'];
             this.userNumId = chatboxConfig.id;
 
