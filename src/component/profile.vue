@@ -591,27 +591,20 @@ export default {
                 }
             });
             this.registerCreditChangeSocketCallback();
+            chatboxUtils.onBasicConfigChange(function (configData) {
+                _this.loadDataFromStorage(configData);
+            });
             chatboxUtils.getBasicConfig(function (configData) {
                 if ('id' in configData) {
                     console.log('[profile] User has registered.');
                     // id is returned from server, if client doesn't have it
                     // then needs to register
-                    chatboxConfig.id = configData['id'];
-                    chatboxConfig.userId = configData['user_id'];
-                    chatboxConfig.username = configData['username'];
-                    chatboxConfig.aboutMe = configData['about_me'];
-                    _this.hasAvatar = configData['has_avatar'];
-                    _this.username = chatboxConfig.username;
-                    _this.aboutMe = chatboxConfig.aboutMe;
-                    _this.userNumId = chatboxConfig.id;
-                    _this.password = configData['password'];
+                    _this.loadDataFromStorage(configData);
                     _this.tempFunctionToMigrateUserBefore270();
 
-
                     // check if there is token
-                    if ('token' in configData && configData['token']) {
+                    if (configData['token']) {
                         console.log('[profile] found token in local storage');
-                        chatboxConfig.token = configData['token'];
                         _this.checkin();
                     }else {
                         _this.login();
@@ -620,12 +613,7 @@ export default {
                 } else {
                     if ('user_id' in configData) {
                         // user created locally but failed to register previously
-                        chatboxConfig.userId = configData['user_id'];
-                        chatboxConfig.username = configData['username'];
-                        chatboxConfig.aboutMe = configData['about_me'];
-                        _this.username = chatboxConfig.username;
-                        _this.aboutMe = chatboxConfig.aboutMe;
-                        _this.password = configData['password'];
+                        _this.loadDataFromStorage(configData);
                         _this.registerUser(true);
                     } else {
                         _this.registerUser(false);
@@ -633,6 +621,23 @@ export default {
                 }
 
             });
+        },
+        loadDataFromStorage (configData) {
+            chatboxConfig.id = configData['id'];
+            this.userNumId = chatboxConfig.id;
+
+            chatboxConfig.userId = configData['user_id'];
+
+            chatboxConfig.username = configData['username'];
+            this.username = chatboxConfig.username;
+
+            chatboxConfig.aboutMe = configData['about_me'];
+            this.aboutMe = chatboxConfig.aboutMe;
+
+            chatboxConfig.token = configData['token'];
+
+            this.password = configData['password'];
+            this.hasAvatar = configData['has_avatar'];
         }
     },
     watch: {

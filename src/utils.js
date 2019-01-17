@@ -28,6 +28,7 @@ var storage = {
         }
         
     }
+    // TODO: add on change
 }
 var tabVisibleCallbacks = [];
 var tabInvisibleCallbacks = [];
@@ -146,6 +147,13 @@ export default {
         storage.get('chatbox_config', function (item) {
             var configData = item['chatbox_config'] || {};
             callback(configData);
+        })
+    },
+    onBasicConfigChange: function (callback) {
+        chrome.storage.onChanged.addListener(function(changes, area){
+            if ('chatbox_config' in changes) {
+                callback(changes['chatbox_config']['newValue']);
+            }
         })
     },
     tryLoadingProfileImg: function (obj, userId, useS3) {

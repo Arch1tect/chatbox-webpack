@@ -753,12 +753,17 @@ export default {
     },
     watch: {
         'config.token': function (newToken, prevToken) {
+            var _this = this;
             if (newToken && !chatboxSocket.isConnected()) {
                 var liveChatEnabled = false;
                 if (chatboxConfig.redirected) {
                     chatboxConfig.samePageChat = true;
                     liveChatEnabled = true;
                 }
+                // There is a bug below, if user click on disconnect
+                // chatboxConfig.liveChatEnabled will be false
+                // and login shouldn't trigger chat connection
+                // but the whitelist code could still make connection
                 if (liveChatEnabled || chatboxConfig.liveChatEnabled) {
                     this.startConnection();
                 } else {
@@ -770,7 +775,12 @@ export default {
                     });
                 }
             }
-            // TODO: if token changed to null, disconnect?
+            // If token changed to null, it's when auth failure or
+            // user log out, should disconnect
+            // Any chance we don't want to auto disconnect?
+            if (chatboxSocket.isConnected() && !newToken) {
+                chatboxSocket.disconnect();
+            }
         },
         'state.view': function (newView, prevView) {
             if (newView == 2) {
@@ -831,6 +841,7 @@ export default {
                   type: 'warn'
                 });
             }
+
             chatboxUtils.storage.get('chatbox_config', function (item) {
                 // what other config do we need to reload?
                 var configData = item['chatbox_config'] || {};
