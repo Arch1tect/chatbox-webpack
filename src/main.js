@@ -73,6 +73,8 @@ const messages = {
     429: 'Slow down please',
     4001: 'Insufficient credits',
     e: {
+      passwordTooShort: 'Password length must be more than 8 characters',
+      passwordNotMatch: 'Password does not match',
       inputTooLong: 'Please send no more than 150 words',
       loginFailed: 'Login failed',
       userNotFound: 'User not found',
@@ -80,6 +82,10 @@ const messages = {
       wrongToken: 'Session expired, please login again'
     },
     m: {
+      passwordUpdated: 'Password updated',
+      showChangePasswordForm: 'Change password',
+      confirmNewPassword: 'Confirm password',
+      newPassword: 'New password',
       userNumId: 'User ID',
       password: 'Password',
       login: 'Login',
@@ -189,6 +195,8 @@ const messages = {
     429: '请放慢速度',
     4001: '积分不足',
     e: {
+      passwordTooShort: '密码长度需至少8个字符',
+      passwordNotMatch: '确认密码不符',
       inputTooLong: '请减少到150字以内',
       loginFailed: '登录失败',
       userNotFound: '找不到该用户',
@@ -196,6 +204,10 @@ const messages = {
       wrongToken: '请重新登录'
     },
     m: {
+      passwordUpdated: '密码已更新',
+      showChangePasswordForm: '修改密码',
+      confirmNewPassword: '确认密码',
+      newPassword: '新密码',
       userNumId: '账号',
       password: '密码',
       login: '登录',

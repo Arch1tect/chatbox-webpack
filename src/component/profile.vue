@@ -12,6 +12,14 @@
     .follower-stats {
         margin: 10px;
     }
+    .show-change-password-form {
+        margin: 30px;
+        cursor: pointer;
+        color: #00a6ff;
+    }
+    .show-change-password-form:hover {
+        text-decoration: underline;
+    }
     .follower-stats span{
         cursor: pointer;
     }
@@ -74,7 +82,7 @@
         background: none;
         border: 1px solid lightgray;
         border-radius: 5px;
-        margin-bottom: 30px;
+        /*margin-bottom: 30px;*/
         text-align: left;
         line-height: 1.5;
     }
@@ -118,36 +126,53 @@
         border: 1px solid #d1d5da;
         display: block;
     }
+    .password-requiremnets {
+        color: red;
+    }
 </style>
 <template>
     <div v-show="state.view==0">
         <div class="socketchatbox-page-title">
-            <span v-if="chatbox.token">{{$t('m.selfProfile')}}</span>
+            <span v-if="changingPassword" class="leave-others-profile"><font-awesome-icon icon="long-arrow-alt-left" @click='changingPassword=false' /></span>
+            <span v-if="chatbox.token && !changingPassword">{{$t('m.selfProfile')}}</span>
+            <span v-if="changingPassword">{{$t('m.showChangePasswordForm')}}</span>
             <span v-if="!chatbox.token">{{$t('m.login')}}</span>
         </div>
-        <div class="socketchatbox-profileArea">
-            <center v-if="chatbox.token">
-                <div class="img-upload-file-wrapper">
-                    <img v-bind:src="profileImgSrc" onerror="this.onerror=null;this.src='profile-empty.png';" />
-
-                    <div class="upload-profile-image-btn-wrapper">
-                      <button class="upload-profile-image-btn">{{$t('m.uploadProfileImage')}}</button>
-                      <input accept="image/*" type="file" @change="onFileChanged">
+        <div ref="profileArea" class="socketchatbox-profileArea">
+            <div v-if="chatbox.token">
+                <center v-show="!changingPassword">
+                    <div class="img-upload-file-wrapper">
+                        <img v-bind:src="profileImgSrc" onerror="this.onerror=null;this.src='profile-empty.png';" />
+                        <div class="upload-profile-image-btn-wrapper">
+                          <button class="upload-profile-image-btn">{{$t('m.uploadProfileImage')}}</button>
+                          <input accept="image/*" type="file" @change="onFileChanged">
+                        </div>
                     </div>
+                    <input class="username" :placeholder="$t('m.displayName')" maxlength="10" type="text" v-model="username">
+                    <div class="user-metadata">
+                        <div>
+                            <span>ID: {{chatbox.id}}</span>
+                            <span>{{$t('m.credit')}}: {{chatbox.credit}}</span>
+                        </div>
+                        <div class="follower-stats">
+                            <span @click="utils.viewFollowers(true, followings, followers)">{{$t('m.followingCount')}}: <span class="count">{{followings.length}}</span></span>
+                            <span @click="utils.viewFollowers(false, followings, followers)">{{$t('m.followerCount')}}: <span class="count">{{followers.length}}</span></span>
+                        </div>
+                    </div>
+                    <textarea v-model="aboutMe" :placeholder="$t('m.aboutMe')" class="socketchatbox-aboutme"></textarea>
+                </center>
+                <center v-if="!changingPassword" class='show-change-password-form' @click='toggleChangePasswordForm'>{{$t('m.showChangePasswordForm')}}</center>
+                <div class="login-forms-wrapper" v-if="changingPassword">
+                    <br/><br/><br/>
+                    <span>{{$t('m.newPassword')}}</span>
+                    <input ref="newPasswordInput" maxlength="20" type="password" v-model="newPassword">
+                    <br/>
+                    <span>{{$t('m.confirmNewPassword')}}</span>
+                    <input maxlength="20" type="password" v-model="confirmNewPassword">
+                    <br/>
+                    <div class="password-requiremnets">{{newPasswordRequirements}}</div>
                 </div>
-                <input class="username" :placeholder="$t('m.displayName')" maxlength="10" type="text" v-model="username">
-                <div class="user-metadata">
-                    <div>
-                        <span>ID: {{chatbox.id}}</span>
-                        <span>{{$t('m.credit')}}: {{chatbox.credit}}</span>
-                    </div>
-                    <div class="follower-stats">
-                        <span @click="utils.viewFollowers(true, followings, followers)">{{$t('m.followingCount')}}: <span class="count">{{followings.length}}</span></span>
-                        <span @click="utils.viewFollowers(false, followings, followers)">{{$t('m.followerCount')}}: <span class="count">{{followers.length}}</span></span>
-                    </div>
-                </div>
-                <textarea v-model="aboutMe" :placeholder="$t('m.aboutMe')" class="socketchatbox-aboutme"></textarea>
-            </center>
+            </div>
             <div v-if="!chatbox.token">
                 <br/><br/><br/>
                 <div class="login-forms-wrapper">
@@ -200,31 +225,52 @@ export default {
             followers: [],
             followings: [],
             id: '',
-            savingName: false,
+            savingData: false,
             savingImg: false,
-            savingAboutMe: false,
             userNumId: '',
-            password: ''
+            password: '',
+            changingPassword: false,
+            newPassword: '',
+            confirmNewPassword: ''
         }
     },
     computed: {
         saveStr: function () {
-            if (this.savingName || this.savingImg)
+            if (this.savingData || this.savingImg)
                 return this.$t('m.updating');
             else
                 return this.$t('m.update');
         },
         canSave: function () {
-            var saving = this.savingName || this.savingImg;
+            var saving = this.savingData || this.savingImg;
             if (saving) return false;
             var profileImgUpdated = this.imgFile;
             var nameUpdated = this.username !== this.chatbox.username;
             var aboutUpdated = this.aboutMe !== this.chatbox.aboutMe;
+            var passwordUpdated = this.newPassword !='' && this.newPassword == this.confirmNewPassword;
 
-            return profileImgUpdated || nameUpdated || aboutUpdated;
+            return profileImgUpdated || nameUpdated || aboutUpdated || passwordUpdated;
+        },
+        newPasswordRequirements: function () {
+            if (this.newPassword.length>0 && this.newPassword.length < 8)
+                return this.$t('e.passwordTooShort');
+            if (this.newPassword != this.confirmNewPassword)
+                return this.$t('e.passwordNotMatch');
         }
     },
     methods: {
+        toggleChangePasswordForm () {
+            var _this = this;
+            if (this.changingPassword) {
+                this.changingPassword = false;
+            } else {
+                this.changingPassword = true;
+                Vue.nextTick(function() {
+                    _this.$refs.newPasswordInput.focus();
+                    //     _this.$refs.profileArea.scrollTop = _this.$refs.profileArea.scrollHeight;
+                });
+            }
+        },
         onFileChanged (event) {
             var _this = this;
             var file = event.target.files[0];
@@ -258,17 +304,16 @@ export default {
             if (this.username == this.chatbox.username) {
                 return;
             }
-            this.savingName = true;
+            this.savingData = true;
 
             var payload = {
                 'uuid': chatboxConfig.userId,
-                'token': chatboxConfig.token,
                 'name': this.username
             }
             var _this = this;
             $.post(chatboxConfig.apiUrl + "/db/user/change_name", payload, function(resp) {
                 Vue.notify({
-                  title: _this.$t('m.nameUpdated'),
+                    title: _this.$t('m.nameUpdated'),
                 });
                 _this.chatbox.username = _this.username;
                 chatboxUtils.storage.get('chatbox_config', function(item) {
@@ -293,14 +338,42 @@ export default {
 
 
             }).always(function(){
-                _this.savingName = false;
+                _this.savingData = false;
+            });
+        },
+        saveNewPassword () {
+            // if (this.newPassword == this.password) {
+            //     return;
+            // }
+            this.savingData = true;
+            var payload = {
+                'password': this.newPassword
+            }
+            var _this = this;
+            $.post(chatboxConfig.apiUrl + "/db/user/change_password", payload, function(resp) {
+                Vue.notify({
+                    title: _this.$t('m.passwordUpdated'),
+                });
+                _this.password = _this.newPassword;
+                chatboxUtils.setBasicConfig({'password': _this.password});
+                _this.changingPassword = false;
+            }).fail(function (xhr, status, error) {
+                var msg =  _this.$t('m.failed');
+                if (xhr.status !== 401) {
+                    Vue.notify({
+                        title: msg,
+                        type: 'error'
+                    });
+                }
+            }).always(function(){
+                _this.savingData = false;
             });
         },
         saveAboutMe () {
             if (this.aboutMe == this.chatbox.aboutMe) {
                 return;
             }
-            this.savingAboutMe = true;
+            this.savingData = true;
             this.chatbox.aboutMe = this.aboutMe;
             var payload = {
                 'uuid': chatboxConfig.userId,
@@ -328,7 +401,7 @@ export default {
                     });
                 }
             }).always(function(){
-                _this.savingAboutMe = false;
+                _this.savingData = false;
             });
         },
         saveProfileImg () {
@@ -365,6 +438,7 @@ export default {
             this.saveName();
             this.saveProfileImg();
             this.saveAboutMe();
+            this.saveNewPassword();
         },
         loadUser () {
             // called when user profile tab is open
@@ -499,7 +573,6 @@ export default {
 
         },
         registerUser (localExist) {
-
             console.log('[profile] Register user');
             console.log('[profile] Local existing user: '+localExist);
             if (!localExist) {
