@@ -520,7 +520,14 @@ export default {
                         title: _this.$t('m.loginSuccess')
                     });
                     chatboxConfig.token = resp.token;
-                    chatboxUtils.setBasicConfig({token:resp.token});
+                    chatboxConfig.userId = resp.uuid;
+                    chatboxUtils.setBasicConfig({
+                        token:resp.token,
+                        user_id: resp.uuid,
+                        id: _this.userNumId,
+                        password: _this.password
+                    });
+                    _this.loadUser();
                 }
             }).fail(function(xhr, status, error) {
                 var msg =  _this.$t('e.loginFailed');
