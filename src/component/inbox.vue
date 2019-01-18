@@ -631,12 +631,11 @@ export default {
                 _this.scrollToBottom();
             });
         },
-        // this is too late, we want to check msg for user
-        // 'state.view': function (newView, prevView) {
-        //     if (newView == 3) {
-        //         this.init();
-        //     }
-        // }
+        'state.view': function (newView, prevView) {
+            if (newView == 3) {
+                this.pollMsgFromDB(true);
+            }
+        }
     },
     created () {
         // expose sendPM method so input component can access it

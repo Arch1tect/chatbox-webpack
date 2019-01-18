@@ -186,15 +186,15 @@
             </div>
         </div>
 
-        <button v-if="chatbox.token" :disabled="!canSave" @click="save" class="socketchatbox-bottom-btn-wrapper half">
+        <button v-if="chatbox.token" :disabled="!canSave" @click="save" class="socketchatbox-bottom-btn-wrapper" v-bind:class="{half: !changingPassword}">
             <span>{{saveStr}}</span>
         </button>
 
-        <button v-if="chatbox.token" @click="logout" class="socketchatbox-bottom-btn-wrapper half right-half red">
+        <button v-if="chatbox.token && !changingPassword" @click="logout" class="socketchatbox-bottom-btn-wrapper half right-half red">
             <span>{{$t('m.logout')}}</span>
         </button>
 
-        <button v-if="!chatbox.token" @click="login" class="socketchatbox-bottom-btn-wrapper">
+        <button v-if="!chatbox.token && !changingPassword" @click="login" class="socketchatbox-bottom-btn-wrapper">
             <span>{{$t('m.login')}}</span>
         </button>
 
@@ -334,7 +334,6 @@ export default {
                         title: msg,
                         type: 'error'
                     });
-                    chatboxUIState.view = 0;
                 }
 
 
@@ -678,6 +677,7 @@ export default {
                             title: _this.$t('e.wrongToken'),
                             type: 'error'
                         });
+                        chatboxUIState.view = 0;
                     }
                 }
             });
