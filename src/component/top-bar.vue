@@ -3,7 +3,7 @@
 
 <!--         <div v-cloak v-show="state.display == 'full'" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-username'>{{config.username}}</div> -->
         <span v-on:click='handleMissClick($event)' id='topbar-options'>
-            <span class='float-left'>
+            <span>
                 <span v-on:click='topOptionClicked(1, $event)' class="top-option" :title="$t('m.commentTab')" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-comments'>
                     <font-awesome-icon icon="comment-alt" class="fa fa-comment-alt"  v-bind:class="{ selected: state.view==1 }" />
                     <span v-show="state.display == 'mini' && config.commentsTotal > 0" class="total-num">{{config.commentsTotal}}</span>
@@ -16,8 +16,10 @@
                     <font-awesome-icon icon="inbox" class="fa fa-inbox"  v-bind:class="{ selected: state.view==3 }" />
                     <span v-show="config.unreadDirectMsg>0" class="unread-notification-dot"></span>
                 </span>
-                <span v-on:click='topOptionClicked(0, $event)' class="top-option" v-show="state.display == 'full'" :title="$t('m.profileTab')" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-profile'><font-awesome-icon icon="user-circle" class="fa fa-user" v-bind:class="{ selected: state.view==0 }" /></span>
+                <span v-on:click='topOptionClicked(0, $event)' class="top-option" v-show="state.display == 'full'" :title="$t('m.profileTab')" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-profile'>
+                    <font-awesome-icon icon="user-circle" class="fa fa-user" v-bind:class="{ selected: state.view==0 }" />
                 </span>
+            </span>
             <span class="right-options">
                 <span v-show="state.display == 'full'" v-on:click='minimizeChatbox($event)' class="top-option" :title="$t('m.minimize')"><font-awesome-icon  icon="window-minimize" class="fa fa-window-minimize" data-toggle="tooltip" data-placement="bottom" id='minimize-chatbox' /></span>
                 <span v-on:click='hideChatbox($event)' class="top-option" :title="$t('m.close')"><font-awesome-icon  icon="times" class="fa fa-close" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-closeChatbox' /></span>
@@ -28,7 +30,8 @@
 <style>
     .right-options {
         float: right;
-        margin-right: 10px
+        margin-right: 10px;
+        position: relative;
     }
 .unread-notification-dot {
     position: absolute;
@@ -69,6 +72,7 @@
 #topbar-options {
   margin-right: 15px;
   font-size: 15px;
+    cursor: pointer;
 }
 #topbar-options .fa {
     color: lightgray;

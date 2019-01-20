@@ -113,7 +113,7 @@
         overflow-y: auto; /*only show scroll bar when needs to*/
         padding-right: 10px;
         padding-left: 10px;
-        padding-top: 30px;
+        padding-top: 15px;
         padding-bottom: 30px;
     }
     .message-name {
