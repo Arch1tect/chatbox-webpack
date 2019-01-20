@@ -757,6 +757,10 @@ export default {
                   title: _this.$t(data.errorCode),
                   type: 'error'
                 });
+                if (data.errorCode == 401) {
+                    chatboxConfig.token = null;
+                    // If socket server not authenticated, force logout
+                }
             });
             chatboxSocket.registerCallback('admin message', function (msg) {
                 Vue.notify({
