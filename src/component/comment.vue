@@ -227,6 +227,7 @@ export default {
         loadComments: function (callback) {
             this.loading = true;
             var _this = this;
+            var alreadyLoadedComment = this.messages.length >0;
             $.get(chatbox.apiUrl + "/db/comments_with_votes/offset/" + this.lastCommentId + "/user_id/" + chatboxConfig.userId + "/url/" + chatbox.location).done(function(resp) {
                 // TODO: many issues with comment system...
                 chatboxConfig.commentsTotal += resp.length;
@@ -244,11 +245,11 @@ export default {
                     _this.messages.push(data);
                     // chatboxUtils.queueDanmu(data, 'comment');
                 }
-                // if (resp.length) {
-                //     Vue.nextTick(function(){
-                //         _this.scrollToBottom();
-                //     });
-                // }
+                if (alreadyLoadedComment && resp.length) {
+                    Vue.nextTick(function(){
+                        _this.scrollToBottom();
+                    });
+                }
                 if (callback)
                     callback(resp);
             }).fail(function (xhr, status, error) {

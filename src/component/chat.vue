@@ -380,6 +380,7 @@ export default {
             messages: [],
             historyMessages: [],
             lastMsg: {},
+            lastHistoryMsg: {},
             typing: null,
             countDown: 0,
             loadedHistory: null, // SITE/PAGE,
@@ -528,28 +529,39 @@ export default {
         preprocessMsg: function (data, historyMessage) {
             // May need to add log
             // if loading from cache, there's timestamp on message
+
+            var lastMsg = this.lastMsg;
+            var messages = this.messages;
+            if (historyMessage) {
+                lastMsg = this.lastHistoryMsg;
+                messages = this.historyMessages;
+            }
+
             if (!data.time)
                 data.time = moment.now();
-            if (!this.lastMsg.time || (data.time - this.lastMsg.time > LOG_MESSAGE_TIME_AFTER)) {
+            if (!lastMsg.time || (data.time - lastMsg.time > LOG_MESSAGE_TIME_AFTER)) {
                 var log = {
                     isLog: true,
                     time: data.time,
                 };
-                if (historyMessage) {
-                    this.historyMessages.push(log);
-                } else {
-                    this.messages.push(log);
-                }
+                messages.push(log);
                 this.updateLogTime();
                 data.loggingTime = true;
             }
             },
         processMsg: function (data, historyMessage) {
             this.preprocessMsg(data, historyMessage);
+            var lastMsg = this.lastMsg;
+            var messages = this.messages;
+            if (historyMessage) {
+                lastMsg = this.lastHistoryMsg;
+                messages = this.historyMessages;
+            }
+
             if (data.sender == chatboxConfig.userId)
                 data.me = true;
 
-            if (this.lastMsg && data.sender == this.lastMsg.sender)
+            if (lastMsg && data.sender == lastMsg.sender)
                 data.fromSameUser = true;
 
             chatboxUtils.tryLoadingProfileImg(data, data.sender, data.me);
@@ -580,6 +592,7 @@ export default {
 
             if (historyMessage) {
                 this.historyMessages.push(data);
+                this.lastHistoryMsg = data;
             } else {
                 this.messages.push(data);
                 this.lastMsg = data;
@@ -853,6 +866,7 @@ export default {
         'config.samePageChat': function (newVal, prevVal) {
             this.loadedHistory = null;
             this.historyMessages = [];
+            this.lastHistoryMsg = {};
         },
         'state.view': function (newView, prevView) {
             if (newView == 2) {
