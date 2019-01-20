@@ -1,4 +1,12 @@
 <style>
+    .load-chat-history {
+        color: gray;
+        cursor: pointer;
+        text-decoration: underline;
+    }
+    .load-chat-history:hover {
+        color: #2196F3;
+    }
     .stubborn-btn {
         color: #6d6d6d;
         background: #efefef;
@@ -286,6 +294,25 @@
         <invitations></invitations>
         <div ref="chatArea" class="socketchatbox-chatArea">
             <div class="socketchatbox-messages">
+                <center class="load-chat-history" v-if="canLoadChatHistory" @click="loadChatHistory">{{$t('m.loadChatHistory')}}</center>
+
+                <div v-bind:class="{ 'socketchatbox-message': true, 'socketchatbox-message-me': msg.me, 'merge-above': msg.fromSameUser && !msg.loggingTime }" v-for="msg in historyMessages">
+                    <div class="socketchatbox-log" v-if="msg.isLog">{{msg.message}}</div>
+                    <div v-else>
+                        <span v-if="!msg.fromSameUser || msg.loggingTime">
+                            <img class="user-avatar" @click="viewUser(msg)" v-bind:src="msg.profileImgSrc" />
+                            <span class="message-name">{{msg.username}}</span>
+                            <br />
+                        </span>
+                        <span v-else class="user-avatar-placeholder"></span>
+
+                        <div v-if="msg.renderType=='media'" class="socketchatbox-messageBody image-or-video"><img class="chatbox-image" v-bind:src="msg.message" @click="viewImage(msg.message)"/></div>
+                        <div v-if="msg.renderType=='file'" class="socketchatbox-messageBody"><a target='_blank' v-bind:download="msg.fileName" v-bind:href="msg.file">{{msg.fileName}}</a></div>
+                        <!-- use v-html because message contain html due to adding class to emoji -->
+                        <div v-if="msg.renderType=='text'" v-html="msg.message" class="socketchatbox-messageBody"></div>
+                        <div v-if="msg.renderType=='emoji-only'" class="socketchatbox-messageBody emoji-only">{{msg.message}}</div>
+                    </div>
+                </div>
 
                 <div v-bind:class="{ 'socketchatbox-message': true, 'socketchatbox-message-me': msg.me, 'merge-above': msg.fromSameUser && !msg.loggingTime }" v-for="msg in messages">
                     <div class="socketchatbox-log" v-if="msg.isLog">{{msg.message}}</div>
@@ -332,14 +359,17 @@ import chatboxSocket from '../socket.js'
 "use strict";
 const TYPING_STAY_TIME = 3*1000; // ms
 const DISCONNECT_DELAY_TIME = 5*60*1000; // 10 min
-
-var useDifferentStyleForPureEmoji = false;
+const MAX_HISTORY_MESSAGE = 50;
 const LOG_MESSAGE_TIME_AFTER = 1*60*1000; // 1 min
 const COUNT_DOWN = 10;
+
+var useDifferentStyleForPureEmoji = false;
+
 var typingUserDict = {};
 var disconnectTimer = null;
 var firstTimeAutoScroll = true; // Only auto scroll when maximize for first time
 var countDownTimer = null;
+
 export default {
     name: 'chat-body',
     data () {
@@ -348,9 +378,13 @@ export default {
             socket: chatboxSocket,
             config: chatboxConfig,
             messages: [],
+            historyMessages: [],
             lastMsg: {},
             typing: null,
             countDown: 0,
+            loadedHistory: null, // SITE/PAGE,
+            curSiteChatHisotry: [],
+            curPageChatHistory: [],
             countDownType: 'SITE_TO_PAGE',
         }
     },
@@ -360,7 +394,17 @@ export default {
                 return this.$t('m.foundSamePage', {countDown:this.countDown});
             }
             return this.$t('m.urlChanged', {countDown:this.countDown});
+        },
+        canLoadChatHistory: function () {
+            if (this.loadedHistory)
+                return false;
+            if (chatboxConfig.samePageChat)
+                return this.curPageChatHistory.length > 0;
+            if (!chatboxConfig.samePageChat)
+                return this.curSiteChatHisotry.length > 0;
+            return false;
         }
+
     },
     methods: {
         agreeToPrompt: function () {
@@ -465,6 +509,14 @@ export default {
                     Vue.set(this.messages, i, msg);
                 }
             }
+            i = 0;
+            for (; i < this.historyMessages.length; i++) {
+                var msg = this.historyMessages[i];
+                if (msg.isLog && msg.time) {
+                    msg.message = moment(msg.time).fromNow()
+                    Vue.set(this.historyMessages, i, msg);
+                }
+            }
         },
         keepUpdatingLogTime: function () {
             var _this = this;
@@ -473,7 +525,7 @@ export default {
                 _this.keepUpdatingLogTime()
             }, 60*1000);
         },
-        preprocessMsg: function (data) {
+        preprocessMsg: function (data, historyMessage) {
             // May need to add log
             // if loading from cache, there's timestamp on message
             if (!data.time)
@@ -483,13 +535,17 @@ export default {
                     isLog: true,
                     time: data.time,
                 };
-                this.messages.push(log);
+                if (historyMessage) {
+                    this.historyMessages.push(log);
+                } else {
+                    this.messages.push(log);
+                }
                 this.updateLogTime();
                 data.loggingTime = true;
             }
             },
-        processMsg: function (data) {
-            this.preprocessMsg(data);
+        processMsg: function (data, historyMessage) {
+            this.preprocessMsg(data, historyMessage);
             if (data.sender == chatboxConfig.userId)
                 data.me = true;
 
@@ -522,28 +578,29 @@ export default {
                 }
             }
 
-            this.messages.push(data);
-            this.lastMsg = data;
-            var _this = this;
-
-            var newMsgNotVisible = false;
-            if (_this.state.view != 2 || _this.state.display != 'full') {
-                newMsgNotVisible = true;
-            }
-            if (this.hasScrolledToBottom()) {
-
-                Vue.nextTick(function() {
-                    _this.scrollToBottom();
-                });
-                if (data.renderType == 'media') {
-                    // Media takes time to load
-                    this.scrollToBottomLater();
-                }
+            if (historyMessage) {
+                this.historyMessages.push(data);
             } else {
-                newMsgNotVisible = true;
+                this.messages.push(data);
+                this.lastMsg = data;
+                var _this = this;
+                var newMsgNotVisible = false;
+                if (_this.state.view != 2 || _this.state.display != 'full') {
+                    newMsgNotVisible = true;
+                }
+                if (this.hasScrolledToBottom()) {
+                    Vue.nextTick(function () {
+                        _this.scrollToBottom();
+                    });
+                    if (data.renderType == 'media') {
+                        // Media takes time to load
+                        this.scrollToBottomLater();
+                    }
+                } else {
+                    newMsgNotVisible = true;
+                }
+                if (newMsgNotVisible) chatboxConfig.unreadLiveMsgTotal++;
             }
-            if (newMsgNotVisible) chatboxConfig.unreadLiveMsgTotal ++;
-
         },
         // Add typing user, auto remove after centain amount of time
         // TODO: use user id not name
@@ -608,8 +665,8 @@ export default {
                         hasAvatar: data.hasAvatar
                     }
                     messages.push(msg);
-                    if (messages.length > 30) {
-                        messages = messages.slice(-30);
+                    if (messages.length > MAX_HISTORY_MESSAGE) {
+                        messages = messages.slice(-MAX_HISTORY_MESSAGE);
                     }
 
                     chatboxUtils.storage.set(roomId, JSON.stringify(messages));
@@ -724,28 +781,39 @@ export default {
               type: 'warn'
             });
         },
-        loadChatHistory: function () {
-            // load chat history from storage
-            var roomId = chatboxConfig.location;
-            if (!chatboxConfig.samePageChat) {
-                roomId = chatboxConfig.domain;
-            }
+        checkChatHistory: function () {
             var _this = this;
-            chatboxUtils.storage.get(roomId, function(item) {
-                if (item && item[roomId]) {
-                    var messages = JSON.parse(item[roomId]);
-                    var i = 0;
-                    for (; i< messages.length; i++)
-                        _this.processMsg(messages[i]);
-
-
-                    var log = {
-                        isLog: true,
-                        message: _this.$t('m.chatHistoryAbove')
-                    };
-                    _this.messages.push(log);
+            chatboxUtils.storage.get(chatboxConfig.location, function(item) {
+                if (item && item[chatboxConfig.location]) {
+                    var messages = JSON.parse(item[chatboxConfig.location]);
+                    _this.curPageChatHistory = messages;
                 }
             });
+            chatboxUtils.storage.get(chatboxConfig.domain, function(item) {
+                if (item && item[chatboxConfig.domain]) {
+                    var messages = JSON.parse(item[chatboxConfig.domain]);
+                    _this.curSiteChatHisotry = messages;
+                }
+            });
+        },
+        loadChatHistory: function () {
+            this.canLoadChatHistory = false;
+            // load chat history from storage
+            this.loadedHistory = 'PAGE';
+            var history = this.curPageChatHistory;
+            if (!chatboxConfig.samePageChat) {
+                this.loadedHistory = 'SITE';
+                history = this.curSiteChatHisotry;
+            }
+            this.historyMessages = [];
+            var i = 0;
+            for (; i< history.length; i++)
+                this.processMsg(history[i], true);
+            var log = {
+                isLog: true,
+                message: this.$t('m.chatHistoryAbove')
+            };
+            this.historyMessages.push(log);
         },
         hasScrolledToBottom: function () {
             return this.$refs.chatArea.scrollHeight - this.$refs.chatArea.scrollTop - this.$refs.chatArea.offsetHeight < 50
@@ -781,6 +849,10 @@ export default {
             if (chatboxSocket.isConnected() && !newToken) {
                 chatboxSocket.disconnect();
             }
+        },
+        'config.samePageChat': function (newVal, prevVal) {
+            this.loadedHistory = null;
+            this.historyMessages = [];
         },
         'state.view': function (newView, prevView) {
             if (newView == 2) {
@@ -903,10 +975,7 @@ export default {
         if (chatboxConfig.testing)
             this.loadTestData();
         this.keepUpdatingLogTime();
-        // TODO: load history only if chatbox visible
-        // This is tricky, we don't want to load it after receiving any live chat msg
-        this.loadChatHistory(); // after we know same page chat or not
-
+        this.checkChatHistory();
     }
 }
 

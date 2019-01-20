@@ -16,7 +16,7 @@ if (localAPI) {
 
 export default {
 	// testing: true,
-	version: '2.7.0',
+	version: '2.7.1',
 	detectLocation: true,
 	lang: 'en', // or zh
 	userId: null,

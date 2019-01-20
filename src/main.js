@@ -83,6 +83,7 @@ const messages = {
       wrongToken: 'Session expired, please login again'
     },
     m: {
+      loadChatHistory: 'Load chat history',
       passwordUpdated: 'Password updated',
       showChangePasswordForm: 'Change password',
       confirmNewPassword: 'Confirm password',
@@ -206,6 +207,7 @@ const messages = {
       wrongToken: '请重新登录'
     },
     m: {
+      loadChatHistory: '载入聊天记录',
       passwordUpdated: '密码已更新',
       showChangePasswordForm: '修改密码',
       confirmNewPassword: '确认密码',

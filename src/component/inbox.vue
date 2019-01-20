@@ -633,7 +633,7 @@ export default {
         },
         'state.view': function (newView, prevView) {
             if (newView == 3) {
-                this.pollMsgFromDB(true);
+                this.pollMsgFromDB(false);
             }
         }
     },
