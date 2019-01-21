@@ -647,7 +647,6 @@ export default {
             });
         },
         tempFunctionToMigrateUserBefore270: function () {
-            console.log('password length '+this.password.length);
             var _this = this;
             if (this.password.length > 25) {
                 console.log('[profile] user was created prior to 2.7.0, register again');
@@ -683,9 +682,11 @@ export default {
             });
             this.registerCreditChangeSocketCallback();
             chatboxUtils.onBasicConfigChange(function (configData) {
+               console.log('[profile] config in storage changed, load again')
                 _this.loadDataFromStorage(configData);
             });
             chatboxUtils.getBasicConfig(function (configData) {
+                console.log('[profile] load config from storage.');
                 if ('id' in configData) {
                     console.log('[profile] User has registered.');
                     // id is returned from server, if client doesn't have it

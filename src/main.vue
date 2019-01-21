@@ -249,10 +249,9 @@ export default {
             chatboxUtils.updateIframeSize('close');
         },
         loadConfigFromStorage () {
-            console.log('Load config from storage');
             var _this = this;
             chatboxUtils.getBasicConfig(function (configData) {
-
+                console.log('[main] Load config from storage');
                 if ('size' in configData) {
                     var size = configData['size'];
                     _this.state.width = parseInt(size['width']);
@@ -266,30 +265,13 @@ export default {
                     // console.log(chatboxUIState.left);
                     window.parent.postMessage({state: 'moving', dx: chatboxUIState.left}, "*");
                 }
-                if ('livechat_danmu' in configData) {
-                    chatboxConfig.livechatDanmu = configData['livechat_danmu'];
-                }
-                if ('invitation_danmu' in configData) {
-                    chatboxConfig.invitationDanmu = configData['invitation_danmu'];
-                }
                 if ('redirect' in configData) {
                     var allowUrlDict = configData['redirect']||{};
                     if (chatboxConfig.location in allowUrlDict) {
-                        chatboxConfig.redirected = true;
-                        delete allowUrlDict[chatboxConfig.location];
                         // override disply mode to full size
                         _this.state.display = 'full';
                     }
                 }
-                if ('livechat_anywhere' in configData) {
-                    chatboxConfig.liveChatEnabled = configData['livechat_anywhere'];
-                }
-
-                if ('same_page_chat' in configData) {
-                    chatboxConfig.samePageChat = configData['same-page-chat'];
-                }
-
-                chatboxUtils.storage.set('chatbox_config', configData);
                 _this.decideChatboxDisplay();
             });
         },

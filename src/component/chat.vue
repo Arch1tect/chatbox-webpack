@@ -276,7 +276,7 @@
 <template>
     <div v-show="state.view==2">
         <div id="socketchatbox-chatroom-title" class="socketchatbox-page-title">
-            <span :title="$t('m.invitations')" class="invitations" v-bind:class="{active: state.chatTopPanel==2}" @click="toggleOnlineUsers(2)">
+            <span v-if="socket.state.connected" :title="$t('m.invitations')" class="invitations" v-bind:class="{active: state.chatTopPanel==2}" @click="toggleOnlineUsers(2)">
                 <font-awesome-icon icon="bullhorn" class="fa fa-bullhorn" data-toggle="tooltip" data-placement="bottom"/>
             </span>
             <span v-bind:title="socket.state.connected ? $t('m.disconnect') : $t('m.connect')"  @click="toggleConnection" data-toggle="tooltip" data-placement="bottom" id='socketchatbox-live-status' class='badge' v-bind:class="{connected: socket.state.connected}">{{socket.state.connected? $t('m.online'): $t('m.offline')}}
@@ -758,7 +758,9 @@ export default {
                   type: 'error'
                 });
                 if (data.errorCode == 401) {
+                    console.log('[chat] socket received 401, delete token')
                     chatboxConfig.token = null;
+                    _this.state.view = 0;
                     // If socket server not authenticated, force logout
                 }
             });
@@ -787,16 +789,24 @@ export default {
                 chatboxConfig.liveChatEnabled = false;
                 this.socket.disconnect();
             } else {
+                chatboxConfig.liveChatEnabled = true;
                 this.startConnection();
             }
         },
         startConnection: function () {
-            chatboxConfig.liveChatEnabled = true;
-            chatboxSocket.connect();
-            Vue.notify({
-              title: this.$t('m.connecting'),
-              type: 'warn'
-            });
+            if (chatboxConfig.token) {
+                chatboxSocket.connect();
+                Vue.notify({
+                  title: this.$t('m.connecting'),
+                  type: 'warn'
+                });
+            } else {
+                Vue.notify({
+                    title: this.$t(401),
+                    type: 'error'
+                });
+                this.state.view = 0;
+            }
         },
         checkChatHistory: function () {
             var _this = this;
@@ -839,26 +849,10 @@ export default {
     watch: {
         'config.token': function (newToken, prevToken) {
             var _this = this;
-            if (newToken && !chatboxSocket.isConnected()) {
-                var liveChatEnabled = false;
-                if (chatboxConfig.redirected) {
-                    chatboxConfig.samePageChat = true;
-                    liveChatEnabled = true;
-                }
-                // There is a bug below, if user click on disconnect
-                // chatboxConfig.liveChatEnabled will be false
-                // and login shouldn't trigger chat connection
-                // but the whitelist code could still make connection
-                if (liveChatEnabled || chatboxConfig.liveChatEnabled) {
-                    this.startConnection();
-                } else {
-                    chatboxUtils.storage.get('whitelist', function (item) {
-                        var whitelist = item['whitelist'];
-                        if (whitelist && chatboxConfig.domain in whitelist) {
-                            _this.startConnection();
-                        }
-                    });
-                }
+            console.log('[chat] token changed from '+prevToken+' to ' + newToken);
+            // login doesn't mean we should connect chat socket right away?
+            if (newToken && !chatboxSocket.isConnected() && chatboxConfig.liveChatEnabled) {
+                this.startConnection();
             }
             // If token changed to null, it's when auth failure or
             // user log out, should disconnect
@@ -871,6 +865,7 @@ export default {
             this.loadedHistory = null;
             this.historyMessages = [];
             this.lastHistoryMsg = {};
+            console.log('[chat] samePageChat changed, clear history');
         },
         'state.view': function (newView, prevView) {
             if (newView == 2) {
@@ -913,6 +908,49 @@ export default {
     },
     created () {
         var _this = this;
+        chatboxUtils.storage.get('chatbox_config', function (item) {
+            console.log('[chat] load config from storage');
+            var configData = item['chatbox_config'] || {};
+            if ('livechat_danmu' in configData) {
+                chatboxConfig.livechatDanmu = configData['livechat_danmu'];
+            }
+            if ('invitation_danmu' in configData) {
+                chatboxConfig.invitationDanmu = configData['invitation_danmu'];
+            }
+            if ('livechat_anywhere' in configData) {
+                chatboxConfig.liveChatEnabled = configData['livechat_anywhere'];
+            } else {
+                chatboxConfig.liveChatEnabled = true;
+            }
+            if ('same_page_chat' in configData) {
+                chatboxConfig.samePageChat = configData['same-page-chat'];
+            }
+            // checking redirected must after checking livechat_anywhere config
+            // and after checking same_page_chat config
+
+            if ('redirect' in configData) {
+                var allowUrlDict = configData['redirect']||{};
+                if (chatboxConfig.location in allowUrlDict) {
+                    // chatboxConfig.redirected = true;
+                    chatboxConfig.liveChatEnabled = true;
+                    chatboxConfig.samePageChat = true;
+                    delete allowUrlDict[chatboxConfig.location];
+                    chatboxUtils.storage.set('chatbox_config', configData);
+                }
+            }
+            if (!chatboxConfig.liveChatEnabled) {
+                chatboxUtils.storage.get('whitelist', function (item) {
+                    var whitelist = item['whitelist'];
+                    if (whitelist && chatboxConfig.domain in whitelist) {
+                        console.log('[chat] found current domain in whitelist');
+                        chatboxConfig.liveChatEnabled = true;
+                        if (chatboxConfig.token) _this.startConnection();
+                    }
+                });
+            } else {
+                if (chatboxConfig.token) _this.startConnection();
+            }
+        });
         chatboxUtils.registerTabInvisibleCallbacks(function () {
             if (!chatboxSocket.isConnected()) return;
             disconnectTimer = setTimeout(function(){
@@ -924,21 +962,9 @@ export default {
             if (disconnectTimer) {
                 clearTimeout(disconnectTimer);
             }
-            if(chatboxConfig.liveChatEnabled && !chatboxSocket.state.connected) {
-                chatboxSocket.connect();
-                Vue.notify({
-                  title: _this.$t('m.connecting'),
-                  type: 'warn'
-                });
+            if(chatboxConfig.liveChatEnabled && chatboxConfig.token && !chatboxSocket.state.connected) {
+                _this.startConnection();
             }
-
-            chatboxUtils.storage.get('chatbox_config', function (item) {
-                // what other config do we need to reload?
-                var configData = item['chatbox_config'] || {};
-                if ('livechat_danmu' in configData) {
-                    chatboxConfig.livechatDanmu = configData['livechat_danmu'];
-                }
-            });
         });
 
         // Check if page has changed url or title
