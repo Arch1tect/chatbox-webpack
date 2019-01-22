@@ -113,30 +113,16 @@
         /*max-height: 200px;*/
         /*object-fit: cover;*/
     }
-    .login-forms-wrapper {
-        width: 200px;
-        margin:auto;
-    }
-    .login-forms-wrapper input {
-        margin-top: 5px;
-        width: 100%;
-        line-height: 20px;
-        padding: 5px;
-        border-radius: 5px;
-        border: 1px solid #d1d5da;
-        display: block;
-    }
     .password-requiremnets {
         color: red;
     }
 </style>
 <template>
-    <div v-show="state.view==0">
+    <div v-show="state.view==0 && chatbox.token">
         <div class="socketchatbox-page-title">
             <span v-if="changingPassword" class="leave-others-profile"><font-awesome-icon icon="long-arrow-alt-left" @click='changingPassword=false' /></span>
             <span v-if="chatbox.token && !changingPassword">{{$t('m.selfProfile')}}</span>
             <span v-if="changingPassword">{{$t('m.showChangePasswordForm')}}</span>
-            <span v-if="!chatbox.token">{{$t('m.login')}}</span>
         </div>
         <div ref="profileArea" class="socketchatbox-profileArea">
             <div v-if="chatbox.token">
@@ -151,7 +137,7 @@
                     <input class="username" :placeholder="$t('m.displayName')" maxlength="10" type="text" v-model="username">
                     <div class="user-metadata">
                         <div>
-                            <span>ID: {{chatbox.id}}</span>
+                            <span>ID: {{chatbox.userNumId}}</span>
                             <span>{{$t('m.credit')}}: {{chatbox.credit}}</span>
                         </div>
                         <div class="follower-stats">
@@ -167,22 +153,11 @@
                     <span>{{$t('m.newPassword')}}</span>
                     <input ref="newPasswordInput" maxlength="20" type="password" v-model="newPassword">
                     <br/>
-                    <span>{{$t('m.confirmNewPassword')}}</span>
+                    <span>{{$t('m.confirmPassword')}}</span>
                     <input maxlength="20" type="password" v-model="confirmNewPassword">
                     <br/>
                     <div class="password-requiremnets">{{newPasswordRequirements}}</div>
                 </div>
-            </div>
-            <div v-if="!chatbox.token">
-                <br/><br/><br/>
-                <div class="login-forms-wrapper">
-                    <span>{{$t('m.userNumId')}}</span>
-                    <input maxlength="15" type="number" v-model="userNumId">
-                    <br/>
-                    <span>{{$t('m.password')}}</span>
-                    <input maxlength="50" type="password" v-model="password">
-                </div>
-
             </div>
         </div>
 
@@ -192,10 +167,6 @@
 
         <button v-if="chatbox.token && !changingPassword" @click="logout" class="socketchatbox-bottom-btn-wrapper half right-half red">
             <span>{{$t('m.logout')}}</span>
-        </button>
-
-        <button v-if="!chatbox.token && !changingPassword" @click="login" class="socketchatbox-bottom-btn-wrapper">
-            <span>{{$t('m.login')}}</span>
         </button>
 
     </div>
@@ -224,11 +195,8 @@ export default {
             username: 'No name',
             followers: [],
             followings: [],
-            id: '',
             savingData: false,
             savingImg: false,
-            userNumId: '',
-            password: '',
             changingPassword: false,
             newPassword: '',
             confirmNewPassword: ''
@@ -335,8 +303,6 @@ export default {
                         type: 'error'
                     });
                 }
-
-
             }).always(function(){
                 _this.savingData = false;
             });
@@ -356,9 +322,10 @@ export default {
                 Vue.notify({
                     title: _this.$t('m.passwordUpdated'),
                 });
-                _this.password = _this.newPassword;
-                chatboxUtils.setBasicConfig({'password': _this.password});
+                chatboxConfig.password = _this.newPassword;
+                chatboxUtils.setBasicConfig({'password': _this.newPassword});
                 _this.changingPassword = false;
+                // TODO: also need to update this.password in login.vue
             }).fail(function (xhr, status, error) {
                 var msg =  _this.$t('m.failed');
                 if (xhr.status !== 401) {
@@ -460,7 +427,7 @@ export default {
                 chatboxConfig.aboutMe = user.about;
                 _this.aboutMe = user.about;
                 _this.username = user.name;
-                chatboxConfig.id = user.id;
+                chatboxConfig.userNumId = user.id;
                 chatboxConfig.credit = user.credit;
                 _this.followers = user.followers || [];
                 _this.followings = user.followings || [];
@@ -504,133 +471,6 @@ export default {
                 }
             }).always(function(){});
         },
-        login () {
-            Vue.notify({
-                title: this.$t('m.loggingIn'),
-                type: 'warn'
-            });
-            var _this = this;
-            // login only when local token is denied
-            // user manually trigger login
-            var payload = {
-                'id': this.userNumId,
-                'password': this.password
-            };
-            $.post(chatboxConfig.apiUrl + '/db/user/login', payload).done(function(resp) {
-                if (resp.token) {
-                    Vue.notify({
-                        title: _this.$t('m.loginSuccess')
-                    });
-                    chatboxConfig.token = resp.token;
-                    chatboxUtils.setBasicConfig({
-                        token:resp.token,
-                        user_id: resp.uuid,
-                        id: _this.userNumId,
-                        password: _this.password
-                    });
-                    if (resp.uuid !== chatboxConfig.userId) {
-                        chatboxConfig.userId = resp.uuid;
-                        _this.loadUser();
-                        // login a different account
-                        console.log('login a different account');
-                        // clear local inbox data
-                        chatboxUtils.storage.set('chatbox-inbox', null);
-                        chatboxUtils.storage.set('already-read-friends', null);
-                    }
-
-                }
-            }).fail(function(xhr, status, error) {
-                var msg =  _this.$t('e.loginFailed');
-                if (xhr.status == 404) {
-                    msg = _this.$t('e.userNotFound');
-                }
-                if (xhr.status == 400) {
-                    msg = _this.$t('e.wrongPassword');
-                }
-                Vue.notify({
-                    title: msg,
-                    type: 'error'
-                });
-                chatboxUtils.setBasicConfig({token:null});
-                chatboxConfig.token = null;
-            }).always(function(){});
-        },
-        checkin () {
-            if (!chatboxConfig.tabVisible) return;
-            var _this = this;
-            chatboxUtils.getBasicConfig(function (configData) {
-                var now = Date.now();
-                var shouldCheck = false;
-                if ('last_checkin_time' in configData) {
-                    var delta = now - configData['last_checkin_time'];
-                    if (delta > 60*60*1000) {
-                        shouldCheck = true;
-                        // Check in every hour to earn credit
-                    }
-                } else {
-                    shouldCheck = true;
-                }
-                if (shouldCheck) {
-                    chatboxUtils.setBasicConfig({last_checkin_time:now});
-                    $.post(chatboxConfig.apiUrl + "/db/user/" + chatboxConfig.userId+'/checkin').done(function(resp) {
-                        if (resp.credit_delta) {
-                            _this.processCreditChange(resp.credit_delta);
-                        }
-                    }).fail(function (xhr, status, error) {
-                        var msg =  _this.$t('m.checkinFailed');
-                        if (xhr.status !== 401) {
-                            Vue.notify({
-                                title: msg,
-                                type: 'error'
-                            });
-                        }
-                    }).always(function(){});
-                }
-            });
-
-        },
-        registerUser (localExist) {
-            console.log('[profile] Register user');
-            console.log('[profile] Local existing user: '+localExist);
-            if (!localExist) {
-                chatboxConfig.userId = chatboxUtils.genGuid();
-                this.password = chatboxUtils.genPassword();
-                chatboxConfig.username = 'u' + Math.floor(Math.random() * 1 * 1000 * 1000);
-                chatboxUtils.setBasicConfig({
-                    user_id: chatboxConfig.userId,
-                    username: chatboxConfig.username,
-                    password: this.password,
-                });
-                this.username = chatboxConfig.username;
-            }
-
-            var _this = this;
-            var payload = {
-                'uuid': chatboxConfig.userId,
-                'name': chatboxConfig.username,
-                'password': this.password
-            };
-
-            $.post(chatboxConfig.apiUrl + "/db/user/register", payload, function(resp) {
-                Vue.notify({
-                    title: _this.$t('m.welcomeInstall'),
-                });
-                if (resp.id && resp.id > 0) {
-                    // Successful registration, save the id
-                    chatboxConfig.id = resp.id;
-                    chatboxUtils.setBasicConfig({
-                        id: chatboxConfig.id,
-                    });
-                    _this.userNumId = resp.id;
-                    _this.login();
-                }
-            }).fail(function() {
-                Vue.notify({
-                    title: _this.$t('m.registerFailed'),
-                    type: 'error'
-                });
-            }).always(function(){});
-        },
         processCreditChange: function (delta) {
             this.credit += delta;
 
@@ -646,40 +486,8 @@ export default {
                 _this.processCreditChange(delta);
             });
         },
-        tempFunctionToMigrateUserBefore270: function () {
-            var _this = this;
-            if (this.password.length > 25) {
-                console.log('[profile] user was created prior to 2.7.0, register again');
-                var password = chatboxUtils.genPassword();
-                var payload = {
-                    'uuid': chatboxConfig.userId,
-                    'id': chatboxConfig.id,
-                    'password': password
-                };
-                $.post(chatboxConfig.apiUrl + "/db/user/auth_migrate", payload, function(resp) {
-                    _this.password = password;
-                    chatboxUtils.setBasicConfig({password:password});
-                    console.log('auth migration success');
-                    _this.login();
-                })
-
-            }
-        },
         init () {
             var _this = this;
-            $.ajaxSetup({
-                error: function (x, status, error) {
-                    if (x.status == 401) {
-                        chatboxConfig.token = null;
-                        chatboxUtils.setBasicConfig({token:null});
-                        Vue.notify({
-                            title: _this.$t('e.wrongToken'),
-                            type: 'error'
-                        });
-                        chatboxUIState.view = 0;
-                    }
-                }
-            });
             this.registerCreditChangeSocketCallback();
             chatboxUtils.onBasicConfigChange(function (configData) {
                console.log('[profile] config in storage changed, load again')
@@ -687,50 +495,20 @@ export default {
             });
             chatboxUtils.getBasicConfig(function (configData) {
                 console.log('[profile] load config from storage.');
-                if ('id' in configData) {
-                    console.log('[profile] User has registered.');
-                    // id is returned from server, if client doesn't have it
-                    // then needs to register
-                    _this.loadDataFromStorage(configData);
-                    _this.tempFunctionToMigrateUserBefore270();
-
-                    // check if there is token
-                    if (configData['token']) {
-                        console.log('[profile] found token in local storage');
-                        _this.checkin();
-                    }else {
-                        _this.login();
-                    }
-
-                } else {
-                    if ('user_id' in configData) {
-                        // user created locally but failed to register previously
-                        _this.loadDataFromStorage(configData);
-                        _this.registerUser(true);
-                    } else {
-                        _this.registerUser(false);
-                    }
-                }
-
+                _this.loadDataFromStorage(configData);
             });
         },
         loadDataFromStorage (configData) {
-            if (!configData) return; // when clearing local storage
-
-            chatboxConfig.id = configData['id'];
-            this.userNumId = chatboxConfig.id;
-
-            chatboxConfig.userId = configData['user_id'];
+            if (!configData) {
+                console.log('[profile] ERROR: no config data to load');
+                return;
+            } // when clearing local storage
 
             chatboxConfig.username = configData['username'];
             this.username = chatboxConfig.username;
 
             chatboxConfig.aboutMe = configData['about_me'];
             this.aboutMe = chatboxConfig.aboutMe;
-
-            chatboxConfig.token = configData['token'];
-
-            this.password = configData['password'];
             this.hasAvatar = configData['has_avatar'];
         }
     },
@@ -742,6 +520,8 @@ export default {
         },
     },
     created () {
+        chatboxUtils.processCreditChange = this.processCreditChange;
+        chatboxUtils.loadUser = this.loadUser;
         this.init();
     }
 }

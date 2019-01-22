@@ -1,23 +1,3 @@
-<template>
-    <div id="chatbox-main-vue">
-
-        <div v-cloak v-show="state.display!='hidden'" id="socketchatbox-all" class="socketchatbox-page" :style="{ marginLeft: marginLeft }">
-            <div v-if="state.display=='full'" id="socketchatbox-ne" class="socketchatbox-resize" @mousedown="resizeStart"></div>
-            <top-bar v-cloak></top-bar>
-            <div :style="{ height: state.height + 'px', width: state.width + 'px'}" id='socketchatbox-body' v-show="state.display=='full'">
-                <comment-body class="socketchatbox-body"></comment-body>
-                <chat-body class="socketchatbox-body"></chat-body>
-                <inbox-body class="socketchatbox-body"></inbox-body>
-                <profile-body class="socketchatbox-body"></profile-body>
-                <others-profile class="socketchatbox-body"></others-profile>
-                <followers-body class="socketchatbox-body"></followers-body>
-                <notifications position="bottom"/>
-                <input-bar></input-bar>
-            </div>
-        </div>
-    </div>
-</template>
-
 <style>
 .socketchatbox-page-title .fa.fa-power-off {
     color:lightgray;
@@ -120,6 +100,26 @@ button:focus {
   background: rgba(0,0,0,0.05); 
 }
 </style>
+<template>
+    <div id="chatbox-main-vue">
+
+        <div v-cloak v-show="state.display!='hidden'" id="socketchatbox-all" class="socketchatbox-page" :style="{ marginLeft: marginLeft }">
+            <div v-if="state.display=='full'" id="socketchatbox-ne" class="socketchatbox-resize" @mousedown="resizeStart"></div>
+            <top-bar v-cloak></top-bar>
+            <div :style="{ height: state.height + 'px', width: state.width + 'px'}" id='socketchatbox-body' v-show="state.display=='full'">
+                <comment-body class="socketchatbox-body"></comment-body>
+                <chat-body class="socketchatbox-body"></chat-body>
+                <inbox-body class="socketchatbox-body"></inbox-body>
+                <login-body class="socketchatbox-body"></login-body>
+                <profile-body class="socketchatbox-body"></profile-body>
+                <others-profile class="socketchatbox-body"></others-profile>
+                <followers-body class="socketchatbox-body"></followers-body>
+                <notifications position="bottom"/>
+                <input-bar></input-bar>
+            </div>
+        </div>
+    </div>
+</template>
 <script>
 import Vue from 'vue'
 

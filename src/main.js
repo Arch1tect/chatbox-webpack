@@ -15,6 +15,7 @@ import inbox from './component/inbox.vue'
 import inputBar from './component/input-bar.vue'
 import comment from './component/comment.vue'
 import profile from './component/profile.vue'
+import login from './component/login.vue'
 import othersProfile from './component/others-profile.vue'
 import onlineUsers from './component/online-users.vue'
 import invitations from './component/invitations.vue'
@@ -25,6 +26,7 @@ Vue.component('chat-body', chat);
 Vue.component('inbox-body', inbox);
 Vue.component('comment-body', comment);
 Vue.component('profile-body', profile);
+Vue.component('login-body', login);
 Vue.component('others-profile', othersProfile);
 Vue.component('followers-body', followers);
 
@@ -83,10 +85,16 @@ const messages = {
       wrongToken: 'Session expired, please login again'
     },
     m: {
+      registerInfo: 'Set up password then click Submit',
+      register: 'Register',
+      registering: 'Registering...',
+      registerInstead: 'No account? Register now!',
+      loginInstead: 'Already have account? Login instead!',
       loadChatHistory: 'Load chat history',
       passwordUpdated: 'Password updated',
       showChangePasswordForm: 'Change password',
       confirmNewPassword: 'Confirm password',
+      confirmPassword: 'Confirm password',
       newPassword: 'New password',
       userNumId: 'User ID',
       password: 'Password',
@@ -186,7 +194,7 @@ const messages = {
       invitationSent: 'Invitation sent',
       numUserReceived: 'followers received',
       welcomeInstall: 'Welcome to use this extension!',
-      registerFailed: 'Failed to register, please refresh',
+      registerFailed: 'Failed to register',
       welcomeFromBot: "Welcome! Thank you for using this extension and please feel free to send us feedback! ;)"
     }
   },
@@ -207,10 +215,15 @@ const messages = {
       wrongToken: '请重新登录'
     },
     m: {
+      registerInfo: '只需设定密码即可注册。',
+      register: '注册',
+      registering: '注册中。。。',
+      registerInstead: '没有账号？去注册',
+      loginInstead: '已有账号？去登录',
       loadChatHistory: '载入聊天记录',
       passwordUpdated: '密码已更新',
       showChangePasswordForm: '修改密码',
-      confirmNewPassword: '确认密码',
+      confirmPassword: '确认密码',
       newPassword: '新密码',
       userNumId: '账号',
       password: '密码',
@@ -310,7 +323,7 @@ const messages = {
       invitationSent: '邀请发送成功',
       numUserReceived: '位关注者收到',
       welcomeInstall: '欢迎使用这款插件!',
-      registerFailed: '注册失败，请刷新重试',
+      registerFailed: '注册失败',
       welcomeFromBot: '欢迎使用这款插件! 请访问官方论坛给我们留言提建议！'
     }
   }

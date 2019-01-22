@@ -16,11 +16,11 @@ if (localAPI) {
 
 export default {
 	// testing: true,
-	version: '2.7.2',
+	version: '2.7.3',
 	detectLocation: true,
 	lang: 'en', // or zh
 	userId: null,
-	id: null,
+	userNumId: null,
 	token: null,
 	credit: null,
 	shareLocation: true,
@@ -28,6 +28,7 @@ export default {
 	invitationDanmu: 'any_site', // never, same_site, any_site
 	samePageChat: false, // same page chat VS same site chat
 	username: null,
+	password: null,
 	aboutMe: '',
 	socketUrl: socketUrl,
 	apiUrl : apiUrl,

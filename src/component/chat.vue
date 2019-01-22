@@ -761,6 +761,7 @@ export default {
                     console.log('[chat] socket received 401, delete token')
                     chatboxConfig.token = null;
                     _this.state.view = 0;
+                    chatboxUtils.setBasicConfig({token:null});
                     // If socket server not authenticated, force logout
                 }
             });
