@@ -4,7 +4,8 @@
 
 var localSocketServer = false;
 var localAPI = false; // DB APIs
-var socketUrl = 'https://quotime.me'
+// var socketUrl = 'https://quotime.me'
+var socketUrl = 'https://api.yiyechat.com';
 var apiUrl = socketUrl;
 
 if (localSocketServer){
@@ -16,7 +17,7 @@ if (localAPI) {
 
 export default {
 	// testing: true,
-	version: '2.7.3',
+	version: '2.7.4',
 	detectLocation: true,
 	lang: 'en', // or zh
 	userId: null,
