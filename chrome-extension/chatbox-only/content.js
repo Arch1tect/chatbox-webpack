@@ -11,11 +11,11 @@ if (typeof(chrome) !== 'undefined' && chrome.extension) {
     runningExtension = true;
 }
 var samePageTitleStr = 'number of users on exact same page';
-var sameSiteTitleStr = 'no others on same page, number of users on same website';
+var sameSiteTitleStr = 'number of users on same website';
 var lng = window.navigator.userLanguage || window.navigator.language;
 if (lng.indexOf('zh')>-1) {
     samePageTitleStr = '浏览当前网页的人数';
-    sameSiteTitleStr = '当前网页没有其他用户，显示浏览当前网站的人数';
+    sameSiteTitleStr = '浏览当前网站的人数';
 }
 function createChatboxIframe() {
     // check if there is already chatbox created
