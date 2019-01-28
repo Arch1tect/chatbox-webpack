@@ -489,7 +489,7 @@ export default {
         init () {
             var _this = this;
             this.registerCreditChangeSocketCallback();
-            chatboxUtils.onBasicConfigChange(function (configData) {
+            chatboxUtils.addBasicConfigChangeListener(function (configData) {
                console.log('[profile] config in storage changed, load again')
                 _this.loadDataFromStorage(configData);
             });

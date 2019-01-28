@@ -85,6 +85,8 @@ const messages = {
       wrongToken: 'Session expired, please login again'
     },
     m: {
+      block: 'Block',
+      unblock: 'Unblock',
       registerInfo: 'Set up password then click Submit',
       register: 'Register',
       registering: 'Registering...',
@@ -215,6 +217,8 @@ const messages = {
       wrongToken: '请重新登录'
     },
     m: {
+      block: '屏蔽',
+      unblock: '取消屏蔽',
       registerInfo: '只需设定密码即可注册。',
       register: '注册',
       registering: '注册中。。。',

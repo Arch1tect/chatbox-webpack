@@ -1,27 +1,4 @@
-<template>
-    <div v-show="state.view==-1">
-        <div class="socketchatbox-page-title">
-            <span class="leave-others-profile"><font-awesome-icon icon="long-arrow-alt-left" v-on:click='state.view=prevView' /></span><span>{{title}}</span>
-        </div>
-        <div class="socketchatbox-profileArea">
-            <center>
-                <img v-bind:src="profileImgSrc" />
-                <div class="username">{{username}}</div>
-                <div class="user-metadata"><span>ID: {{id}}</span><span class="follow">{{$t('m.followerCount')}}: {{followerCount}}</span></div>
-                <div class="socketchatbox-aboutme">{{aboutMe}}</div>
-                <br/><br/><br/>
-            </center>
-        </div>
-        <button @click="toggleFollow" class="socketchatbox-bottom-btn-wrapper half" v-bind:class="{red: isFollowing}">
-            <span>{{toggleFollowStr}}</span>
-        </button>
-        <button  @click="message" class="socketchatbox-bottom-btn-wrapper half right-half">
-            <span>{{$t('m.sendPrivateMessage')}}</span>
-        </button>
-    </div>
-</template>
 <style>
-
 .socketchatbox-aboutme-others {
     margin: 30px;
     margin-top: 20px;
@@ -50,7 +27,38 @@
 .user-metadata .follow {
     margin: 15px;
 }
+.block-user {
+    color: red;
+    cursor: pointer;
+}
+.block-user:hover {
+    text-decoration: underline;
+}
 </style>
+<template>
+    <div v-show="state.view==-1">
+        <div class="socketchatbox-page-title">
+            <span class="leave-others-profile"><font-awesome-icon icon="long-arrow-alt-left" v-on:click='state.view=prevView' /></span><span>{{title}}</span>
+        </div>
+        <div class="socketchatbox-profileArea">
+            <center>
+                <img v-bind:src="profileImgSrc" />
+                <div class="username">{{username}}</div>
+                <div class="user-metadata"><span>ID: {{id}}</span><span class="follow">{{$t('m.followerCount')}}: {{followerCount}}</span></div>
+                <div class="socketchatbox-aboutme">{{aboutMe}}</div>
+                <br/><br/>
+                <div @click="toggleBlockUser" class="block-user">{{toggleBlockUserStr}}</div>
+                <br/><br/><br/>
+            </center>
+        </div>
+        <button @click="toggleFollow" class="socketchatbox-bottom-btn-wrapper half" v-bind:class="{red: isFollowing}">
+            <span>{{toggleFollowStr}}</span>
+        </button>
+        <button  @click="message" class="socketchatbox-bottom-btn-wrapper half right-half">
+            <span>{{$t('m.sendPrivateMessage')}}</span>
+        </button>
+    </div>
+</template>
 <script>
 import Vue from 'vue'
 
@@ -86,8 +94,25 @@ export default {
                 return this.$t('m.unfollow');
             return this.$t('m.follow');
         },
+        toggleBlockUserStr: function () {
+            if (this.userId in chatboxConfig.blockUserDict)
+                return this.$t('m.unblock');
+            return this.$t('m.block');
+        }
     },
     methods: {
+        toggleBlockUser () {
+            var _this = this;
+            // TODO: block PM as well
+
+            // block chat socket by adding user to blacklist
+            var msg = _this.toggleBlockUserStr + ' ' + this.$t('m.success');
+            chatboxUtils.toggleBlockUserDict(this.userId);
+            Vue.notify({
+                title: msg
+            });
+            // TODO: notify server?
+        },
         message () {
             chatboxUtils.goToMessage(this.userId, this.username, this.hasAvatar);
         },
@@ -183,7 +208,15 @@ export default {
         }
     },
     created () {
+        var _this = this;
         chatboxUtils.viewOthersProfile = this.viewOthersProfile;
+        chatboxUtils.addBlockUserChangeListener(function(data){
+            chatboxConfig.blockUserDict = data;
+        })
+        chatboxUtils.getBlockUserDict(function(data){
+            chatboxConfig.blockUserDict = data;
+        })
+
     }
 }
 

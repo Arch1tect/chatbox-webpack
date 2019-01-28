@@ -28,7 +28,13 @@ var storage = {
         }
         
     }
-    // TODO: add on change
+}
+function addStorageChangeListener(key, callback) {
+    chrome.storage.onChanged.addListener(function(changes, area){
+        if (key in changes) {
+            callback(changes[key]['newValue']);
+        }
+    })
 }
 var tabVisibleCallbacks = [];
 var tabInvisibleCallbacks = [];
@@ -149,12 +155,31 @@ export default {
             callback(configData);
         })
     },
-    onBasicConfigChange: function (callback) {
-        chrome.storage.onChanged.addListener(function(changes, area){
-            if ('chatbox_config' in changes) {
-                callback(changes['chatbox_config']['newValue']);
-            }
+    getBlockUserDict: function (callback) {
+        storage.get('block_user', function (item) {
+            var blockUserDict = item['block_user'] || {};
+            callback(blockUserDict);
         })
+
+    },
+    toggleBlockUserDict: function (uuid) {
+        // this is a short cut for specifically chatbox_config key
+        storage.get('block_user', function (item) {
+            var blockUserDict = item['block_user'] || {};
+            if (uuid in blockUserDict) {
+                delete blockUserDict[uuid];
+            } else {
+                blockUserDict[uuid] = true;
+            }
+            storage.set('block_user', blockUserDict);
+        });
+    },
+    addBasicConfigChangeListener: function (callback) {
+        addStorageChangeListener('chatbox_config', callback);
+    },
+    addStorageChangeListener: addStorageChangeListener,
+    addBlockUserChangeListener: function (callback) {
+        addStorageChangeListener('block_user', callback);
     },
     tryLoadingProfileImg: function (obj, userId, useS3) {
         var domain = chatboxConfig.cdnUrl;

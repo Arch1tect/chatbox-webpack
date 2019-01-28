@@ -733,6 +733,7 @@ export default {
                 _this.scrollToBottomLater();
             });
             chatboxSocket.registerCallback('typing', function (data) {
+                if (data.userId in chatboxConfig.blockUserDict) return;
                 _this.addTypingUser(data.username);
             });
             chatboxSocket.registerCallback('stop typing', function (data) {
@@ -741,6 +742,7 @@ export default {
             });
             // Whenever the server emits 'new message', update the chat body
             chatboxSocket.registerCallback('new message', function (data) {
+                if (data.sender in chatboxConfig.blockUserDict) return;
                 _this.processMsg(data);
                 if (chatboxConfig.livechatDanmu && chatboxConfig.tabVisible) {
                     chatboxUtils.queueDanmu(data, 'live');
@@ -749,6 +751,7 @@ export default {
             });
             // Received file
             chatboxSocket.registerCallback('base64 file', function (data) {
+                if (data.sender in chatboxConfig.blockUserDict) return;
                 data.isFile = true;
                 _this.processMsg(data);
             });

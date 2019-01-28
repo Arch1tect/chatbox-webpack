@@ -17,7 +17,7 @@ if (localAPI) {
 
 export default {
 	// testing: true,
-	version: '2.7.4',
+	version: '2.7.5',
 	detectLocation: true,
 	lang: 'en', // or zh
 	userId: null,
@@ -44,7 +44,7 @@ export default {
 	// data for passing around
 	location: 'https://www.youtube.com/',
 	domain: 'https://www.youtube.com/',
-	// redirected: false, // doesn't seem to need
+	blockUserDict: {},
 	commentsTotal: 0,
 	pageTitle: null,
 	unreadLiveMsgTotal: 0,
