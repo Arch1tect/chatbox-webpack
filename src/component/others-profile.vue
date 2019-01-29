@@ -211,7 +211,7 @@ export default {
         var _this = this;
         chatboxUtils.viewOthersProfile = this.viewOthersProfile;
         chatboxUtils.addBlockUserChangeListener(function(data){
-            chatboxConfig.blockUserDict = data;
+            chatboxConfig.blockUserDict = data || {};
         })
         chatboxUtils.getBlockUserDict(function(data){
             chatboxConfig.blockUserDict = data;

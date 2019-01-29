@@ -760,7 +760,7 @@ export default {
                   title: _this.$t(data.errorCode),
                   type: 'error'
                 });
-                if (data.errorCode == 401) {
+                if (chatboxConfig.socketTokenMustMatchDB && data.errorCode == 401) {
                     console.log('[chat] socket received 401, delete token')
                     chatboxConfig.token = null;
                     _this.state.view = 0;

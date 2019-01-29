@@ -17,6 +17,8 @@ if (localAPI) {
 
 export default {
 	// testing: true,
+	// When running DB api locally with remote socket server
+	socketTokenMustMatchDB: false,
 	version: '2.7.5',
 	detectLocation: true,
 	lang: 'en', // or zh
