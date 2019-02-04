@@ -49,6 +49,11 @@ function keepCheckingLocationChange() {
         'url': location.href
     }
     window.chatboxIFrame.contentWindow.postMessage(msg, "*");
+    // TODO: change below to 
+    // NO! already tried with Youtube, wouldn't work.
+    // $(window).bind('hashchange', function() {
+    //     /* things */
+    // });
     setTimeout(function(){keepCheckingLocationChange()}, 3*1000);
 }
 function checkLocationChange() {
@@ -76,7 +81,6 @@ function resizeIFrameToFitContent(e) {
     if (msg.state ==='show') {
         chatboxIFrame.style.display  = "block";
         console.log('show iframe');
-
     }
     else if (msg.state ==='full size') {
         chatboxIFrame.style.display  = "block";
@@ -236,7 +240,6 @@ chrome.storage.local.get('chatbox_config', function(item){
     // } else {
     //     shouldCreateIframe = true;
     // }
-
     if (shouldCreateIframe) createChatboxIframe();
 
     if (!shouldCreateIframe) {
@@ -356,5 +359,6 @@ chrome.storage.local.get('count_bubble_position', function(item){
     }
 
 });
+
 
 

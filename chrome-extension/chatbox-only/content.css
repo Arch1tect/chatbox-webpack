@@ -48,14 +48,6 @@
 .danmuWrapper {
     /*display: none;*/
 }
-img.danmu-avatar {
-    height: 35px;
-    width: 35px;
-    border-radius: 100%;
-    object-fit: cover;
-    position: absolute;
-    left: -38px;
-}
 .chatbox-danmu {
     position: fixed;
     color: white;
@@ -67,11 +59,18 @@ img.danmu-avatar {
     font-family: Arial,Helvetica,sans-serif;
     font-size: 15px;
 }
-.chatbox-danmu .danmu-text {
-    border: 1px solid rgba(0, 182, 255, 1);
-    box-shadow: 7px 7px 3px rgba(0, 0, 0, 0.2);
+img.danmu-avatar {
+    height: 35px;
+    width: 35px;
+    border-radius: 100%;
+    object-fit: cover;
+    position: absolute;
+    /*left: -38px;*/
+    /*top: -5px;*/
+}
+.danmu-text {
+    margin-left: 40px; /*space for avatar*/
     border-radius: 5px;
-    background: rgba(0, 182, 255, 0.9);
     padding: 10px;
     padding-bottom: 5px;
     padding-top: 5px;
@@ -81,22 +80,30 @@ img.danmu-avatar {
     -o-user-select: none;
     user-select: none;
 }
-.chatbox-danmu .invitation {
+.danmu-text.video-comment {
+    background: #00000080;
+    border: none;
+}
+.danmu-text.invite {
     border: 1px solid lightgray;
-    color: #0089ff;
+    /*color: #0089ff;*/
     color: black;
-    box-shadow: 7px 7px 3px rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
     background: white;
-    padding: 10px;
-    padding-bottom: 5px;
-    padding-top: 5px;
 }
-.chatbox-danmu.self .invitation, .chatbox-danmu.self .danmu-text{
+.danmu-text.live-chat {
+    border: 1px solid rgba(0, 182, 255, 1);
+    box-shadow: 7px 7px 3px rgba(0, 0, 0, 0.2);
+    background: rgba(0, 182, 255, 0.9);;
+    color: white;
+}
+.self .danmu-text.live-chat {
     background: #bf0;
-    border: 1px solid lightgray;
     color: black;
+    border: 1px solid lightgray;
 }
+
+
+
 span.invitation-url {
     color: #0089ff;
     cursor: pointer;
@@ -105,7 +112,7 @@ span.invitation-url:hover {
     text-decoration: underline;
 }
 
-.chatbox-danmu img{
+.chatbox-danmu img {
     max-height: 100px;
     -webkit-user-select: none;
     -khtml-user-select: none;

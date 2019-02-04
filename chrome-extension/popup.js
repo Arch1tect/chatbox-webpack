@@ -21,6 +21,7 @@ var autoJoinAnywhereStr = 'Auto join live chat on any website';
 var autoJoinStr = 'Auto join live chat on current website';
 var autoJoinListStr = 'Auto join live chat on following sites';
 var emptyListStr = 'Never auto join live chat.';
+var videoDanmuStr = 'Show scrolling comment on Youtube';
 
 var lng = window.navigator.userLanguage || window.navigator.language;
 if (lng.indexOf('zh')>-1) {
@@ -42,6 +43,7 @@ if (lng.indexOf('zh')>-1) {
     autoJoinStr = '浏览当前网站时自动连线聊天';
     autoJoinListStr = '浏览以下网站时自动连线聊天';
     emptyListStr = '浏览任何网站时都不会自动连线。';
+    videoDanmuStr = '显示Youtube留言弹幕';
 }
 function renderWhitelist() {
 
@@ -186,6 +188,7 @@ document.addEventListener('DOMContentLoaded', function () {
     $('label .mini').text(miniStr);
     $('label .hidden').text(hiddenStr);
     $('.invitation-danmu').text(invitationStr);
+    $('.video-danmu').text(videoDanmuStr);
     $('label .invitation-from-anywhere').text(fromAnywhereStr);
     $('label .same-site-invite-only').text(fromSameSiteOnlyStr);
     $('label .invitation-from-nowhere').text(fromNowhereStr);
@@ -225,6 +228,13 @@ document.addEventListener('DOMContentLoaded', function () {
             var checkbox = "input[name=livechat_danmu][value="+val+"]";
             $(checkbox).prop("checked",true);
         }
+        if ('video_danmu' in configDataFromStorage) {
+            var val = configDataFromStorage['video_danmu'];
+            if (val) val = 'yes';
+            else val = 'no';
+            var checkbox = "input[name=video_danmu][value="+val+"]";
+            $(checkbox).prop("checked",true);
+        }
         if ('livechat_anywhere' in configDataFromStorage) {
             var val = configDataFromStorage['livechat_anywhere'];
             toggleWhitelistOptions(!val);
@@ -252,6 +262,14 @@ document.addEventListener('DOMContentLoaded', function () {
         else val = false;
         saveConfig('livechat_anywhere', val);
         toggleWhitelistOptions(!val);
+    });
+    $('input:radio[name="video_danmu"]').change(function() {
+        var val = $(this).val();
+        if (val == 'yes') val = true;
+        else val = false;
+        //TODO
+        // showHideDanmu('video_danmu', val);
+        saveConfig('video_danmu', val);
     });
     $('input:radio[name="livechat_danmu"]').change(function() {
         var val = $(this).val();

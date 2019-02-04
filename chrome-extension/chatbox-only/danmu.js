@@ -45,9 +45,11 @@ document.addEventListener('click',function(e){
 function createDanmu(msg) {
     // msg = {
     //     'type': live/comment/invitation,
-    //     'content': 'str'
+    //     'content': 'str',
+    //     'profileImgSrc': optional
     // }
     messages.push(msg);
+    // console.log(msg);
     var danmu  = document.createElement("div");
     msg.el = danmu;
     danmu.className = 'chatbox-danmu';
@@ -59,10 +61,9 @@ function createDanmu(msg) {
         'openChatbox': true,
     }
     if (msg.type == 'live') {
-        danmu.className += ' live';
         var content = msg.content;
         if (!msg.content) content = msg.message;
-        innerHtml = "<div class='danmu-text'>"+content+"</div>";
+        innerHtml = "<div class='live-chat danmu-text'>"+content+"</div>";
         if(content.startsWith('stickers/')) {
             var src = ""
             if (chrome && chrome.extension)
@@ -75,20 +76,25 @@ function createDanmu(msg) {
     }
     if (msg.type == 'invitation') {
         var content = msg.username+invitationStr+" <span class='invitation-url' title='"+msg.url+"'>"+msg.pageTitle+"</span>";
-        innerHtml = "<div class='invitation'>"+content+"</div>";
+        innerHtml = "<div class='invite danmu-text'>"+content+"</div>";
         onclickMsg.type = 'invitation';
+    }
+    if (msg.type == 'video') {
+        danmu.syncWithVideo = true;
+        innerHtml = "<div class='video-comment danmu-text'>"+msg.content+"</div>";
     }
     // Add sender avatar if there is
     if (msg.profileImgSrc && msg.profileImgSrc != 'profile-empty.png') {
-        var avatarSpan = "<img class='danmu-avatar' draggable='false' src='" + msg.profileImgSrc+"' />";
-        innerHtml = avatarSpan + innerHtml;
-    }
-    danmu.onclick = function (e) {
-        if (!dragging)
-            window.chatboxIFrame.contentWindow.postMessage(onclickMsg, "*");
+        // var avatarSpan = "<img class='danmu-avatar' draggable='false' src='" + msg.profileImgSrc+"'"+ "" " />";
+        var $avatarSpan = $('<img>');
+        $avatarSpan.addClass('danmu-avatar');
+        $avatarSpan.attr('draggable', false);
+        $avatarSpan.attr('src', msg.profileImgSrc);
+        $avatarSpan.attr('title', msg.name);
+        innerHtml = $avatarSpan.prop('outerHTML') + innerHtml;
     }
     danmu.innerHTML = innerHtml;
-    danmu.style.top = 30 + msg.row*100 + 'px';
+    danmu.style.top = 5 + msg.row*50 + 'px';
     var startX = window.innerWidth + 'px';
     var time = 20;
     // TODO: figure out good algorithm...
@@ -98,7 +104,7 @@ function createDanmu(msg) {
     // If drag then it's possible to move more than screen wide
     // but animation has stopped...
     if (!danmu.animate)
-        return; // safari doesn't support this!
+        return; // safari doesn't support animate
     var danmuAnimation = danmu.animate([
           // keyframes, at least two
           { transform: 'translateX('+startX+')' }, 
@@ -112,9 +118,15 @@ function createDanmu(msg) {
     );
     danmu.animation = danmuAnimation;
     danmuAnimation.onfinish = function () {
-        var i = messages.indexOf(msg);
-        messages.splice(i, 1);
-        danmuWrapper.removeChild(danmu);
+        // video danmu might already been cleared
+        // console.log('anime finish, remove ' + msg.content);
+        try {
+            var i = messages.indexOf(msg);
+            messages.splice(i, 1);
+            danmuWrapper.removeChild(danmu);
+        } catch (err) {
+            console.log(err);
+        }
     };
     danmu.onmouseover = function () {
         danmuAnimation.pause();
@@ -126,8 +138,33 @@ function createDanmu(msg) {
         dragY = e.clientY;
     }
     danmu.onmouseout = function () {
-        if (draggingElement != danmu)
+        if (draggingElement != danmu) {
+            if (danmu.clickedToPause) return;
+            if (msg.type == 'video' && videoPaused) return;
             danmuAnimation.play();
+        }
+    }
+    if (msg.type == 'video') {
+        if (videoPaused) {
+            // might create danmu element after clicking on
+            // pause video, because there are danmu in waitlist
+            // so we pause then after creation.
+            danmuAnimation.pause();
+        }
+        danmu.onclick = function (e) {
+            if (danmu.clickedToPause) {
+                danmu.clickedToPause = false;
+                danmuAnimation.play();
+            } else {
+                danmu.clickedToPause = true;
+            }
+            // console.log(danmuAnimation);
+        }
+    } else {
+        danmu.onclick = function (e) {
+            if (!dragging)
+                window.chatboxIFrame.contentWindow.postMessage(onclickMsg, "*");
+        }
     }
     danmuWrapper.appendChild(danmu);
 }
@@ -146,7 +183,7 @@ function checkDanmu() {
             // animation laggy
             setTimeout(function(){
                 checkDanmu();
-            }, 2*1000);
+            }, 300);
         } else {
             // If no available spot, wait and check again later
             setTimeout(function(){
@@ -166,6 +203,15 @@ function findSpot() {
         var msg = messages[i];
         if (msg.el.getBoundingClientRect().left + msg.el.offsetWidth > window.innerWidth || !showing)
             occupied[msg.row] = true;
+        // the message could take multiple rows
+        var msgHeight = msg.el.offsetHeight;
+        var rowBelowCount = 1;
+        while (msgHeight > 50) {
+            occupied[msg.row+rowBelowCount] = true;
+            msgHeight += -50;
+            rowBelowCount++;
+        }
+
     }
     var j = 1;
     for (; j < ROW_NUM; j ++) {
@@ -194,7 +240,7 @@ function receiveMsgFromChatboxFrame (e) {
 window.onmouseup = function (e) {
     if (draggingElement) {
         if (draggingElement.animation) {
-            draggingElement.animation.play();
+                // draggingElement.animation.play();
         } else {
             // this is user count bubble
             chrome.storage.local.set({'count_bubble_position': {
