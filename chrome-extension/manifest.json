@@ -8,14 +8,9 @@
   "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
     "js": [
-      // "jquery-3.1.0.min.js",
-      // "chatbox-only/content.js",
-      // "chatbox-only/danmu.js",
-      // "danmu_youtube.js",
       "content-static/js/main.js"
     ],
     "css": [
-      // "chatbox-only/content.css",
       "content-static/css/main.css"
     ]
   }],
