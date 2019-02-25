@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+	<head>
+	    <meta charset="utf-8">
+
+		<link rel="stylesheet" href="popup.css">
+
+		<title>Chat Anywhere</title>
+
+	</head>
+	<body>
+		<!-- <div class='top-part'> -->
+			<!-- <a href='https://quotime.me/online.html'>Find others</a> -->
+		<!-- </div> -->
+		<center class='top-part'>
+			<!-- <a href='https://forum.urlchatbox.com/' target="_blank"> -->
+			<img class="open-chatbox" src='icon.png'/>
+			<button class='open-chatbox' title='Click here to open or close the box'>Open</button>
+<!-- 			<span id='online-user-msg'>
+				<span id='user-count'></span>&nbsp; user on this page
+			</span> -->
+		</center>
+		<div id="content">
+            <div class="option-title first"><b class="same-page-count">Show same page user number</b></div>
+            <form>
+                <label>
+                    <input checked="checked" class="form-radio" type="radio" name="show_same_page_user_count" value="yes"> <span class='yes'>Yes</span>
+                </label>
+                <label>
+                    <input class="form-radio" type="radio" name="show_same_page_user_count" value="no"> <span class='no'>No</span>
+                </label>
+            </form>
+            <br/>
+            <div class="option-title"><b class="display-mode">Default display mode</b></div>
+            <form>
+                <label>
+                    <input class="form-radio" type="radio" name="default_display" value="full"> <span class='full'>Full</span>
+                </label>
+                <label>
+                    <input class="form-radio" type="radio" name="default_display" value="mini"> <span class='mini'>Mini</span>
+                </label>
+                <label>
+                    <input class="form-radio" type="radio" checked="checked" name="default_display" value="hidden"> <span class='hidden'>Hidden</span>
+                </label>
+            </form>
+            <br/>
+			<div class="option-title"><b class="video-danmu">Show scrolling comment on Youtube</b></div>
+			<form>
+				<label>
+					<input class="form-radio" type="radio" checked="checked" name="video_danmu" value="yes"> <span class='yes'>Yes</span>
+				</label>
+				<label>
+					<input class="form-radio" type="radio" name="video_danmu" value="no"> <span class='no'>No</span>
+				</label>
+			</form>
+			<br/>
+			<div class="option-title"><b class="invitation-danmu">Show scrolling message for invitation</b></div>
+			<form>
+				<label>
+					<input class="form-radio" type="radio" checked="checked" name="invitation_danmu" value="any_site"> <span class='invitation-from-anywhere'>From anywhere</span>
+				</label>
+				<br/>
+				<label>
+					<input class="form-radio" type="radio" name="invitation_danmu" value="same_site"> <span class='same-site-invite-only'>From same website only</span>
+				</label>
+				<br/>
+				<label>
+					<input class="form-radio" type="radio" name="invitation_danmu" value="never"> <span class='invitation-from-nowhere'>Never</span>
+				</label>
+			</form>
+			<br/>
+			<div class="option-title"><b class="danmu">Show scrolling message for live chat</b></div>
+			<form>
+				<label>
+					<input class="form-radio" type="radio" checked="checked" name="livechat_danmu" value="yes"> <span class='yes'>Yes</span>
+				</label>
+				<label>
+					<input class="form-radio" type="radio" name="livechat_danmu" value="no"> <span class='no'>No</span>
+				</label>
+			</form>
+			<br/>
+
+			<div class="option-title"><b class="auto-join-anywhere">Auto join live chat on any website</b></div>
+			<form>
+				<label>
+					<input class="form-radio" type="radio" checked="checked" name="livechat_anywhere" value="yes"> <span class='yes'>Yes</span>
+				</label>
+				<label>
+					<input class="form-radio" type="radio" name="livechat_anywhere" value="no"> <span class='no'>No</span>
+				</label>
+			</form>
+
+			<br/>
+			<div class="whitelist-options">
+				<div class="option-title"><b class="auto-join">Auto join live chat on this website</b></div>
+				<form>
+					<label>
+						<input class="form-radio" type="radio" checked="checked" name="toggle_whitelist" value="yes"> <span class='yes'>Yes</span>
+					</label>
+					<label>
+						<input class="form-radio" type="radio" name="toggle_whitelist" value="no"> <span class='no'>No</span>
+					</label>
+				</form>
+
+	<!-- 			<br/>
+				<div class="option-title"><b>Share your location on the <a href='https://urlchatbox.com/online.html'>hub</a>?</b></div>
+				<form>
+					<label>
+						<input type="radio" checked="checked" name="toggle_share_location" value="yes"> Yes
+					</label>
+					<label>
+						<input type="radio" name="toggle_share_location" value="no"> No
+					</label>
+				</form> -->
+
+				<br/>
+				<div class="option-title"><b class='auto-join-list'>Auto join live chat on following sites</b></div>
+				<div class="whitelist"></div>
+			</div>
+
+		</div>
+
+<!-- 			<footer>
+				<a href='https://quotime.me/online.html'>Find other people</a>
+			</footer> -->
+	</body>
+
+	<script src="jquery-3.1.0.min.js"></script>
+	<script src="popup.js"></script>
+</html>

@@ -1,16 +1,23 @@
 {
-
-
   "name": "__MSG_appName__",
   "short_name": "__MSG_appName__",
   "description": "__MSG_appDesc__",
   "default_locale": "en",
-  "version": "2.8.0",
+  "version": "3.0.0",
   "permissions": ["activeTab", "storage", "unlimitedStorage"],
   "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
-    "js": ["jquery-3.1.0.min.js","chatbox-only/content.js","chatbox-only/danmu.js","danmu_youtube.js"],
-    "css": ["chatbox-only/content.css"]
+    "js": [
+      // "jquery-3.1.0.min.js",
+      // "chatbox-only/content.js",
+      // "chatbox-only/danmu.js",
+      // "danmu_youtube.js",
+      "content-static/js/main.js"
+    ],
+    "css": [
+      // "chatbox-only/content.css",
+      "content-static/css/main.css"
+    ]
   }],
   "background": {
     "scripts": ["background.js"],
@@ -22,11 +29,13 @@
       "128": "icon.png" 
   },
   "browser_action": {
-      "default_title": "Same Page",
+      "default_title": "__MSG_appName__",
       "default_icon": "icon.png",
       "default_popup": "popup.html"
   },
   "manifest_version": 2,
-  "web_accessible_resources": ["chatbox-only/chatbox-frame.html", "chatbox-only/stickers/*"]
-
+  "web_accessible_resources": [
+    "chatbox-only/*"
+  ],
+  "content_security_policy": "script-src 'self' 'sha256-bH2qD9pIoGgLVuJI7bW66arvunk7q1Y5dZZ8z5RLN/Q='; object-src 'self'"
 }
