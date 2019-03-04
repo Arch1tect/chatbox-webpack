@@ -8,6 +8,7 @@
   "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
     "js": [
+      "chatbox-only/content.js",
       "content-static/js/main.js"
     ],
     "css": [
@@ -30,7 +31,8 @@
   },
   "manifest_version": 2,
   "web_accessible_resources": [
-    "chatbox-only/*"
+    "chatbox-only/*",
+    "duonao.js"
   ],
   "content_security_policy": "script-src 'self' 'sha256-bH2qD9pIoGgLVuJI7bW66arvunk7q1Y5dZZ8z5RLN/Q='; object-src 'self'"
 }
