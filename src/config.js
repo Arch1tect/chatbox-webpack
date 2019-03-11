@@ -19,7 +19,7 @@ export default {
 	// testing: true,
 	// When running DB api locally with remote socket server
 	socketTokenMustMatchDB: false,
-	version: '3.0.1',
+	version: '3.1.0',
 	detectLocation: true,
 	lang: 'en', // or zh
 	userId: null,
