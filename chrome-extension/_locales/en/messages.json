@@ -4,7 +4,7 @@
         "description": "The title of the application, displayed in the web store."
     },
     "appDesc": {
-        "message": "Show comments on top of Youtube videos!",
+        "message": "Show live comments on top of Youtube videos, chat with people watching same video",
         "description":"The description of the application, displayed in the web store."
     }
 }
