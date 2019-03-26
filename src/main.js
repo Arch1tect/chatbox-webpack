@@ -287,7 +287,7 @@ const messages = {
       samePageChat: '网页',
       sameSiteChat: '网站',
       typeHere: '输入。。。',
-      joinMe: '邀请大家去',
+      joinMe: '邀请你去',
       liveChatWelcomeLog: '和当前页面的用户在线聊天',
       liveChatWelcomeLogSameSite: '和当前网站的用户在线聊天',
       comment: '留言！',
