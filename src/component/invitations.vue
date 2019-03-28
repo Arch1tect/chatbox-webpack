@@ -159,6 +159,8 @@ export default {
         registerInvitationCallback: function () {
             var _this = this;
             chatboxSocket.registerCallback('invite', function (msg) {
+                console.log('invitation!!!!!!!!!!!!!');
+                console.log(msg);
                 _this.processInvitation(msg);
                 if (chatboxConfig.tabVisible) {
                     _this.queueDanmu(msg);

@@ -1,10 +1,10 @@
 {
     "appName": {
-        "message": "Youtube Plus",
+        "message": "Same Page",
         "description": "The title of the application, displayed in the web store."
     },
     "appDesc": {
-        "message": "Show live comments on top of Youtube videos, chat with people watching same video",
+        "message": "Live chat with people who are visiting the same website as you!",
         "description":"The description of the application, displayed in the web store."
     }
 }
